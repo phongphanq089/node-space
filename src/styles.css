@@ -5,6 +5,46 @@
 
 @theme {
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+  /* ── NodeSpace Dark UI Tokens ─────────────────────────────── */
+
+  /* Backgrounds */
+  --color-ns-bg:          #080c10;
+  --color-ns-surface:     rgb(12 18 28 / 0.9);
+  --color-ns-surface-alt: rgb(10 14 20 / 0.95);
+  --color-ns-panel:       rgb(12 18 28 / 0.8);
+  --color-ns-topbar:      rgb(10 14 20 / 0.8);
+  --color-ns-input:       rgb(255 255 255 / 0.05);
+  --color-ns-hover:       rgb(79 184 178 / 0.06);
+  --color-ns-hover-md:    rgb(79 184 178 / 0.1);
+  --color-ns-active:      rgb(79 184 178 / 0.14);
+
+  /* Borders */
+  --color-ns-border:      rgb(79 184 178 / 0.1);
+  --color-ns-border-soft: rgb(79 184 178 / 0.08);
+  --color-ns-border-md:   rgb(79 184 178 / 0.15);
+  --color-ns-border-em:   rgb(79 184 178 / 0.25);
+  --color-ns-input-focus: rgb(79 184 178 / 0.4);
+
+  /* Accent colours */
+  --color-ns-accent:      #4fb8b2;
+  --color-ns-accent-lt:   #60d7cf;
+  --color-ns-purple:      #7c6ef7;
+  --color-ns-pink:        #e05c9a;
+  --color-ns-amber:       #f0a040;
+
+  /* Text */
+  --color-ns-text:        #e8f4f3;
+  --color-ns-text-2:      #c8dbd8;
+  --color-ns-muted:       rgb(175 205 200 / 0.65);
+  --color-ns-muted-md:    rgb(175 205 200 / 0.55);
+  --color-ns-muted-sm:    rgb(175 205 200 / 0.45);
+  --color-ns-faint:       rgb(175 205 200 / 0.35);
+  --color-ns-ghost:       rgb(175 205 200 / 0.4);
+  --color-ns-placeholder: rgb(175 205 200 / 0.3);
+
+  /* Special */
+  --color-ns-on-accent:   #080c10;
 }
 
 :root {

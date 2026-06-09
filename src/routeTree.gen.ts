@@ -9,9 +9,33 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardTrashRouteImport } from './routes/dashboard.trash'
+import { Route as DashboardTagsRouteImport } from './routes/dashboard.tags'
+import { Route as DashboardRecentRouteImport } from './routes/dashboard.recent'
+import { Route as DashboardNodesRouteImport } from './routes/dashboard.nodes'
+import { Route as DashboardFavoritesRouteImport } from './routes/dashboard.favorites'
 
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -22,35 +46,148 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardTrashRoute = DashboardTrashRouteImport.update({
+  id: '/trash',
+  path: '/trash',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardTagsRoute = DashboardTagsRouteImport.update({
+  id: '/tags',
+  path: '/tags',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardRecentRoute = DashboardRecentRouteImport.update({
+  id: '/recent',
+  path: '/recent',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardNodesRoute = DashboardNodesRouteImport.update({
+  id: '/nodes',
+  path: '/nodes',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardFavoritesRoute = DashboardFavoritesRouteImport.update({
+  id: '/favorites',
+  path: '/favorites',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/dashboard/favorites': typeof DashboardFavoritesRoute
+  '/dashboard/nodes': typeof DashboardNodesRoute
+  '/dashboard/recent': typeof DashboardRecentRoute
+  '/dashboard/tags': typeof DashboardTagsRoute
+  '/dashboard/trash': typeof DashboardTrashRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/dashboard/favorites': typeof DashboardFavoritesRoute
+  '/dashboard/nodes': typeof DashboardNodesRoute
+  '/dashboard/recent': typeof DashboardRecentRoute
+  '/dashboard/tags': typeof DashboardTagsRoute
+  '/dashboard/trash': typeof DashboardTrashRoute
+  '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/dashboard/favorites': typeof DashboardFavoritesRoute
+  '/dashboard/nodes': typeof DashboardNodesRoute
+  '/dashboard/recent': typeof DashboardRecentRoute
+  '/dashboard/tags': typeof DashboardTagsRoute
+  '/dashboard/trash': typeof DashboardTrashRoute
+  '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/dashboard'
+    | '/login'
+    | '/register'
+    | '/dashboard/favorites'
+    | '/dashboard/nodes'
+    | '/dashboard/recent'
+    | '/dashboard/tags'
+    | '/dashboard/trash'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id: '__root__' | '/' | '/about'
+  to:
+    | '/'
+    | '/about'
+    | '/login'
+    | '/register'
+    | '/dashboard/favorites'
+    | '/dashboard/nodes'
+    | '/dashboard/recent'
+    | '/dashboard/tags'
+    | '/dashboard/trash'
+    | '/dashboard'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/dashboard'
+    | '/login'
+    | '/register'
+    | '/dashboard/favorites'
+    | '/dashboard/nodes'
+    | '/dashboard/recent'
+    | '/dashboard/tags'
+    | '/dashboard/trash'
+    | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -65,12 +202,79 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/trash': {
+      id: '/dashboard/trash'
+      path: '/trash'
+      fullPath: '/dashboard/trash'
+      preLoaderRoute: typeof DashboardTrashRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/tags': {
+      id: '/dashboard/tags'
+      path: '/tags'
+      fullPath: '/dashboard/tags'
+      preLoaderRoute: typeof DashboardTagsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/recent': {
+      id: '/dashboard/recent'
+      path: '/recent'
+      fullPath: '/dashboard/recent'
+      preLoaderRoute: typeof DashboardRecentRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/nodes': {
+      id: '/dashboard/nodes'
+      path: '/nodes'
+      fullPath: '/dashboard/nodes'
+      preLoaderRoute: typeof DashboardNodesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/favorites': {
+      id: '/dashboard/favorites'
+      path: '/favorites'
+      fullPath: '/dashboard/favorites'
+      preLoaderRoute: typeof DashboardFavoritesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
+
+interface DashboardRouteChildren {
+  DashboardFavoritesRoute: typeof DashboardFavoritesRoute
+  DashboardNodesRoute: typeof DashboardNodesRoute
+  DashboardRecentRoute: typeof DashboardRecentRoute
+  DashboardTagsRoute: typeof DashboardTagsRoute
+  DashboardTrashRoute: typeof DashboardTrashRoute
+  DashboardIndexRoute: typeof DashboardIndexRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardFavoritesRoute: DashboardFavoritesRoute,
+  DashboardNodesRoute: DashboardNodesRoute,
+  DashboardRecentRoute: DashboardRecentRoute,
+  DashboardTagsRoute: DashboardTagsRoute,
+  DashboardTrashRoute: DashboardTrashRoute,
+  DashboardIndexRoute: DashboardIndexRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  DashboardRoute: DashboardRouteWithChildren,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
