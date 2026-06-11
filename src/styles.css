@@ -1,117 +1,116 @@
-
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap");
-@import "tailwindcss";
-@plugin "@tailwindcss/typography";
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
 @theme {
-  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
 
   /* ── NodeSpace Dark UI Tokens ─────────────────────────────── */
 
   /* Backgrounds */
-  --color-ns-bg:          #080c10;
-  --color-ns-surface:     rgb(12 18 28 / 0.9);
-  --color-ns-surface-alt: rgb(10 14 20 / 0.95);
-  --color-ns-panel:       rgb(12 18 28 / 0.8);
-  --color-ns-topbar:      rgb(10 14 20 / 0.8);
-  --color-ns-input:       rgb(255 255 255 / 0.05);
-  --color-ns-hover:       rgb(79 184 178 / 0.06);
-  --color-ns-hover-md:    rgb(79 184 178 / 0.1);
-  --color-ns-active:      rgb(79 184 178 / 0.14);
+  --color-ns-bg: #05020c;
+  --color-ns-surface: rgb(10 6 22 / 0.9);
+  --color-ns-surface-alt: rgb(8 4 18 / 0.95);
+  --color-ns-panel: rgb(10 6 22 / 0.8);
+  --color-ns-topbar: rgb(8 4 18 / 0.8);
+  --color-ns-input: rgb(255 255 255 / 0.05);
+  --color-ns-hover: rgb(124 58 237 / 0.08);
+  --color-ns-hover-md: rgb(124 58 237 / 0.15);
+  --color-ns-active: rgb(124 58 237 / 0.22);
 
   /* Borders */
-  --color-ns-border:      rgb(79 184 178 / 0.1);
-  --color-ns-border-soft: rgb(79 184 178 / 0.08);
-  --color-ns-border-md:   rgb(79 184 178 / 0.15);
-  --color-ns-border-em:   rgb(79 184 178 / 0.25);
-  --color-ns-input-focus: rgb(79 184 178 / 0.4);
+  --color-ns-border: rgb(124 58 237 / 0.12);
+  --color-ns-border-soft: rgb(124 58 237 / 0.08);
+  --color-ns-border-md: rgb(124 58 237 / 0.2);
+  --color-ns-border-em: rgb(124 58 237 / 0.35);
+  --color-ns-input-focus: rgb(124 58 237 / 0.5);
 
   /* Accent colours */
-  --color-ns-accent:      #4fb8b2;
-  --color-ns-accent-lt:   #60d7cf;
-  --color-ns-purple:      #7c6ef7;
-  --color-ns-pink:        #e05c9a;
-  --color-ns-amber:       #f0a040;
+  --color-ns-accent: #7c3aed;
+  --color-ns-accent-lt: #a78bfa;
+  --color-ns-purple: #6366f1;
+  --color-ns-pink: #e05c9a;
+  --color-ns-amber: #f59e0b;
 
   /* Text */
-  --color-ns-text:        #e8f4f3;
-  --color-ns-text-2:      #c8dbd8;
-  --color-ns-muted:       rgb(175 205 200 / 0.65);
-  --color-ns-muted-md:    rgb(175 205 200 / 0.55);
-  --color-ns-muted-sm:    rgb(175 205 200 / 0.45);
-  --color-ns-faint:       rgb(175 205 200 / 0.35);
-  --color-ns-ghost:       rgb(175 205 200 / 0.4);
-  --color-ns-placeholder: rgb(175 205 200 / 0.3);
+  --color-ns-text: #f5f3ff;
+  --color-ns-text-2: #ddd6fe;
+  --color-ns-muted: rgb(221 214 254 / 0.65);
+  --color-ns-muted-md: rgb(221 214 254 / 0.55);
+  --color-ns-muted-sm: rgb(221 214 254 / 0.45);
+  --color-ns-faint: rgb(221 214 254 / 0.35);
+  --color-ns-ghost: rgb(221 214 254 / 0.4);
+  --color-ns-placeholder: rgb(221 214 254 / 0.3);
 
   /* Special */
-  --color-ns-on-accent:   #080c10;
+  --color-ns-on-accent: #ffffff;
 }
 
 :root {
-  --sea-ink: #173a40;
-  --sea-ink-soft: #416166;
-  --lagoon: #4fb8b2;
-  --lagoon-deep: #328f97;
-  --palm: #2f6a4a;
-  --sand: #e7f0e8;
-  --foam: #f3faf5;
-  --surface: rgba(255, 255, 255, 0.74);
-  --surface-strong: rgba(255, 255, 255, 0.9);
-  --line: rgba(23, 58, 64, 0.14);
-  --inset-glint: rgba(255, 255, 255, 0.82);
-  --kicker: rgba(47, 106, 74, 0.9);
-  --bg-base: #e7f3ec;
-  --header-bg: rgba(251, 255, 248, 0.84);
-  --chip-bg: rgba(255, 255, 255, 0.8);
-  --chip-line: rgba(47, 106, 74, 0.18);
-  --link-bg-hover: rgba(255, 255, 255, 0.9);
-  --hero-a: rgba(79, 184, 178, 0.36);
-  --hero-b: rgba(47, 106, 74, 0.2);
+  --sea-ink: #f5f3ff;
+  --sea-ink-soft: #ddd6fe;
+  --lagoon: #7c3aed;
+  --lagoon-deep: #6d28d9;
+  --palm: #a78bfa;
+  --sand: #090514;
+  --foam: #0c0720;
+  --surface: rgba(10, 6, 22, 0.74);
+  --surface-strong: rgba(10, 6, 22, 0.9);
+  --line: rgba(124, 58, 237, 0.16);
+  --inset-glint: rgba(167, 139, 250, 0.14);
+  --kicker: #c084fc;
+  --bg-base: #05020c;
+  --header-bg: rgba(10, 6, 22, 0.8);
+  --chip-bg: rgba(13, 8, 30, 0.9);
+  --chip-line: rgba(167, 139, 250, 0.24);
+  --link-bg-hover: rgba(24, 14, 49, 0.8);
+  --hero-a: rgba(124, 58, 237, 0.18);
+  --hero-b: rgba(99, 102, 241, 0.12);
 }
 
-:root[data-theme="dark"] {
-  --sea-ink: #d7ece8;
-  --sea-ink-soft: #afcdc8;
-  --lagoon: #60d7cf;
-  --lagoon-deep: #8de5db;
-  --palm: #6ec89a;
-  --sand: #0f1a1e;
-  --foam: #101d22;
-  --surface: rgba(16, 30, 34, 0.8);
-  --surface-strong: rgba(15, 27, 31, 0.92);
-  --line: rgba(141, 229, 219, 0.18);
-  --inset-glint: rgba(194, 247, 238, 0.14);
-  --kicker: #b8efe5;
-  --bg-base: #0a1418;
-  --header-bg: rgba(10, 20, 24, 0.8);
-  --chip-bg: rgba(13, 28, 32, 0.9);
-  --chip-line: rgba(141, 229, 219, 0.24);
-  --link-bg-hover: rgba(24, 44, 49, 0.8);
-  --hero-a: rgba(96, 215, 207, 0.18);
-  --hero-b: rgba(110, 200, 154, 0.12);
+:root[data-theme='dark'] {
+  --sea-ink: #f5f3ff;
+  --sea-ink-soft: #ddd6fe;
+  --lagoon: #7c3aed;
+  --lagoon-deep: #6d28d9;
+  --palm: #a78bfa;
+  --sand: #090514;
+  --foam: #0c0720;
+  --surface: rgba(10, 6, 22, 0.8);
+  --surface-strong: rgba(10, 6, 22, 0.92);
+  --line: rgba(124, 58, 237, 0.18);
+  --inset-glint: rgba(167, 139, 250, 0.14);
+  --kicker: #c084fc;
+  --bg-base: #05020c;
+  --header-bg: rgba(10, 6, 22, 0.8);
+  --chip-bg: rgba(13, 8, 30, 0.9);
+  --chip-line: rgba(167, 139, 250, 0.24);
+  --link-bg-hover: rgba(24, 14, 49, 0.8);
+  --hero-a: rgba(124, 58, 237, 0.18);
+  --hero-b: rgba(99, 102, 241, 0.12);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --sea-ink: #d7ece8;
-    --sea-ink-soft: #afcdc8;
-    --lagoon: #60d7cf;
-    --lagoon-deep: #8de5db;
-    --palm: #6ec89a;
-    --sand: #0f1a1e;
-    --foam: #101d22;
-    --surface: rgba(16, 30, 34, 0.8);
-    --surface-strong: rgba(15, 27, 31, 0.92);
-    --line: rgba(141, 229, 219, 0.18);
-    --inset-glint: rgba(194, 247, 238, 0.14);
-    --kicker: #b8efe5;
-    --bg-base: #0a1418;
-    --header-bg: rgba(10, 20, 24, 0.8);
-    --chip-bg: rgba(13, 28, 32, 0.9);
-    --chip-line: rgba(141, 229, 219, 0.24);
-    --link-bg-hover: rgba(24, 44, 49, 0.8);
-    --hero-a: rgba(96, 215, 207, 0.18);
-    --hero-b: rgba(110, 200, 154, 0.12);
+  :root:not([data-theme='light']) {
+    --sea-ink: #f5f3ff;
+    --sea-ink-soft: #ddd6fe;
+    --lagoon: #7c3aed;
+    --lagoon-deep: #6d28d9;
+    --palm: #a78bfa;
+    --sand: #090514;
+    --foam: #0c0720;
+    --surface: rgba(10, 6, 22, 0.8);
+    --surface-strong: rgba(10, 6, 22, 0.92);
+    --line: rgba(124, 58, 237, 0.18);
+    --inset-glint: rgba(167, 139, 250, 0.14);
+    --kicker: #c084fc;
+    --bg-base: #05020c;
+    --header-bg: rgba(10, 6, 22, 0.8);
+    --chip-bg: rgba(13, 8, 30, 0.9);
+    --chip-line: rgba(167, 139, 250, 0.24);
+    --link-bg-hover: rgba(24, 14, 49, 0.8);
+    --hero-a: rgba(124, 58, 237, 0.18);
+    --hero-b: rgba(99, 102, 241, 0.12);
   }
 }
 
@@ -133,28 +132,45 @@ body {
   background:
     radial-gradient(1100px 620px at -8% -10%, var(--hero-a), transparent 58%),
     radial-gradient(1050px 620px at 112% -12%, var(--hero-b), transparent 62%),
-    radial-gradient(720px 380px at 50% 115%, rgba(79, 184, 178, 0.1), transparent 68%),
-    linear-gradient(180deg, color-mix(in oklab, var(--sand) 68%, white) 0%, var(--foam) 44%, var(--bg-base) 100%);
+    radial-gradient(
+      720px 380px at 50% 115%,
+      rgba(79, 184, 178, 0.1),
+      transparent 68%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--sand) 68%, white) 0%,
+      var(--foam) 44%,
+      var(--bg-base) 100%
+    );
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body::before {
-  content: "";
+  content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: -1;
   opacity: 0.28;
   background:
-    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.8), transparent 34%),
-    radial-gradient(circle at 78% 26%, rgba(79, 184, 178, 0.2), transparent 42%),
+    radial-gradient(
+      circle at 20% 15%,
+      rgba(255, 255, 255, 0.8),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 78% 26%,
+      rgba(79, 184, 178, 0.2),
+      transparent 42%
+    ),
     radial-gradient(circle at 42% 82%, rgba(47, 106, 74, 0.14), transparent 36%);
 }
 
 body::after {
-  content: "";
+  content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
@@ -201,7 +217,7 @@ pre code {
 }
 
 .display-title {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: 'Fraunces', Georgia, serif;
 }
 
 .island-shell {
@@ -215,7 +231,11 @@ pre code {
 }
 
 .feature-card {
-  background: linear-gradient(165deg, color-mix(in oklab, var(--surface-strong) 93%, white 7%), var(--surface));
+  background: linear-gradient(
+    165deg,
+    color-mix(in oklab, var(--surface-strong) 93%, white 7%),
+    var(--surface)
+  );
   box-shadow:
     0 1px 0 var(--inset-glint) inset,
     0 18px 34px rgba(30, 90, 72, 0.1),
@@ -230,7 +250,10 @@ pre code {
 button,
 .island-shell,
 a {
-  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease,
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease,
     transform 180ms ease;
 }
 
@@ -251,7 +274,7 @@ a {
 }
 
 .nav-link::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   bottom: -6px;
@@ -299,3 +322,116 @@ a {
   }
 }
 
+/* ── NodeSpace Ambient Backgrounds & Effects ───────────────── */
+
+/* Landing Page Grid Overlay */
+.ns-grid-overlay {
+  background-image:
+    linear-gradient(rgba(79, 184, 178, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79, 184, 178, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse at 50% 20%, black 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(
+    ellipse at 50% 20%,
+    black 30%,
+    transparent 80%
+  );
+}
+
+/* Landing Page Orbs */
+.ns-orb-accent-20 {
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-ns-accent) 20%, transparent),
+    transparent 70%
+  );
+  filter: blur(80px);
+}
+
+.ns-orb-purple-18 {
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-ns-purple) 18%, transparent),
+    transparent 70%
+  );
+  filter: blur(80px);
+}
+
+.ns-orb-green-15 {
+  background: radial-gradient(circle, rgba(47, 106, 74, 0.15), transparent 70%);
+  filter: blur(80px);
+}
+
+/* Auth Pages Orbs */
+.ns-orb-accent-20-blur {
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-ns-accent) 20%, transparent),
+    transparent 70%
+  );
+  filter: blur(80px);
+}
+
+.ns-orb-purple-20-blur {
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-ns-purple) 20%, transparent),
+    transparent 70%
+  );
+  filter: blur(80px);
+}
+
+/* Dashboard Hero Blurs */
+.ns-hero-blur-accent-30 {
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-ns-accent) 30%, transparent),
+    transparent 70%
+  );
+  filter: blur(40px);
+}
+
+.ns-hero-blur-purple-25 {
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-ns-purple) 25%, transparent),
+    transparent 70%
+  );
+  filter: blur(40px);
+}
+
+/* Text Gradients */
+.ns-text-gradient {
+  background-image: linear-gradient(
+    135deg,
+    var(--color-ns-accent) 0%,
+    var(--color-ns-purple) 55%,
+    var(--color-ns-pink) 100%
+  );
+}
+
+/* Float animation for 3D elements */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.ns-animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+/* Glassmorphism countdown card glow and shadow */
+.ns-countdown-card {
+  background: rgba(10, 6, 22, 0.65);
+  border: 1px solid rgba(124, 58, 237, 0.25);
+  box-shadow:
+    0 8px 32px 0 rgba(0, 0, 0, 0.37),
+    inset 0 0 12px rgba(124, 58, 237, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}

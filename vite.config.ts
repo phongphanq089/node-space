@@ -1,3 +1,4 @@
+import netlify from '@netlify/vite-plugin-tanstack-start'
 import tailwindcss from '@tailwindcss/vite'
 import { devtools } from '@tanstack/devtools-vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
@@ -27,7 +28,7 @@ export default defineConfig(() => ({
         },
       ],
     }),
-
+    netlify(),
     nitro(), // tự host Node  dùng cho Node/VPS/Docker/Railway: giữ nitro(), chạy node .output/server/index.mjs vì nó đc đóng gói sẵn là 1 server rồi ===> server runtime chạy được trực tiếp
     tailwindcss(),
     viteReact(),
