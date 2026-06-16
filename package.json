@@ -7,8 +7,9 @@
   },
   "scripts": {
     "dev": "vite dev --port 3000",
-    "build": "vite build",
-    "build:nitro": "cross-env NITRO_PRESET=netlify vite build",
+    "build": "cross-env NITRO_PRESET=cloudflare_pages vite build",
+    "build:nitro": "pnpm run build",
+    "preview:cloudflare": "wrangler pages dev dist",
     "start": "node .output/server/index.mjs",
     "preview": "vite preview",
     "test": "vitest run",
@@ -32,7 +33,7 @@
     "vite-tsconfig-paths": "^6.1.1"
   },
   "devDependencies": {
-    "@netlify/vite-plugin-tanstack-start": "^1.2.15",
+    "@cloudflare/workers-types": "^4.20241218.0",
     "@tailwindcss/typography": "^0.5.16",
     "@tanstack/devtools-vite": "^0.7.0",
     "@tanstack/eslint-config": "^0.4.0",
@@ -53,7 +54,8 @@
     "prettier-plugin-tailwindcss": "^0.8.0",
     "typescript": "^6.0.2",
     "vite": "^8.0.0",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.5",
+    "wrangler": "^3.101.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

@@ -1,120 +1,62 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
+
+/* ─────────────────────────────────────────────────────────────
+   Design Tokens
+   primary  : #7c3aed  (violet-700)
+   secondary: #6366f1  (indigo-500)
+   accent-lt: #a78bfa  (violet-400) — lighter tint / highlight
+   ───────────────────────────────────────────────────────────── */
 
 @theme {
   --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
 
-  /* ── NodeSpace Dark UI Tokens ─────────────────────────────── */
-
   /* Backgrounds */
-  --color-ns-bg: #05020c;
-  --color-ns-surface: rgb(10 6 22 / 0.9);
+  --color-ns-bg:          #05020c;
+  --color-ns-surface:     rgb(10 6 22 / 0.9);
   --color-ns-surface-alt: rgb(8 4 18 / 0.95);
-  --color-ns-panel: rgb(10 6 22 / 0.8);
-  --color-ns-topbar: rgb(8 4 18 / 0.8);
-  --color-ns-input: rgb(255 255 255 / 0.05);
-  --color-ns-hover: rgb(124 58 237 / 0.08);
-  --color-ns-hover-md: rgb(124 58 237 / 0.15);
-  --color-ns-active: rgb(124 58 237 / 0.22);
+  --color-ns-panel:       rgb(10 6 22 / 0.8);
+  --color-ns-topbar:      rgb(8 4 18 / 0.8);
+  --color-ns-input:       rgb(255 255 255 / 0.05);
+  --color-ns-hover:       rgb(124 58 237 / 0.08);
+  --color-ns-hover-md:    rgb(124 58 237 / 0.15);
+  --color-ns-active:      rgb(124 58 237 / 0.22);
 
   /* Borders */
-  --color-ns-border: rgb(124 58 237 / 0.12);
+  --color-ns-border:      rgb(124 58 237 / 0.12);
   --color-ns-border-soft: rgb(124 58 237 / 0.08);
-  --color-ns-border-md: rgb(124 58 237 / 0.2);
-  --color-ns-border-em: rgb(124 58 237 / 0.35);
+  --color-ns-border-md:   rgb(124 58 237 / 0.2);
+  --color-ns-border-em:   rgb(124 58 237 / 0.35);
   --color-ns-input-focus: rgb(124 58 237 / 0.5);
 
-  /* Accent colours */
-  --color-ns-accent: #7c3aed;
-  --color-ns-accent-lt: #a78bfa;
-  --color-ns-purple: #6366f1;
-  --color-ns-pink: #e05c9a;
-  --color-ns-amber: #f59e0b;
+  /* Colors — primary / secondary / accent */
+  --color-ns-accent:      #7c3aed; /* primary   — violet-700  */
+  --color-ns-secondary:   #6366f1; /* secondary — indigo-500  */
+  --color-ns-accent-lt:   #a78bfa; /* highlight — violet-400  */
+  --color-ns-purple:      #6366f1; /* alias → secondary (backward compat) */
+  --color-ns-pink:        #e05c9a; /* optional third          */
+  --color-ns-amber:       #f59e0b; /* optional warning/badge  */
 
   /* Text */
-  --color-ns-text: #f5f3ff;
-  --color-ns-text-2: #ddd6fe;
-  --color-ns-muted: rgb(221 214 254 / 0.65);
-  --color-ns-muted-md: rgb(221 214 254 / 0.55);
-  --color-ns-muted-sm: rgb(221 214 254 / 0.45);
-  --color-ns-faint: rgb(221 214 254 / 0.35);
-  --color-ns-ghost: rgb(221 214 254 / 0.4);
+  --color-ns-text:        #f5f3ff;
+  --color-ns-text-2:      #ddd6fe;
+  --color-ns-muted:       rgb(221 214 254 / 0.65);
+  --color-ns-muted-md:    rgb(221 214 254 / 0.55);
+  --color-ns-muted-sm:    rgb(221 214 254 / 0.45);
+  --color-ns-faint:       rgb(221 214 254 / 0.35);
+  --color-ns-ghost:       rgb(221 214 254 / 0.4);
   --color-ns-placeholder: rgb(221 214 254 / 0.3);
 
-  /* Special */
+  /* On-color */
   --color-ns-on-accent: #ffffff;
 }
 
-:root {
-  --sea-ink: #f5f3ff;
-  --sea-ink-soft: #ddd6fe;
-  --lagoon: #7c3aed;
-  --lagoon-deep: #6d28d9;
-  --palm: #a78bfa;
-  --sand: #090514;
-  --foam: #0c0720;
-  --surface: rgba(10, 6, 22, 0.74);
-  --surface-strong: rgba(10, 6, 22, 0.9);
-  --line: rgba(124, 58, 237, 0.16);
-  --inset-glint: rgba(167, 139, 250, 0.14);
-  --kicker: #c084fc;
-  --bg-base: #05020c;
-  --header-bg: rgba(10, 6, 22, 0.8);
-  --chip-bg: rgba(13, 8, 30, 0.9);
-  --chip-line: rgba(167, 139, 250, 0.24);
-  --link-bg-hover: rgba(24, 14, 49, 0.8);
-  --hero-a: rgba(124, 58, 237, 0.18);
-  --hero-b: rgba(99, 102, 241, 0.12);
-}
+/* ── Global Reset ─────────────────────────────────────────── */
 
-:root[data-theme='dark'] {
-  --sea-ink: #f5f3ff;
-  --sea-ink-soft: #ddd6fe;
-  --lagoon: #7c3aed;
-  --lagoon-deep: #6d28d9;
-  --palm: #a78bfa;
-  --sand: #090514;
-  --foam: #0c0720;
-  --surface: rgba(10, 6, 22, 0.8);
-  --surface-strong: rgba(10, 6, 22, 0.92);
-  --line: rgba(124, 58, 237, 0.18);
-  --inset-glint: rgba(167, 139, 250, 0.14);
-  --kicker: #c084fc;
-  --bg-base: #05020c;
-  --header-bg: rgba(10, 6, 22, 0.8);
-  --chip-bg: rgba(13, 8, 30, 0.9);
-  --chip-line: rgba(167, 139, 250, 0.24);
-  --link-bg-hover: rgba(24, 14, 49, 0.8);
-  --hero-a: rgba(124, 58, 237, 0.18);
-  --hero-b: rgba(99, 102, 241, 0.12);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --sea-ink: #f5f3ff;
-    --sea-ink-soft: #ddd6fe;
-    --lagoon: #7c3aed;
-    --lagoon-deep: #6d28d9;
-    --palm: #a78bfa;
-    --sand: #090514;
-    --foam: #0c0720;
-    --surface: rgba(10, 6, 22, 0.8);
-    --surface-strong: rgba(10, 6, 22, 0.92);
-    --line: rgba(124, 58, 237, 0.18);
-    --inset-glint: rgba(167, 139, 250, 0.14);
-    --kicker: #c084fc;
-    --bg-base: #05020c;
-    --header-bg: rgba(10, 6, 22, 0.8);
-    --chip-bg: rgba(13, 8, 30, 0.9);
-    --chip-line: rgba(167, 139, 250, 0.24);
-    --link-bg-hover: rgba(24, 14, 49, 0.8);
-    --hero-a: rgba(124, 58, 237, 0.18);
-    --hero-b: rgba(99, 102, 241, 0.12);
-  }
-}
-
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -126,291 +68,17 @@ body,
 
 body {
   margin: 0;
-  color: var(--sea-ink);
+  background-color: var(--color-ns-bg);
+  color: var(--color-ns-text-2);
   font-family: var(--font-sans);
-  background-color: var(--bg-base);
-  background:
-    radial-gradient(1100px 620px at -8% -10%, var(--hero-a), transparent 58%),
-    radial-gradient(1050px 620px at 112% -12%, var(--hero-b), transparent 62%),
-    radial-gradient(
-      720px 380px at 50% 115%,
-      rgba(79, 184, 178, 0.1),
-      transparent 68%
-    ),
-    linear-gradient(
-      180deg,
-      color-mix(in oklab, var(--sand) 68%, white) 0%,
-      var(--foam) 44%,
-      var(--bg-base) 100%
-    );
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-  opacity: 0.28;
-  background:
-    radial-gradient(
-      circle at 20% 15%,
-      rgba(255, 255, 255, 0.8),
-      transparent 34%
-    ),
-    radial-gradient(
-      circle at 78% 26%,
-      rgba(79, 184, 178, 0.2),
-      transparent 42%
-    ),
-    radial-gradient(circle at 42% 82%, rgba(47, 106, 74, 0.14), transparent 36%);
-}
+/* ── Reusable Utilities ───────────────────────────────────── */
 
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-  opacity: 0.14;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-  background-size: 28px 28px;
-  mask-image: radial-gradient(circle at 50% 30%, black, transparent 78%);
-}
-
-a {
-  color: var(--lagoon-deep);
-  text-decoration-color: rgba(50, 143, 151, 0.4);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
-}
-
-a:hover {
-  color: #246f76;
-}
-
-code {
-  font-size: 0.9em;
-  border: 1px solid var(--line);
-  background: color-mix(in oklab, var(--surface-strong) 82%, white 18%);
-  border-radius: 7px;
-  padding: 2px 7px;
-}
-
-pre code {
-  border: 0;
-  background: transparent;
-  padding: 0;
-  border-radius: 0;
-  font-size: inherit;
-  color: inherit;
-}
-
-.page-wrap {
-  width: min(1080px, calc(100% - 2rem));
-  margin-inline: auto;
-}
-
-.display-title {
-  font-family: 'Fraunces', Georgia, serif;
-}
-
-.island-shell {
-  border: 1px solid var(--line);
-  background: linear-gradient(165deg, var(--surface-strong), var(--surface));
-  box-shadow:
-    0 1px 0 var(--inset-glint) inset,
-    0 22px 44px rgba(30, 90, 72, 0.1),
-    0 6px 18px rgba(23, 58, 64, 0.08);
-  backdrop-filter: blur(4px);
-}
-
-.feature-card {
-  background: linear-gradient(
-    165deg,
-    color-mix(in oklab, var(--surface-strong) 93%, white 7%),
-    var(--surface)
-  );
-  box-shadow:
-    0 1px 0 var(--inset-glint) inset,
-    0 18px 34px rgba(30, 90, 72, 0.1),
-    0 4px 14px rgba(23, 58, 64, 0.06);
-}
-
-.feature-card:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in oklab, var(--lagoon-deep) 35%, var(--line));
-}
-
-button,
-.island-shell,
-a {
-  transition:
-    background-color 180ms ease,
-    color 180ms ease,
-    border-color 180ms ease,
-    transform 180ms ease;
-}
-
-.island-kicker {
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  font-weight: 700;
-  font-size: 0.69rem;
-  color: var(--kicker);
-}
-
-.nav-link {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-  color: var(--sea-ink-soft);
-}
-
-.nav-link::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -6px;
-  width: 100%;
-  height: 2px;
-  transform: scaleX(0);
-  transform-origin: left;
-  background: linear-gradient(90deg, var(--lagoon), #7ed3bf);
-  transition: transform 170ms ease;
-}
-
-.nav-link:hover,
-.nav-link.is-active {
-  color: var(--sea-ink);
-}
-
-.nav-link:hover::after,
-.nav-link.is-active::after {
-  transform: scaleX(1);
-}
-
-@media (max-width: 640px) {
-  .nav-link::after {
-    bottom: -4px;
-  }
-}
-
-.site-footer {
-  border-top: 1px solid var(--line);
-  background: color-mix(in oklab, var(--header-bg) 84%, transparent 16%);
-}
-
-.rise-in {
-  animation: rise-in 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes rise-in {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ── NodeSpace Ambient Backgrounds & Effects ───────────────── */
-
-/* Landing Page Grid Overlay */
-.ns-grid-overlay {
-  background-image:
-    linear-gradient(rgba(79, 184, 178, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(79, 184, 178, 0.05) 1px, transparent 1px);
-  background-size: 40px 40px;
-  mask-image: radial-gradient(ellipse at 50% 20%, black 30%, transparent 80%);
-  -webkit-mask-image: radial-gradient(
-    ellipse at 50% 20%,
-    black 30%,
-    transparent 80%
-  );
-}
-
-/* Landing Page Orbs */
-.ns-orb-accent-20 {
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--color-ns-accent) 20%, transparent),
-    transparent 70%
-  );
-  filter: blur(80px);
-}
-
-.ns-orb-purple-18 {
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--color-ns-purple) 18%, transparent),
-    transparent 70%
-  );
-  filter: blur(80px);
-}
-
-.ns-orb-green-15 {
-  background: radial-gradient(circle, rgba(47, 106, 74, 0.15), transparent 70%);
-  filter: blur(80px);
-}
-
-/* Auth Pages Orbs */
-.ns-orb-accent-20-blur {
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--color-ns-accent) 20%, transparent),
-    transparent 70%
-  );
-  filter: blur(80px);
-}
-
-.ns-orb-purple-20-blur {
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--color-ns-purple) 20%, transparent),
-    transparent 70%
-  );
-  filter: blur(80px);
-}
-
-/* Dashboard Hero Blurs */
-.ns-hero-blur-accent-30 {
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--color-ns-accent) 30%, transparent),
-    transparent 70%
-  );
-  filter: blur(40px);
-}
-
-.ns-hero-blur-purple-25 {
-  background: radial-gradient(
-    circle,
-    color-mix(in srgb, var(--color-ns-purple) 25%, transparent),
-    transparent 70%
-  );
-  filter: blur(40px);
-}
-
-/* Text Gradients */
-.ns-text-gradient {
-  background-image: linear-gradient(
-    135deg,
-    var(--color-ns-accent) 0%,
-    var(--color-ns-purple) 55%,
-    var(--color-ns-pink) 100%
-  );
-}
-
-/* Float animation for 3D elements */
+/* Float animation — used on 3D hero icon (index.tsx)         */
 @keyframes float {
   0%,
   100% {
@@ -425,13 +93,51 @@ a {
   animation: float 5s ease-in-out infinite;
 }
 
-/* Glassmorphism countdown card glow and shadow */
+/* Countdown card — glassmorphism panel used in LandingCountdown  */
 .ns-countdown-card {
-  background: rgba(10, 6, 22, 0.65);
-  border: 1px solid rgba(124, 58, 237, 0.25);
+  background: rgb(10 6 22 / 0.65);
+  border: 1px solid rgb(124 58 237 / 0.25);
   box-shadow:
-    0 8px 32px 0 rgba(0, 0, 0, 0.37),
-    inset 0 0 12px rgba(124, 58, 237, 0.1);
+    0 8px 32px 0 rgb(0 0 0 / 0.37),
+    inset 0 0 12px rgb(124 58 237 / 0.1);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+}
+
+/* Rise-in — slide-up + fade entrance for auth cards             */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise-in {
+  animation: rise-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Ambient orb glows — used on auth pages as background accents  */
+.ns-orb-accent-20-blur {
+  background: radial-gradient(circle, var(--color-ns-accent) 0%, transparent 70%);
+  filter: blur(80px);
+}
+
+.ns-orb-purple-20-blur {
+  background: radial-gradient(circle, var(--color-ns-purple) 0%, transparent 70%);
+  filter: blur(80px);
+}
+
+/* Dashboard hero blur orbs                                       */
+.ns-hero-blur-accent-30 {
+  background: radial-gradient(circle, var(--color-ns-accent) 0%, transparent 70%);
+  filter: blur(60px);
+}
+
+.ns-hero-blur-purple-25 {
+  background: radial-gradient(circle, var(--color-ns-purple) 0%, transparent 70%);
+  filter: blur(60px);
 }

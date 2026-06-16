@@ -17,3 +17,4 @@ todos.json
 .gemini
 tsconfig.tsbuildinfo
 docs
+.agents

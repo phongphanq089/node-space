@@ -1,7 +1,0 @@
-[build]
-  command = "npm run build:nitro"
-  publish = "dist"
-
-[dev]
-  command = "npm run dev"
-  targetPort = 3000
