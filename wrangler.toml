@@ -1,7 +1,4 @@
 name = "node-space-worker"
 compatibility_date = "2026-06-16"
 compatibility_flags = ["nodejs_compat"]
-main = "dist/_worker.js"
-
-[assets]
-directory = "dist"
+main = "@tanstack/react-start/server-entry"

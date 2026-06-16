@@ -1,8 +1,8 @@
+import { cloudflare } from '@cloudflare/vite-plugin'
 import tailwindcss from '@tailwindcss/vite'
 import { devtools } from '@tanstack/devtools-vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
-import { nitro } from 'nitro/vite'
 import { defineConfig } from 'vite'
 
 export default defineConfig(() => ({
@@ -13,6 +13,7 @@ export default defineConfig(() => ({
     tsconfigPaths: true,
   },
   plugins: [
+    cloudflare({ viteEnvironment: { name: 'ssr' } }),
     tanstackStart({
       srcDirectory: 'src',
       prerender: {
@@ -21,7 +22,6 @@ export default defineConfig(() => ({
         crawlLinks: false,
       },
     }),
-    nitro(), // tự host Node  dùng cho Node/VPS/Docker/Railway: giữ nitro(), chạy node .output/server/index.mjs vì nó đc đóng gói sẵn là 1 server rồi ===> server runtime chạy được trực tiếp
     tailwindcss(),
     viteReact(),
     devtools(),
