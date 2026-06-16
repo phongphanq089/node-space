@@ -1,5 +1,5 @@
 {
-  "name": "node-space",
+  "name": "node-space-worker",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@8.6.0",
