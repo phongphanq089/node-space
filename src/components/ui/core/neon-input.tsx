@@ -334,7 +334,7 @@ const NeonInput = forwardRef<HTMLInputElement, NeonInputProps>(
         <input
           ref={ref}
           id={inputId}
-          className={`ni-input font-mono ${sc.inputH} ${sc.text} ${inputClassName}`}
+          className={`ni-input font-mono text-white! ${sc.inputH} ${sc.text} ${inputClassName}`}
           style={
             {
               color: resolvedText,

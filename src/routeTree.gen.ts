@@ -11,14 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
-import { Route as DashboardTrashRouteImport } from './routes/dashboard.trash'
-import { Route as DashboardTagsRouteImport } from './routes/dashboard.tags'
-import { Route as DashboardRecentRouteImport } from './routes/dashboard.recent'
-import { Route as DashboardNodesRouteImport } from './routes/dashboard.nodes'
-import { Route as DashboardFavoritesRouteImport } from './routes/dashboard.favorites'
+import { Route as DashboardDashboardIndexRouteImport } from './routes/_dashboard/dashboard.index'
+import { Route as DashboardDashboardTrashRouteImport } from './routes/_dashboard/dashboard.trash'
+import { Route as DashboardDashboardTagsRouteImport } from './routes/_dashboard/dashboard.tags'
+import { Route as DashboardDashboardRecentRouteImport } from './routes/_dashboard/dashboard.recent'
+import { Route as DashboardDashboardNodesRouteImport } from './routes/_dashboard/dashboard.nodes'
+import { Route as DashboardDashboardFavoritesRouteImport } from './routes/_dashboard/dashboard.favorites'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -31,8 +31,7 @@ const LoginRoute = LoginRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+  id: '/_dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -40,78 +39,78 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardIndexRoute = DashboardIndexRouteImport.update({
-  id: '/',
-  path: '/',
+const DashboardDashboardIndexRoute = DashboardDashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
   getParentRoute: () => DashboardRoute,
 } as any)
-const DashboardTrashRoute = DashboardTrashRouteImport.update({
-  id: '/trash',
-  path: '/trash',
+const DashboardDashboardTrashRoute = DashboardDashboardTrashRouteImport.update({
+  id: '/dashboard/trash',
+  path: '/dashboard/trash',
   getParentRoute: () => DashboardRoute,
 } as any)
-const DashboardTagsRoute = DashboardTagsRouteImport.update({
-  id: '/tags',
-  path: '/tags',
+const DashboardDashboardTagsRoute = DashboardDashboardTagsRouteImport.update({
+  id: '/dashboard/tags',
+  path: '/dashboard/tags',
   getParentRoute: () => DashboardRoute,
 } as any)
-const DashboardRecentRoute = DashboardRecentRouteImport.update({
-  id: '/recent',
-  path: '/recent',
+const DashboardDashboardRecentRoute =
+  DashboardDashboardRecentRouteImport.update({
+    id: '/dashboard/recent',
+    path: '/dashboard/recent',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardDashboardNodesRoute = DashboardDashboardNodesRouteImport.update({
+  id: '/dashboard/nodes',
+  path: '/dashboard/nodes',
   getParentRoute: () => DashboardRoute,
 } as any)
-const DashboardNodesRoute = DashboardNodesRouteImport.update({
-  id: '/nodes',
-  path: '/nodes',
-  getParentRoute: () => DashboardRoute,
-} as any)
-const DashboardFavoritesRoute = DashboardFavoritesRouteImport.update({
-  id: '/favorites',
-  path: '/favorites',
-  getParentRoute: () => DashboardRoute,
-} as any)
+const DashboardDashboardFavoritesRoute =
+  DashboardDashboardFavoritesRouteImport.update({
+    id: '/dashboard/favorites',
+    path: '/dashboard/favorites',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/dashboard/favorites': typeof DashboardFavoritesRoute
-  '/dashboard/nodes': typeof DashboardNodesRoute
-  '/dashboard/recent': typeof DashboardRecentRoute
-  '/dashboard/tags': typeof DashboardTagsRoute
-  '/dashboard/trash': typeof DashboardTrashRoute
-  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/favorites': typeof DashboardDashboardFavoritesRoute
+  '/dashboard/nodes': typeof DashboardDashboardNodesRoute
+  '/dashboard/recent': typeof DashboardDashboardRecentRoute
+  '/dashboard/tags': typeof DashboardDashboardTagsRoute
+  '/dashboard/trash': typeof DashboardDashboardTrashRoute
+  '/dashboard/': typeof DashboardDashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/dashboard/favorites': typeof DashboardFavoritesRoute
-  '/dashboard/nodes': typeof DashboardNodesRoute
-  '/dashboard/recent': typeof DashboardRecentRoute
-  '/dashboard/tags': typeof DashboardTagsRoute
-  '/dashboard/trash': typeof DashboardTrashRoute
-  '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/favorites': typeof DashboardDashboardFavoritesRoute
+  '/dashboard/nodes': typeof DashboardDashboardNodesRoute
+  '/dashboard/recent': typeof DashboardDashboardRecentRoute
+  '/dashboard/tags': typeof DashboardDashboardTagsRoute
+  '/dashboard/trash': typeof DashboardDashboardTrashRoute
+  '/dashboard': typeof DashboardDashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteWithChildren
+  '/_dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/dashboard/favorites': typeof DashboardFavoritesRoute
-  '/dashboard/nodes': typeof DashboardNodesRoute
-  '/dashboard/recent': typeof DashboardRecentRoute
-  '/dashboard/tags': typeof DashboardTagsRoute
-  '/dashboard/trash': typeof DashboardTrashRoute
-  '/dashboard/': typeof DashboardIndexRoute
+  '/_dashboard/dashboard/favorites': typeof DashboardDashboardFavoritesRoute
+  '/_dashboard/dashboard/nodes': typeof DashboardDashboardNodesRoute
+  '/_dashboard/dashboard/recent': typeof DashboardDashboardRecentRoute
+  '/_dashboard/dashboard/tags': typeof DashboardDashboardTagsRoute
+  '/_dashboard/dashboard/trash': typeof DashboardDashboardTrashRoute
+  '/_dashboard/dashboard/': typeof DashboardDashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/dashboard'
     | '/login'
     | '/register'
     | '/dashboard/favorites'
@@ -134,15 +133,15 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/dashboard'
+    | '/_dashboard'
     | '/login'
     | '/register'
-    | '/dashboard/favorites'
-    | '/dashboard/nodes'
-    | '/dashboard/recent'
-    | '/dashboard/tags'
-    | '/dashboard/trash'
-    | '/dashboard/'
+    | '/_dashboard/dashboard/favorites'
+    | '/_dashboard/dashboard/nodes'
+    | '/_dashboard/dashboard/recent'
+    | '/_dashboard/dashboard/tags'
+    | '/_dashboard/dashboard/trash'
+    | '/_dashboard/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -168,10 +167,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
+    '/_dashboard': {
+      id: '/_dashboard'
+      path: ''
+      fullPath: '/'
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -182,67 +181,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/': {
-      id: '/dashboard/'
-      path: '/'
+    '/_dashboard/dashboard/': {
+      id: '/_dashboard/dashboard/'
+      path: '/dashboard'
       fullPath: '/dashboard/'
-      preLoaderRoute: typeof DashboardIndexRouteImport
+      preLoaderRoute: typeof DashboardDashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/dashboard/trash': {
-      id: '/dashboard/trash'
-      path: '/trash'
+    '/_dashboard/dashboard/trash': {
+      id: '/_dashboard/dashboard/trash'
+      path: '/dashboard/trash'
       fullPath: '/dashboard/trash'
-      preLoaderRoute: typeof DashboardTrashRouteImport
+      preLoaderRoute: typeof DashboardDashboardTrashRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/dashboard/tags': {
-      id: '/dashboard/tags'
-      path: '/tags'
+    '/_dashboard/dashboard/tags': {
+      id: '/_dashboard/dashboard/tags'
+      path: '/dashboard/tags'
       fullPath: '/dashboard/tags'
-      preLoaderRoute: typeof DashboardTagsRouteImport
+      preLoaderRoute: typeof DashboardDashboardTagsRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/dashboard/recent': {
-      id: '/dashboard/recent'
-      path: '/recent'
+    '/_dashboard/dashboard/recent': {
+      id: '/_dashboard/dashboard/recent'
+      path: '/dashboard/recent'
       fullPath: '/dashboard/recent'
-      preLoaderRoute: typeof DashboardRecentRouteImport
+      preLoaderRoute: typeof DashboardDashboardRecentRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/dashboard/nodes': {
-      id: '/dashboard/nodes'
-      path: '/nodes'
+    '/_dashboard/dashboard/nodes': {
+      id: '/_dashboard/dashboard/nodes'
+      path: '/dashboard/nodes'
       fullPath: '/dashboard/nodes'
-      preLoaderRoute: typeof DashboardNodesRouteImport
+      preLoaderRoute: typeof DashboardDashboardNodesRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/dashboard/favorites': {
-      id: '/dashboard/favorites'
-      path: '/favorites'
+    '/_dashboard/dashboard/favorites': {
+      id: '/_dashboard/dashboard/favorites'
+      path: '/dashboard/favorites'
       fullPath: '/dashboard/favorites'
-      preLoaderRoute: typeof DashboardFavoritesRouteImport
+      preLoaderRoute: typeof DashboardDashboardFavoritesRouteImport
       parentRoute: typeof DashboardRoute
     }
   }
 }
 
 interface DashboardRouteChildren {
-  DashboardFavoritesRoute: typeof DashboardFavoritesRoute
-  DashboardNodesRoute: typeof DashboardNodesRoute
-  DashboardRecentRoute: typeof DashboardRecentRoute
-  DashboardTagsRoute: typeof DashboardTagsRoute
-  DashboardTrashRoute: typeof DashboardTrashRoute
-  DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardDashboardFavoritesRoute: typeof DashboardDashboardFavoritesRoute
+  DashboardDashboardNodesRoute: typeof DashboardDashboardNodesRoute
+  DashboardDashboardRecentRoute: typeof DashboardDashboardRecentRoute
+  DashboardDashboardTagsRoute: typeof DashboardDashboardTagsRoute
+  DashboardDashboardTrashRoute: typeof DashboardDashboardTrashRoute
+  DashboardDashboardIndexRoute: typeof DashboardDashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
-  DashboardFavoritesRoute: DashboardFavoritesRoute,
-  DashboardNodesRoute: DashboardNodesRoute,
-  DashboardRecentRoute: DashboardRecentRoute,
-  DashboardTagsRoute: DashboardTagsRoute,
-  DashboardTrashRoute: DashboardTrashRoute,
-  DashboardIndexRoute: DashboardIndexRoute,
+  DashboardDashboardFavoritesRoute: DashboardDashboardFavoritesRoute,
+  DashboardDashboardNodesRoute: DashboardDashboardNodesRoute,
+  DashboardDashboardRecentRoute: DashboardDashboardRecentRoute,
+  DashboardDashboardTagsRoute: DashboardDashboardTagsRoute,
+  DashboardDashboardTrashRoute: DashboardDashboardTrashRoute,
+  DashboardDashboardIndexRoute: DashboardDashboardIndexRoute,
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(

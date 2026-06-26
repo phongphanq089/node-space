@@ -1,4 +1,3 @@
-import FeatureHighlights from './components/FeatureHighlights'
 import MusicPlayer from './components/MusicPlayer'
 import NodesList from './components/NodesList'
 import NotesList from './components/NotesList'
@@ -35,8 +34,6 @@ export default function DashboardHome() {
           ✦ "The best way to predict the future is to invent it." – Alan Kay
         </p>
       </div>
-
-      <FeatureHighlights />
 
       {/* 3-column layout */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1fr_280px]">

@@ -1,3 +1,5 @@
+import { SidebarTrigger } from '@/components/ui/core/sidebar'
+
 type IconBtnProps = {
   id?: string
   title?: string
@@ -28,6 +30,7 @@ export default function DashboardTopbar({
   return (
     <header className="flex h-[52px] flex-shrink-0 items-center gap-3 border-b border-ns-border-soft bg-ns-topbar px-4 backdrop-blur">
       {/* Sidebar toggle */}
+      <SidebarTrigger />
       <IconBtn
         id="btn-toggle-sidebar"
         title="Toggle sidebar"

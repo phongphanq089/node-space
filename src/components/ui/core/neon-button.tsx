@@ -44,13 +44,15 @@ export type CCBGlowIntensity = 'low' | 'medium' | 'high'
 
 // ---- Maps --------------------------------------------------
 
-const COLOR_PRESETS: Record<string, string> = {
+// ---- Maps --------------------------------------------------
+
+export const COLOR_PRESETS: Record<string, string> = {
   cyan: '#00f3ff',
   pink: '#7c3aed',
   green: '#39ff14',
 }
 
-const SIZE_CLASSES: Record<CCBSize, string> = {
+export const SIZE_CLASSES: Record<CCBSize, string> = {
   xs: 'px-4 py-2 text-xs',
   sm: 'px-6 py-3 text-xs',
   md: 'px-8 py-4 text-sm',
@@ -58,7 +60,7 @@ const SIZE_CLASSES: Record<CCBSize, string> = {
   xl: 'px-12 py-6 text-lg',
 }
 
-const CORNER_CLASSES: Record<CCBCorner, string> = {
+export const CORNER_CLASSES: Record<CCBCorner, string> = {
   'bottom-right': 'ccb-clip-br',
   'bottom-left': 'ccb-clip-bl',
   'top-right': 'ccb-clip-tr',
@@ -66,7 +68,7 @@ const CORNER_CLASSES: Record<CCBCorner, string> = {
   all: 'ccb-clip-all',
 }
 
-const HOVER_CLASSES: Record<CCBHoverEffect, string> = {
+export const HOVER_CLASSES: Record<CCBHoverEffect, string> = {
   glow: 'ccb-hover-glow',
   shift: 'ccb-hover-shift',
   shine: 'ccb-hover-shine',
@@ -77,7 +79,7 @@ const HOVER_CLASSES: Record<CCBHoverEffect, string> = {
   none: '',
 }
 
-const GLOW_SIZES: Record<CCBGlowIntensity, number> = {
+export const GLOW_SIZES: Record<CCBGlowIntensity, number> = {
   low: 8,
   medium: 15,
   high: 28,
@@ -85,7 +87,7 @@ const GLOW_SIZES: Record<CCBGlowIntensity, number> = {
 
 // ---- Component props ---------------------------------------
 
-export interface CornerCutButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface BaseCornerCutButtonProps {
   children: ReactNode
 
   /**
@@ -159,9 +161,125 @@ export interface CornerCutButtonProps extends ButtonHTMLAttributes<HTMLButtonEle
   textColor?: CCBColor
 }
 
+export type CornerCutButtonProps<T extends React.ElementType = 'button'> =
+  BaseCornerCutButtonProps & {
+    as?: T
+  } & Omit<
+      React.ComponentPropsWithoutRef<T>,
+      keyof BaseCornerCutButtonProps | 'as'
+    >
+
+// ---- Styles Helper -----------------------------------------
+
+/**
+ * Helper function to compute styling classes and custom properties for a CornerCutButton.
+ * Useful if you want to apply the styles manually to custom components.
+ */
+export function getCornerCutButtonStyles(
+  props: BaseCornerCutButtonProps & {
+    className?: string
+    style?: React.CSSProperties
+  }
+) {
+  const {
+    color = 'cyan',
+    size = 'md',
+    variant = 'solid',
+    corner = 'bottom-right',
+    cornerSize = 20,
+    hoverEffect = 'default',
+    glowIntensity = 'medium',
+    hoverColor,
+    hoverOutlined = false,
+    textColor,
+    className = '',
+    style,
+  } = props
+
+  const resolvedColor = COLOR_PRESETS[color] ?? color
+  const resolvedHoverColor = hoverColor
+    ? (COLOR_PRESETS[hoverColor] ?? hoverColor)
+    : undefined
+  const resolvedTextColor = textColor
+    ? (COLOR_PRESETS[textColor] ?? textColor)
+    : undefined
+  const glowSize = GLOW_SIZES[glowIntensity]
+
+  const ghostStyle =
+    variant === 'ghost'
+      ? {
+          backgroundColor: 'color-mix(in srgb, var(--ccb-color) 12%, #000)',
+          color: 'var(--ccb-color)',
+        }
+      : undefined
+
+  const wrapperClasses = [
+    'group/ccb relative inline-flex p-px',
+    `ccb-wrapper-${hoverEffect}`,
+    hoverEffect === 'flicker' ? 'ccb-wrapper' : '',
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  const wrapperStyles = {
+    '--ccb-color': resolvedColor,
+    '--ccb-hover-color': resolvedHoverColor ?? resolvedColor,
+    '--ccb-hover-bg': resolvedHoverColor ?? '#ffffff',
+    '--ccb-corner-size': `${cornerSize}px`,
+    '--ccb-glow-size': `${glowSize}px`,
+    ...(resolvedTextColor ? { '--ccb-text-color': resolvedTextColor } : {}),
+    ...style,
+  } as React.CSSProperties
+
+  const borderFrameClasses = [
+    'pointer-events-none absolute inset-0 z-0 transition-[background,opacity] duration-300',
+    CORNER_CLASSES[corner],
+    variant === 'outline' ? 'bg-[var(--ccb-color)]' : 'bg-white/[0.08]',
+    variant === 'solid' && hoverOutlined && hoverEffect === 'shift'
+      ? 'group-hover/ccb:bg-[var(--ccb-hover-color)]'
+      : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  const innerClasses = [
+    'group font-orbitron relative flex-1 cursor-pointer overflow-hidden font-bold tracking-wider uppercase transition-all',
+    SIZE_CLASSES[size],
+    CORNER_CLASSES[corner],
+    HOVER_CLASSES[hoverEffect],
+    `ccb-${variant}`,
+    hoverOutlined ? 'ccb-hover-outlined' : '',
+    variant === 'solid'
+      ? `bg-[var(--ccb-color)] ${resolvedTextColor ? 'text-[var(--ccb-text-color)]' : 'text-white'}`
+      : '',
+    variant === 'outline'
+      ? `bg-black ${resolvedTextColor ? 'text-[var(--ccb-text-color)]' : 'text-[var(--ccb-color)]'}`
+      : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  const innerStyles = {
+    ...ghostStyle,
+    ...(resolvedTextColor && variant === 'ghost'
+      ? { color: resolvedTextColor }
+      : {}),
+  } as React.CSSProperties
+
+  return {
+    wrapperClasses,
+    wrapperStyles,
+    borderFrameClasses,
+    innerClasses,
+    innerStyles,
+  }
+}
+
 // ---- Component ---------------------------------------------
 
-export const CornerCutButton: React.FC<CornerCutButtonProps> = ({
+export function CornerCutButton<T extends React.ElementType = 'button'>({
+  as,
   children,
   color = 'cyan',
   size = 'md',
@@ -177,91 +295,36 @@ export const CornerCutButton: React.FC<CornerCutButtonProps> = ({
   className = '',
   style,
   ...props
-}) => {
-  const resolvedColor = COLOR_PRESETS[color] ?? color
-  const resolvedHoverColor = hoverColor
-    ? (COLOR_PRESETS[hoverColor] ?? hoverColor)
-    : undefined
-  const resolvedTextColor = textColor
-    ? (COLOR_PRESETS[textColor] ?? textColor)
-    : undefined
-  const glowSize = GLOW_SIZES[glowIntensity]
+}: CornerCutButtonProps<T>) {
+  const Component = as || 'button'
 
-  // Ghost variant needs color-mix background — not expressible in Tailwind
-  const ghostStyle =
-    variant === 'ghost'
-      ? {
-          backgroundColor: 'color-mix(in srgb, var(--ccb-color) 12%, #000)',
-          color: 'var(--ccb-color)',
-        }
-      : undefined
+  const {
+    wrapperClasses,
+    wrapperStyles,
+    borderFrameClasses,
+    innerClasses,
+    innerStyles,
+  } = getCornerCutButtonStyles({
+    color,
+    size,
+    variant,
+    corner,
+    cornerSize,
+    hoverEffect,
+    glowIntensity,
+    hoverColor,
+    hoverOutlined,
+    textColor,
+    className,
+    style,
+  })
 
   return (
-    <div
-      className={[
-        'group/ccb relative inline-flex p-px',
-        `ccb-wrapper-${hoverEffect}`,
-        // ccb-wrapper class retained ONLY for the flicker :has() selector in CSS
-        hoverEffect === 'flicker' ? 'ccb-wrapper' : '',
-        className,
-      ]
-        .filter(Boolean)
-        .join(' ')}
-      style={
-        {
-          '--ccb-color': resolvedColor,
-          '--ccb-hover-color': resolvedHoverColor ?? resolvedColor,
-          '--ccb-hover-bg': resolvedHoverColor ?? '#ffffff',
-          '--ccb-corner-size': `${cornerSize}px`,
-          '--ccb-glow-size': `${glowSize}px`,
-          ...(resolvedTextColor
-            ? { '--ccb-text-color': resolvedTextColor }
-            : {}),
-          ...style,
-        } as React.CSSProperties
-      }
-    >
+    <div className={wrapperClasses} style={wrapperStyles}>
       {/* Border frame: 1px ring on all edges including the diagonal */}
-      <div
-        className={[
-          'pointer-events-none absolute inset-0 z-0 transition-[background,opacity] duration-300',
-          CORNER_CLASSES[corner],
-          variant === 'outline' ? 'bg-[var(--ccb-color)]' : 'bg-white/[0.08]',
-          variant === 'solid' && hoverOutlined && hoverEffect === 'shift'
-            ? 'group-hover/ccb:bg-[var(--ccb-hover-color)]'
-            : '',
-        ]
-          .filter(Boolean)
-          .join(' ')}
-        aria-hidden="true"
-      />
+      <div className={borderFrameClasses} aria-hidden="true" />
 
-      <button
-        className={[
-          'group font-orbitron relative flex-1 cursor-pointer overflow-hidden font-bold tracking-wider uppercase transition-all',
-          SIZE_CLASSES[size],
-          CORNER_CLASSES[corner],
-          HOVER_CLASSES[hoverEffect],
-          // Class kept for compound hover-state CSS selectors (.ccb-solid.ccb-hover-glow:hover etc.)
-          `ccb-${variant}`,
-          hoverOutlined ? 'ccb-hover-outlined' : '',
-          variant === 'solid'
-            ? `bg-[var(--ccb-color)] ${resolvedTextColor ? 'text-[var(--ccb-text-color)]' : 'text-white'}`
-            : '',
-          variant === 'outline'
-            ? `bg-black ${resolvedTextColor ? 'text-[var(--ccb-text-color)]' : 'text-[var(--ccb-color)]'}`
-            : '',
-        ]
-          .filter(Boolean)
-          .join(' ')}
-        style={{
-          ...ghostStyle,
-          ...(resolvedTextColor && variant === 'ghost'
-            ? { color: resolvedTextColor }
-            : {}),
-        }}
-        {...props}
-      >
+      <Component className={innerClasses} style={innerStyles} {...props}>
         {/* Shine sweep layer — only rendered when needed */}
         {hoverEffect === 'shine' && (
           <span className="ccb-shine-layer" aria-hidden="true" />
@@ -284,7 +347,7 @@ export const CornerCutButton: React.FC<CornerCutButtonProps> = ({
             </span>
           )}
         </span>
-      </button>
+      </Component>
     </div>
   )
 }

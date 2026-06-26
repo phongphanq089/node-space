@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 
 import CornerCutButton from '@/components/ui/core/neon-button'
 import NeonInput from '@/components/ui/core/neon-input'
@@ -6,6 +6,7 @@ import NeonInput from '@/components/ui/core/neon-input'
 import AuthCard from './components/AuthCard'
 
 export default function LoginPage() {
+  const navigate = useNavigate()
   return (
     <AuthCard
       title="Welcome back"
@@ -46,6 +47,7 @@ export default function LoginPage() {
         </div>
 
         <CornerCutButton
+          onClick={() => navigate({ to: '/dashboard' })}
           color="pink"
           showArrow
           hoverEffect="glow"

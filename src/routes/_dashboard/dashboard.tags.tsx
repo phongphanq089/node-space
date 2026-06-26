@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/dashboard/tags')({
+export const Route = createFileRoute('/_dashboard/dashboard/tags')({
   component: TagsPage,
 })
 

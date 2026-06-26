@@ -15,6 +15,10 @@ export default function AuthCard({
 }: AuthCardProps) {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-ns-bg px-4 font-sans">
+      <div
+        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-90"
+        style={{ backgroundImage: "url('/hero-banner.png')" }}
+      />
       {/* Ambient orbs */}
       <div
         aria-hidden
