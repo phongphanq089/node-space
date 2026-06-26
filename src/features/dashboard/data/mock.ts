@@ -42,12 +42,12 @@ export interface PlaylistItem {
 
 // ── Navigation ─────────────────────────────────────────────────
 export const NAV: readonly NavItem[] = [
-  { icon: '⌂', label: 'Trang chủ', to: '/dashboard', exact: true },
-  { icon: '⬡', label: 'Tất cả nodes', to: '/dashboard/nodes' },
-  { icon: '★', label: 'Yêu thích', to: '/dashboard/favorites' },
-  { icon: '◷', label: 'Gần đây', to: '/dashboard/recent' },
-  { icon: '⬙', label: 'Thẻ', to: '/dashboard/tags' },
-  { icon: '⊘', label: 'Thùng rác', to: '/dashboard/trash' },
+  { icon: '⌂', label: 'Home', to: '/dashboard', exact: true },
+  { icon: '⬡', label: 'All Nodes', to: '/dashboard/nodes' },
+  { icon: '★', label: 'Favorites', to: '/dashboard/favorites' },
+  { icon: '◷', label: 'Recent', to: '/dashboard/recent' },
+  { icon: '⬙', label: 'Tags', to: '/dashboard/tags' },
+  { icon: '⊘', label: 'Trash', to: '/dashboard/trash' },
 ]
 
 // ── Workspaces ──────────────────────────────────────────────────
@@ -62,17 +62,17 @@ export const WORKSPACES: readonly WorkspaceItem[] = [
 // ── Nodes ───────────────────────────────────────────────────────
 export const NODES: readonly NodeItem[] = [
   {
-    title: 'Hệ thống ghi chú dạng node',
+    title: 'Node-based Note System',
     count: 6,
-    updated: '2 giờ trước',
+    updated: '2 hours ago',
     tag: '#productivity',
     tagColor: '#a78bfa',
     active: true,
   },
   {
-    title: 'Thuật toán Dijkstra giải thích',
+    title: 'Dijkstra Algorithm Explained',
     count: 8,
-    updated: '5 giờ trước',
+    updated: '5 hours ago',
     tag: '#algorithm',
     tagColor: '#34d399',
     starred: true,
@@ -80,14 +80,14 @@ export const NODES: readonly NodeItem[] = [
   {
     title: 'Setup Dev Environment 2024',
     count: 10,
-    updated: '1 ngày trước',
+    updated: '1 day ago',
     tag: '#devops',
     tagColor: '#60a5fa',
   },
   {
-    title: 'Sách hay nên đọc cho dev',
+    title: 'Must-read Books for Developers',
     count: 12,
-    updated: '2 ngày trước',
+    updated: '2 days ago',
     tag: '#book',
     tagColor: '#f87171',
   },
@@ -96,25 +96,25 @@ export const NODES: readonly NodeItem[] = [
 // ── Notes ───────────────────────────────────────────────────────
 export const NOTES: readonly NoteItem[] = [
   {
-    title: 'Tính năng chính',
+    title: 'Key Features',
     tags: ['#overview', '#feature'],
-    updated: '2 giờ trước',
+    updated: '2 hours ago',
     starred: true,
   },
   {
-    title: 'Công nghệ sử dụng',
+    title: 'Technologies Used',
     tags: ['#tech', '#stack'],
-    updated: '2 giờ trước',
+    updated: '2 hours ago',
   },
   {
-    title: 'Kế hoạch phát triển',
+    title: 'Development Roadmap',
     tags: ['#roadmap', '#plan'],
-    updated: '1 ngày trước',
+    updated: '1 day ago',
   },
   {
-    title: 'Use case',
+    title: 'Use Cases',
     tags: ['#usecase', '#example'],
-    updated: '1 ngày trước',
+    updated: '1 day ago',
   },
 ]
 
@@ -122,22 +122,22 @@ export const NOTES: readonly NoteItem[] = [
 export const FEATURES: readonly FeatureItem[] = [
   {
     title: 'Node Link',
-    desc: 'Kết nối các ý tưởng một cách trực quan',
+    desc: 'Connect ideas visually',
     color: 'ns-purple',
   },
   {
     title: 'Markdown Editor',
-    desc: 'Hỗ trợ Markdown và code highlight',
+    desc: 'Supports Markdown and syntax highlighting',
     color: 'ns-accent',
   },
   {
     title: 'Graph View',
-    desc: 'Xem toàn bộ mối liên kết dưới dạng đồ thị',
+    desc: 'View all connections in a graph view',
     color: 'ns-pink',
   },
   {
     title: 'Focus Mode',
-    desc: 'Tập trung viết với không gian yên tĩnh',
+    desc: 'Focus on writing in a quiet space',
     color: 'ns-amber',
   },
 ]

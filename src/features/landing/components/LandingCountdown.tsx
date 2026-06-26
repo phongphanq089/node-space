@@ -1,10 +1,10 @@
 import { useCountdown } from '../hooks/useCountdown'
 
 const UNITS = [
-  { key: 'days', label: 'Ngày' },
-  { key: 'hours', label: 'Giờ' },
-  { key: 'minutes', label: 'Phút' },
-  { key: 'seconds', label: 'Giây' },
+  { key: 'days', label: 'Days' },
+  { key: 'hours', label: 'Hours' },
+  { key: 'minutes', label: 'Minutes' },
+  { key: 'seconds', label: 'Seconds' },
 ] as const
 
 export default function LandingCountdown() {
@@ -37,4 +37,3 @@ export default function LandingCountdown() {
     </footer>
   )
 }
-

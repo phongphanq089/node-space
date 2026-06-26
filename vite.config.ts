@@ -5,6 +5,8 @@ import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
+const isDev = process.env.NODE_ENV !== 'production'
+
 export default defineConfig(() => ({
   server: {
     port: 3000,
@@ -24,9 +26,6 @@ export default defineConfig(() => ({
     }),
     tailwindcss(),
     viteReact(),
-    devtools(),
+    isDev && devtools(),
   ],
 }))
-
-// Vercel docs hiện tại nói TanStack Start chạy trên Vercel khi paired với Nitro; Vercel tự detect TanStack Start + Nitro, build server thành Vercel
-// Thường không cần vercel.json. Nếu Vercel detect sai framework, thêm: { "framework": "tanstack-start" }

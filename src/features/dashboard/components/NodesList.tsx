@@ -8,9 +8,7 @@ export default function NodesList() {
     <div className="overflow-hidden rounded-xl border border-ns-border bg-ns-panel">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-ns-border-soft px-4 py-3">
-        <span className="text-sm font-semibold text-ns-text-2">
-          Danh sách các node
-        </span>
+        <span className="text-sm font-semibold text-ns-text-2">Nodes List</span>
         <div className="flex gap-1">
           <button id="btn-search-node" className={iconBtnSm}>
             <svg
@@ -61,7 +59,7 @@ export default function NodesList() {
         <input
           id="input-node-search"
           type="search"
-          placeholder="Tìm kiếm node..."
+          placeholder="Search nodes..."
           className="flex-1 border-none bg-transparent text-xs text-ns-text-2 placeholder-ns-placeholder outline-none"
         />
       </div>

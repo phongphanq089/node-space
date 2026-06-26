@@ -1,14 +1,16 @@
 import { Link } from '@tanstack/react-router'
 
+import CornerCutButton from '@/components/ui/core/neon-button'
+import NeonInput from '@/components/ui/core/neon-input'
+
 import AuthCard from './components/AuthCard'
-import AuthInput from './components/AuthInput'
 
 const FIELDS = [
   {
     id: 'input-name',
-    label: 'Họ tên',
+    label: 'Full Name',
     type: 'text',
-    placeholder: 'Nguyễn Văn A',
+    placeholder: 'John Doe',
     autoComplete: 'name',
   },
   {
@@ -20,14 +22,14 @@ const FIELDS = [
   },
   {
     id: 'input-password',
-    label: 'Mật khẩu',
+    label: 'Password',
     type: 'password',
     placeholder: '••••••••',
     autoComplete: 'new-password',
   },
   {
     id: 'input-confirm',
-    label: 'Xác nhận mật khẩu',
+    label: 'Confirm Password',
     type: 'password',
     placeholder: '••••••••',
     autoComplete: 'new-password',
@@ -37,16 +39,16 @@ const FIELDS = [
 export default function RegisterPage() {
   return (
     <AuthCard
-      title="Tạo tài khoản"
-      subtitle="Bắt đầu hành trình kết nối ý tưởng của bạn"
+      title="Create Account"
+      subtitle="Start your journey of connecting ideas"
       footer={
         <>
-          Đã có tài khoản?{' '}
+          Already have an account?{' '}
           <Link
             to="/login"
             className="font-semibold text-ns-accent-lt no-underline transition-colors hover:text-ns-accent"
           >
-            Đăng nhập
+            Log in
           </Link>
         </>
       }
@@ -56,16 +58,17 @@ export default function RegisterPage() {
         className="flex flex-col gap-4"
       >
         {FIELDS.map((f) => (
-          <AuthInput key={f.id} {...f} />
+          <NeonInput key={f.id} {...f} color="purple" />
         ))}
 
-        <Link
-          to="/dashboard"
-          id="btn-register-submit"
-          className="mt-1 flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-ns-accent to-ns-accent-lt py-2.5 text-sm font-bold text-ns-on-accent no-underline shadow-[0_0_20px_var(--color-ns-accent)] transition-all hover:-translate-y-0.5 hover:shadow-[0_0_28px_var(--color-ns-accent)]"
+        <CornerCutButton
+          color="pink"
+          showArrow
+          hoverEffect="glow"
+          className="text-center"
         >
-          Tạo tài khoản
-        </Link>
+          Create account
+        </CornerCutButton>
       </form>
     </AuthCard>
   )

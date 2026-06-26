@@ -1,5 +1,7 @@
 import { Link } from '@tanstack/react-router'
 
+import CornerCutButton from '@/components/ui/core/neon-button'
+
 const NAV_LINKS = [
   { label: 'Features', href: '#' },
   { label: 'Templates', href: '#' },
@@ -39,18 +41,16 @@ export default function LandingNavbar() {
 
         {/* Actions */}
         <div className="flex items-center gap-4">
-          <Link
-            to="/login"
-            className="text-sm font-semibold text-ns-muted no-underline transition-colors hover:text-white"
+          <CornerCutButton color="red" variant="outline">
+            Login
+          </CornerCutButton>
+          <CornerCutButton
+            color="pink"
+            hoverEffect="pulse"
+            glowIntensity="high"
           >
-            Đăng nhập
-          </Link>
-          <Link
-            to="/register"
-            className="whitespace-nowrap rounded-full bg-gradient-to-r from-ns-accent to-ns-secondary px-5 py-2.5 text-sm font-bold text-white no-underline shadow-[0_0_24px_rgba(124,58,237,0.5)] transition-all hover:-translate-y-0.5 hover:shadow-[0_0_32px_rgba(124,58,237,0.7)]"
-          >
-            Bắt đầu miễn phí
-          </Link>
+            Get started free
+          </CornerCutButton>
         </div>
       </div>
     </header>

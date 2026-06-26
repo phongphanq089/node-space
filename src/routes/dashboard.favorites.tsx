@@ -11,9 +11,9 @@ function FavoritesPage() {
         <p className="mb-2 text-xs font-bold tracking-[0.12em] text-ns-faint uppercase">
           Dashboard
         </p>
-        <h1 className="mb-2 text-xl font-bold text-ns-text">Yêu thích</h1>
+        <h1 className="mb-2 text-xl font-bold text-ns-text">Favorites</h1>
         <p className="max-w-2xl text-sm leading-6 text-ns-muted">
-          Các nodes và notes bạn đã đánh dấu yêu thích.
+          Nodes and notes you have marked as favorites.
         </p>
       </section>
     </div>

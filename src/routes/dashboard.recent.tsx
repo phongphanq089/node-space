@@ -11,9 +11,9 @@ function RecentPage() {
         <p className="mb-2 text-xs font-bold tracking-[0.12em] text-ns-faint uppercase">
           Dashboard
         </p>
-        <h1 className="mb-2 text-xl font-bold text-ns-text">Gần đây</h1>
+        <h1 className="mb-2 text-xl font-bold text-ns-text">Recent</h1>
         <p className="max-w-2xl text-sm leading-6 text-ns-muted">
-          Các nodes và notes bạn đã xem hoặc chỉnh sửa gần đây.
+          Nodes and notes you have recently viewed or edited.
         </p>
       </section>
     </div>

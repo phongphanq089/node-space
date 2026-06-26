@@ -69,7 +69,7 @@ export default function DashboardTopbar({
         <input
           id="input-search"
           type="search"
-          placeholder="Tìm kiếm nodes, notes, tags…"
+          placeholder="Search nodes, notes, tags..."
           className="flex-1 border-none bg-transparent text-sm text-ns-text-2 placeholder-ns-placeholder outline-none"
         />
         <kbd className="rounded border border-ns-border px-1 font-mono text-[0.6rem] text-ns-faint">
@@ -79,7 +79,7 @@ export default function DashboardTopbar({
 
       {/* Right actions */}
       <div className="ml-auto flex items-center gap-1">
-        <IconBtn id="btn-create-top" title="Tạo mới">
+        <IconBtn id="btn-create-top" title="Create new">
           <svg
             width="16"
             height="16"
@@ -93,7 +93,7 @@ export default function DashboardTopbar({
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
         </IconBtn>
-        <IconBtn id="btn-notifications" title="Thông báo">
+        <IconBtn id="btn-notifications" title="Notifications">
           <svg
             width="16"
             height="16"
@@ -107,7 +107,7 @@ export default function DashboardTopbar({
             <path d="M13.73 21a2 2 0 0 1-3.46 0" />
           </svg>
         </IconBtn>
-        <IconBtn id="btn-settings" title="Cài đặt">
+        <IconBtn id="btn-settings" title="Settings">
           <svg
             width="16"
             height="16"

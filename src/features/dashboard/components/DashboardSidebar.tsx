@@ -1,6 +1,6 @@
 import { Link, useRouterState } from '@tanstack/react-router'
 
-import BrandLogo from '@/components/ui/BrandLogo'
+import BrandLogo from '@/components/shared/logo'
 
 import { NAV, WORKSPACES } from '../data/mock'
 
@@ -17,7 +17,7 @@ export default function DashboardSidebar({ open }: DashboardSidebarProps) {
     >
       {/* Logo */}
       <div className="flex items-center gap-2.5 border-b border-ns-border-soft px-4 py-4">
-        <BrandLogo size="sm" />
+        <BrandLogo />
         <div className="flex min-w-0 flex-col leading-tight">
           <span className="text-sm font-bold tracking-tight text-ns-text">
             NodeSpace
@@ -46,7 +46,7 @@ export default function DashboardSidebar({ open }: DashboardSidebarProps) {
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
-          <span className="flex-1 text-left">Tạo node mới</span>
+          <span className="flex-1 text-left">Create new node</span>
           <kbd className="rounded bg-black/15 px-1 font-mono text-[0.6rem]">
             ⌘N
           </kbd>

@@ -11,9 +11,9 @@ function TrashPage() {
         <p className="mb-2 text-xs font-bold tracking-[0.12em] text-ns-faint uppercase">
           Dashboard
         </p>
-        <h1 className="mb-2 text-xl font-bold text-ns-text">Thùng rác</h1>
+        <h1 className="mb-2 text-xl font-bold text-ns-text">Trash</h1>
         <p className="max-w-2xl text-sm leading-6 text-ns-muted">
-          Các nodes và notes đã xoá — có thể khôi phục trong 30 ngày.
+          Deleted nodes and notes — can be recovered within 30 days.
         </p>
       </section>
     </div>

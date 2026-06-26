@@ -132,7 +132,7 @@ export default function MusicPlayer() {
       {/* Playlist */}
       <div className="border-t border-ns-border-soft px-4 py-3">
         <p className="mb-2 text-[0.62rem] font-bold tracking-widest text-ns-faint uppercase">
-          Danh sách phát
+          Playlist
         </p>
         {PLAYLIST.map((track) => (
           <button
@@ -148,9 +148,7 @@ export default function MusicPlayer() {
                 {track.artist}
               </span>
             </span>
-            {track.active && (
-              <span className="text-xs text-ns-accent">♪</span>
-            )}
+            {track.active && <span className="text-xs text-ns-accent">♪</span>}
           </button>
         ))}
       </div>

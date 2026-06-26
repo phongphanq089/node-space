@@ -17,19 +17,19 @@ export default function DashboardHome() {
           className="ns-hero-blur-purple-25 pointer-events-none absolute -right-8 -bottom-16 h-48 w-48 rounded-full opacity-40"
         />
         <h1 className="relative mb-2 text-xl font-bold text-ns-text sm:text-2xl">
-          Xin chào, Kien 👋
+          Welcome back, Kien 👋
           <br />
-          Sẵn sàng kết nối ý tưởng?
+          Ready to connect ideas?
         </h1>
         <p className="relative mb-4 max-w-md text-sm text-ns-muted">
-          Ghi chú dạng node giúp bạn tư duy tự do, kết nối mọi ý tưởng và xây
-          dựng kiến thức.
+          Node-based notes help you think freely, connect all ideas, and build
+          your knowledge.
         </p>
         <button
           id="btn-hero-explore"
           className="relative inline-flex items-center gap-2 rounded-xl border border-ns-border-em bg-ns-active px-5 py-2 text-sm font-semibold text-ns-accent-lt transition-all hover:bg-ns-hover-md"
         >
-          Khám phá ngay →
+          Explore now →
         </button>
         <p className="relative mt-4 text-xs text-ns-faint">
           ✦ "The best way to predict the future is to invent it." – Alan Kay

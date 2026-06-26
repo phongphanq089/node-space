@@ -10,7 +10,7 @@ export default function NotesList() {
       <div className="flex items-center justify-between border-b border-ns-border-soft px-4 py-3">
         <div>
           <span className="text-sm font-semibold text-ns-text-2">
-            Danh sách notes trong node
+            Notes in this Node
           </span>
           <span className="ml-2 text-xs text-ns-faint">6 notes</span>
         </div>
@@ -46,7 +46,7 @@ export default function NotesList() {
                 ))}
               </div>
               <p className="text-[0.65rem] text-ns-faint">
-                Cập nhật {note.updated}
+                Updated {note.updated}
               </p>
             </div>
             <div className="flex items-center gap-1">

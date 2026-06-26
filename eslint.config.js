@@ -39,6 +39,7 @@ export default [
       '.output/**/*',
       '.vinxi/**/*',
       'dist/**/*',
+      '.agents/**/*',
     ],
   },
   eslintConfigPrettier,

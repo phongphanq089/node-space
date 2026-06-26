@@ -1,11 +1,7 @@
 import '@/styles.css'
 
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import {
-  createRootRoute,
-  HeadContent,
-  Scripts,
-} from '@tanstack/react-router'
+import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 // Inline theme init — runs before React hydration to prevent flash
@@ -20,7 +16,7 @@ export const Route = createRootRoute({
       {
         name: 'description',
         content:
-          'NodeSpace là không gian ghi chú dạng node thế hệ mới — giúp bạn tư duy tự do và kết nối ý tưởng.',
+          'NodeSpace is a next-generation node-based note space — helping you think freely and connect ideas.',
       },
     ],
   }),
@@ -29,7 +25,7 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="vi" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />

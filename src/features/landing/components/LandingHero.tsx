@@ -11,23 +11,23 @@ export default function LandingHero() {
           </div>
 
           {/* Title */}
-          <h1 className="m-0 mb-4 text-[clamp(2.8rem,5.5vw,4.5rem)] font-extrabold leading-[1.05] tracking-[-0.04em] text-white">
+          <h1 className="m-0 mb-4 text-[clamp(2.8rem,5.5vw,4.5rem)] leading-[1.05] font-extrabold tracking-[-0.04em] text-white">
             Coming Soon
           </h1>
 
           {/* Subheading */}
-          <p className="m-0 mb-4 text-xl font-bold leading-snug text-white sm:text-2xl">
-            Một{' '}
+          <p className="m-0 mb-4 text-xl leading-snug font-bold text-white sm:text-2xl">
+            A{' '}
             <span className="bg-gradient-to-r from-ns-accent-lt to-ns-purple bg-clip-text text-transparent">
-              trải nghiệm
+              completely new experience
             </span>{' '}
-            hoàn toàn mới đang được hoàn thiện.
+            is being crafted.
           </p>
 
           {/* Description */}
           <p className="m-0 mb-8 max-w-[500px] text-sm leading-relaxed text-ns-muted">
-            Chúng tôi đang xây dựng không gian làm việc thế hệ tiếp theo cho
-            những người sáng tạo và tư duy khác biệt.
+            We are building the next-generation workspace for creators and those
+            who think differently.
           </p>
 
           {/* Email form */}
@@ -56,14 +56,14 @@ export default function LandingHero() {
                 id="input-notify-email"
                 type="email"
                 placeholder="Enter your email"
-                className="w-full rounded-xl border border-ns-border bg-ns-surface-alt/50 py-3.5 pr-4 pl-12 text-sm text-white placeholder-ns-placeholder outline-none transition-all focus:border-ns-input-focus sm:border-none sm:bg-transparent"
+                className="w-full rounded-xl border border-ns-border bg-ns-surface-alt/50 py-3.5 pr-4 pl-12 text-sm text-white placeholder-ns-placeholder transition-all outline-none focus:border-ns-input-focus sm:border-none sm:bg-transparent"
               />
             </div>
             <button
               type="submit"
-              className="cursor-pointer whitespace-nowrap rounded-xl bg-gradient-to-r from-ns-accent to-ns-secondary px-6 py-3.5 text-sm font-bold text-white shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all hover:opacity-95 hover:shadow-[0_0_28px_rgba(124,58,237,0.6)] active:scale-[0.98] sm:py-3"
+              className="cursor-pointer rounded-xl bg-gradient-to-r from-ns-accent to-ns-secondary px-6 py-3.5 text-sm font-bold whitespace-nowrap text-white shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all hover:opacity-95 hover:shadow-[0_0_28px_rgba(124,58,237,0.6)] active:scale-[0.98] sm:py-3"
             >
-              Thông báo cho tôi
+              Notify me
             </button>
           </form>
 
@@ -83,7 +83,7 @@ export default function LandingHero() {
                 d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
               />
             </svg>
-            Không spam. Chỉ gửi thông tin quan trọng.
+            No spam. Only important updates.
           </div>
         </div>
 

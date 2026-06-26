@@ -1,51 +1,51 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
-
+@import './styles/neon-input.css';
+@import './styles/corner-cut-button.css';
 /* ─────────────────────────────────────────────────────────────
    Design Tokens
    primary  : #7c3aed  (violet-700)
    secondary: #6366f1  (indigo-500)
    accent-lt: #a78bfa  (violet-400) — lighter tint / highlight
    ───────────────────────────────────────────────────────────── */
-
 @theme {
   --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
 
   /* Backgrounds */
-  --color-ns-bg:          #05020c;
-  --color-ns-surface:     rgb(10 6 22 / 0.9);
+  --color-ns-bg: #05020c;
+  --color-ns-surface: rgb(10 6 22 / 0.9);
   --color-ns-surface-alt: rgb(8 4 18 / 0.95);
-  --color-ns-panel:       rgb(10 6 22 / 0.8);
-  --color-ns-topbar:      rgb(8 4 18 / 0.8);
-  --color-ns-input:       rgb(255 255 255 / 0.05);
-  --color-ns-hover:       rgb(124 58 237 / 0.08);
-  --color-ns-hover-md:    rgb(124 58 237 / 0.15);
-  --color-ns-active:      rgb(124 58 237 / 0.22);
+  --color-ns-panel: rgb(10 6 22 / 0.8);
+  --color-ns-topbar: rgb(8 4 18 / 0.8);
+  --color-ns-input: rgb(255 255 255 / 0.05);
+  --color-ns-hover: rgb(124 58 237 / 0.08);
+  --color-ns-hover-md: rgb(124 58 237 / 0.15);
+  --color-ns-active: rgb(124 58 237 / 0.22);
 
   /* Borders */
-  --color-ns-border:      rgb(124 58 237 / 0.12);
+  --color-ns-border: rgb(124 58 237 / 0.12);
   --color-ns-border-soft: rgb(124 58 237 / 0.08);
-  --color-ns-border-md:   rgb(124 58 237 / 0.2);
-  --color-ns-border-em:   rgb(124 58 237 / 0.35);
+  --color-ns-border-md: rgb(124 58 237 / 0.2);
+  --color-ns-border-em: rgb(124 58 237 / 0.35);
   --color-ns-input-focus: rgb(124 58 237 / 0.5);
 
   /* Colors — primary / secondary / accent */
-  --color-ns-accent:      #7c3aed; /* primary   — violet-700  */
-  --color-ns-secondary:   #6366f1; /* secondary — indigo-500  */
-  --color-ns-accent-lt:   #a78bfa; /* highlight — violet-400  */
-  --color-ns-purple:      #6366f1; /* alias → secondary (backward compat) */
-  --color-ns-pink:        #e05c9a; /* optional third          */
-  --color-ns-amber:       #f59e0b; /* optional warning/badge  */
+  --color-ns-accent: #7c3aed; /* primary   — violet-700  */
+  --color-ns-secondary: #6366f1; /* secondary — indigo-500  */
+  --color-ns-accent-lt: #a78bfa; /* highlight — violet-400  */
+  --color-ns-purple: #6366f1; /* alias → secondary (backward compat) */
+  --color-ns-pink: #e05c9a; /* optional third          */
+  --color-ns-amber: #f59e0b; /* optional warning/badge  */
 
   /* Text */
-  --color-ns-text:        #f5f3ff;
-  --color-ns-text-2:      #ddd6fe;
-  --color-ns-muted:       rgb(221 214 254 / 0.65);
-  --color-ns-muted-md:    rgb(221 214 254 / 0.55);
-  --color-ns-muted-sm:    rgb(221 214 254 / 0.45);
-  --color-ns-faint:       rgb(221 214 254 / 0.35);
-  --color-ns-ghost:       rgb(221 214 254 / 0.4);
+  --color-ns-text: #f5f3ff;
+  --color-ns-text-2: #ddd6fe;
+  --color-ns-muted: rgb(221 214 254 / 0.65);
+  --color-ns-muted-md: rgb(221 214 254 / 0.55);
+  --color-ns-muted-sm: rgb(221 214 254 / 0.45);
+  --color-ns-faint: rgb(221 214 254 / 0.35);
+  --color-ns-ghost: rgb(221 214 254 / 0.4);
   --color-ns-placeholder: rgb(221 214 254 / 0.3);
 
   /* On-color */
@@ -122,22 +122,38 @@ body {
 
 /* Ambient orb glows — used on auth pages as background accents  */
 .ns-orb-accent-20-blur {
-  background: radial-gradient(circle, var(--color-ns-accent) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    var(--color-ns-accent) 0%,
+    transparent 70%
+  );
   filter: blur(80px);
 }
 
 .ns-orb-purple-20-blur {
-  background: radial-gradient(circle, var(--color-ns-purple) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    var(--color-ns-purple) 0%,
+    transparent 70%
+  );
   filter: blur(80px);
 }
 
 /* Dashboard hero blur orbs                                       */
 .ns-hero-blur-accent-30 {
-  background: radial-gradient(circle, var(--color-ns-accent) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    var(--color-ns-accent) 0%,
+    transparent 70%
+  );
   filter: blur(60px);
 }
 
 .ns-hero-blur-purple-25 {
-  background: radial-gradient(circle, var(--color-ns-purple) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    var(--color-ns-purple) 0%,
+    transparent 70%
+  );
   filter: blur(60px);
 }
