@@ -42,54 +42,91 @@ export interface PlaylistItem {
 
 // ── Navigation ─────────────────────────────────────────────────
 export const NAV: readonly NavItem[] = [
-  { icon: '⌂', label: 'Home', to: '/dashboard', exact: true },
-  { icon: '⬡', label: 'All Nodes', to: '/dashboard/nodes' },
-  { icon: '★', label: 'Favorites', to: '/dashboard/favorites' },
-  { icon: '◷', label: 'Recent', to: '/dashboard/recent' },
-  { icon: '⬙', label: 'Tags', to: '/dashboard/tags' },
-  { icon: '⊘', label: 'Trash', to: '/dashboard/trash' },
+  { icon: 'home', label: 'Home', to: '/dashboard', exact: true },
+  { icon: 'hexagon', label: 'All Nodes', to: '/dashboard/nodes' },
+  { icon: 'star', label: 'Favorites', to: '/dashboard/favorites' },
+  { icon: 'clock', label: 'Recent', to: '/dashboard/recent' },
+  { icon: 'tag', label: 'Tags', to: '/dashboard/tags' },
+  { icon: 'trash', label: 'Trash', to: '/dashboard/trash' },
+  { icon: 'music', label: 'Music Manager', to: '/dashboard/music' },
 ]
 
 // ── Workspaces ──────────────────────────────────────────────────
 export const WORKSPACES: readonly WorkspaceItem[] = [
-  { color: '#e05c5c', name: 'Personal' },
-  { color: '#5c9fe0', name: 'Dev Projects' },
-  { color: '#e0a05c', name: 'Study' },
-  { color: '#a05ce0', name: 'Ideas' },
-  { color: '#5ce08a', name: 'Archive' },
+  { color: '#f97316', name: 'Personal' },
+  { color: '#ec4899', name: 'Dev Projects' },
+  { color: '#a855f7', name: 'Study' },
+  { color: '#eab308', name: 'Ideas' },
+  { color: '#3b82f6', name: 'Archive' },
 ]
 
 // ── Nodes ───────────────────────────────────────────────────────
-export const NODES: readonly NodeItem[] = [
+export const NODES: readonly (NodeItem & { thumbnail?: string })[] = [
   {
     title: 'Node-based Note System',
     count: 6,
-    updated: '2 hours ago',
+    updated: 'Updated 2 hours ago',
     tag: '#productivity',
     tagColor: '#a78bfa',
     active: true,
+    starred: true,
+    thumbnail:
+      'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=60',
   },
   {
     title: 'Dijkstra Algorithm Explained',
     count: 8,
-    updated: '5 hours ago',
+    updated: 'Updated 5 hours ago',
     tag: '#algorithm',
     tagColor: '#34d399',
     starred: true,
+    thumbnail:
+      'https://images.unsplash.com/photo-1544256718-3bcf237f3974?w=150&auto=format&fit=crop&q=60',
   },
   {
     title: 'Setup Dev Environment 2024',
     count: 10,
-    updated: '1 day ago',
+    updated: 'Updated 1 day ago',
     tag: '#devops',
     tagColor: '#60a5fa',
+    thumbnail:
+      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=150&auto=format&fit=crop&q=60',
   },
   {
-    title: 'Must-read Books for Developers',
+    title: 'Must-read Books for Devs',
     count: 12,
-    updated: '2 days ago',
+    updated: 'Updated 2 days ago',
     tag: '#book',
     tagColor: '#f87171',
+    thumbnail:
+      'https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=150&auto=format&fit=crop&q=60',
+  },
+  {
+    title: 'Database Design Patterns',
+    count: 15,
+    updated: 'Updated 3 days ago',
+    tag: '#database',
+    tagColor: '#f97316',
+    thumbnail:
+      'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=150&auto=format&fit=crop&q=60',
+  },
+  {
+    title: 'Clean Code Note',
+    count: 7,
+    updated: 'Updated 3 days ago',
+    tag: '#clean-code',
+    tagColor: '#3b82f6',
+    thumbnail:
+      'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=150&auto=format&fit=crop&q=60',
+  },
+  {
+    title: 'Linux Commands Cheatsheet',
+    count: 9,
+    updated: 'Updated 4 days ago',
+    tag: '#linux',
+    tagColor: '#a855f7',
+    thumbnail:
+      'https://images.unsplash.com/photo-1518770660439-4636190af475?w=150&auto=format&fit=crop&q=60',
   },
 ]
 
@@ -115,6 +152,56 @@ export const NOTES: readonly NoteItem[] = [
     title: 'Use Cases',
     tags: ['#usecase', '#example'],
     updated: '1 day ago',
+  },
+  {
+    title: 'Benefits & Value',
+    tags: ['#benefit', '#value'],
+    updated: '2 days ago',
+  },
+  {
+    title: 'Integrations & Extensions',
+    tags: ['#integration', '#extend'],
+    updated: '3 days ago',
+  },
+  {
+    title: 'Benefits & Value',
+    tags: ['#benefit', '#value'],
+    updated: '2 days ago',
+  },
+  {
+    title: 'Integrations & Extensions',
+    tags: ['#integration', '#extend'],
+    updated: '3 days ago',
+  },
+  {
+    title: 'Benefits & Value',
+    tags: ['#benefit', '#value'],
+    updated: '2 days ago',
+  },
+  {
+    title: 'Integrations & Extensions',
+    tags: ['#integration', '#extend'],
+    updated: '3 days ago',
+  },
+  {
+    title: 'Benefits & Value',
+    tags: ['#benefit', '#value'],
+    updated: '2 days ago',
+  },
+  {
+    title: 'Integrations & Extensions',
+    tags: ['#integration', '#extend'],
+    updated: '3 days ago',
+  },
+  {
+    title: 'Benefits & Value',
+    tags: ['#benefit', '#value'],
+    updated: '2 days ago',
+  },
+  {
+    title: 'Integrations & Extensions',
+    tags: ['#integration', '#extend'],
+    updated: '3 days ago',
   },
 ]
 
@@ -144,8 +231,10 @@ export const FEATURES: readonly FeatureItem[] = [
 
 // ── Playlist ────────────────────────────────────────────────────
 export const PLAYLIST: readonly PlaylistItem[] = [
-  { title: 'Deep Focus', artist: 'Chillhop Music', active: true },
-  { title: 'Coding Vibes', artist: 'Lo-fi Hip Hop' },
+  { title: 'Midnight Coding', artist: 'Lofi Beats', active: true },
+  { title: 'Coding Vibes', artist: 'Lofi Beats' },
+  { title: 'Rainy Days', artist: 'Chillhop Music' },
+  { title: 'Night Drive', artist: 'Synthwave' },
 ]
 
 export const data_note = [

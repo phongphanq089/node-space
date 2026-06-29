@@ -1,4 +1,4 @@
-import BrandLogo from '@/components/shared/logo'
+import BrandLogo from '@/components/shared/brand-logo '
 
 type AuthCardProps = {
   title: string

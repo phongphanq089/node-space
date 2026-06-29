@@ -18,6 +18,7 @@ import { Route as DashboardDashboardTrashRouteImport } from './routes/_dashboard
 import { Route as DashboardDashboardTagsRouteImport } from './routes/_dashboard/dashboard.tags'
 import { Route as DashboardDashboardRecentRouteImport } from './routes/_dashboard/dashboard.recent'
 import { Route as DashboardDashboardNodesRouteImport } from './routes/_dashboard/dashboard.nodes'
+import { Route as DashboardDashboardMusicRouteImport } from './routes/_dashboard/dashboard.music'
 import { Route as DashboardDashboardFavoritesRouteImport } from './routes/_dashboard/dashboard.favorites'
 
 const RegisterRoute = RegisterRouteImport.update({
@@ -65,6 +66,11 @@ const DashboardDashboardNodesRoute = DashboardDashboardNodesRouteImport.update({
   path: '/dashboard/nodes',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardDashboardMusicRoute = DashboardDashboardMusicRouteImport.update({
+  id: '/dashboard/music',
+  path: '/dashboard/music',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardDashboardFavoritesRoute =
   DashboardDashboardFavoritesRouteImport.update({
     id: '/dashboard/favorites',
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/dashboard/favorites': typeof DashboardDashboardFavoritesRoute
+  '/dashboard/music': typeof DashboardDashboardMusicRoute
   '/dashboard/nodes': typeof DashboardDashboardNodesRoute
   '/dashboard/recent': typeof DashboardDashboardRecentRoute
   '/dashboard/tags': typeof DashboardDashboardTagsRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/dashboard/favorites': typeof DashboardDashboardFavoritesRoute
+  '/dashboard/music': typeof DashboardDashboardMusicRoute
   '/dashboard/nodes': typeof DashboardDashboardNodesRoute
   '/dashboard/recent': typeof DashboardDashboardRecentRoute
   '/dashboard/tags': typeof DashboardDashboardTagsRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/_dashboard/dashboard/favorites': typeof DashboardDashboardFavoritesRoute
+  '/_dashboard/dashboard/music': typeof DashboardDashboardMusicRoute
   '/_dashboard/dashboard/nodes': typeof DashboardDashboardNodesRoute
   '/_dashboard/dashboard/recent': typeof DashboardDashboardRecentRoute
   '/_dashboard/dashboard/tags': typeof DashboardDashboardTagsRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/dashboard/favorites'
+    | '/dashboard/music'
     | '/dashboard/nodes'
     | '/dashboard/recent'
     | '/dashboard/tags'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/dashboard/favorites'
+    | '/dashboard/music'
     | '/dashboard/nodes'
     | '/dashboard/recent'
     | '/dashboard/tags'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/_dashboard/dashboard/favorites'
+    | '/_dashboard/dashboard/music'
     | '/_dashboard/dashboard/nodes'
     | '/_dashboard/dashboard/recent'
     | '/_dashboard/dashboard/tags'
@@ -216,6 +228,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardDashboardNodesRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_dashboard/dashboard/music': {
+      id: '/_dashboard/dashboard/music'
+      path: '/dashboard/music'
+      fullPath: '/dashboard/music'
+      preLoaderRoute: typeof DashboardDashboardMusicRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/_dashboard/dashboard/favorites': {
       id: '/_dashboard/dashboard/favorites'
       path: '/dashboard/favorites'
@@ -228,6 +247,7 @@ declare module '@tanstack/react-router' {
 
 interface DashboardRouteChildren {
   DashboardDashboardFavoritesRoute: typeof DashboardDashboardFavoritesRoute
+  DashboardDashboardMusicRoute: typeof DashboardDashboardMusicRoute
   DashboardDashboardNodesRoute: typeof DashboardDashboardNodesRoute
   DashboardDashboardRecentRoute: typeof DashboardDashboardRecentRoute
   DashboardDashboardTagsRoute: typeof DashboardDashboardTagsRoute
@@ -237,6 +257,7 @@ interface DashboardRouteChildren {
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardDashboardFavoritesRoute: DashboardDashboardFavoritesRoute,
+  DashboardDashboardMusicRoute: DashboardDashboardMusicRoute,
   DashboardDashboardNodesRoute: DashboardDashboardNodesRoute,
   DashboardDashboardRecentRoute: DashboardDashboardRecentRoute,
   DashboardDashboardTagsRoute: DashboardDashboardTagsRoute,
