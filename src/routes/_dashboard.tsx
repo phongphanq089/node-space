@@ -46,8 +46,8 @@ function DashboardLayout() {
     currentTrackIndex,
     isPlaying,
     isMuted,
-    currentTime,
-    duration,
+    // currentTime,
+    // duration,
     seekTo,
     setIsPlaying,
     setCurrentTime,
@@ -135,7 +135,11 @@ function DashboardLayout() {
             setCurrentTime(0)
             if (iframeRef.current && iframeRef.current.contentWindow) {
               iframeRef.current.contentWindow.postMessage(
-                JSON.stringify({ event: 'command', func: 'seekTo', args: [0, true] }),
+                JSON.stringify({
+                  event: 'command',
+                  func: 'seekTo',
+                  args: [0, true],
+                }),
                 '*'
               )
             }

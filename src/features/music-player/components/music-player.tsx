@@ -19,20 +19,6 @@ function isYoutubeUrl(url: string) {
   return url.includes('youtube.com') || url.includes('youtu.be')
 }
 
-function getYoutubeId(url: string) {
-  try {
-    const urlObj = new URL(url)
-    if (urlObj.hostname === 'youtu.be') {
-      return urlObj.pathname.substring(1)
-    }
-    return urlObj.searchParams.get('v') || ''
-  } catch {
-    if (url.includes('v=')) {
-      return url.split('v=')[1]?.split('&')[0] || ''
-    }
-    return url
-  }
-}
 
 function formatTime(seconds: number) {
   const mins = Math.floor(seconds / 60)
@@ -67,7 +53,7 @@ export default function MusicPlayer() {
 
   const categories = [
     'All',
-    ...Array.from(new Set(playlist.map((t) => t.category).filter(Boolean))),
+    ...Array.from(new Set(playlist.map((t) => t.category).filter((c): c is string => !!c))),
   ]
   const filteredPlaylist =
     selectedCategory === 'All'

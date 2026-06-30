@@ -44,7 +44,7 @@ function MusicManagerPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
   // Unique categories for filtering
-  const categories = ['All', ...Array.from(new Set(playlist.map((t) => t.category).filter(Boolean)))]
+  const categories = ['All', ...Array.from(new Set(playlist.map((t) => t.category).filter((c): c is string => !!c)))]
 
   // Filtered playlist
   const filteredPlaylist = selectedCategory === 'All'

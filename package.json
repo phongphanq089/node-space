@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite dev --port 8080",
-    "build": "vite build",
+    "build": "tsc -b && node --max-old-space-size=4096 node_modules/vite/bin/vite.js build",
     "build:nitro": "pnpm run build",
     "preview:cloudflare": "wrangler dev",
     "start": "node .output/server/index.mjs",
@@ -16,7 +16,8 @@
     "test": "vitest run",
     "lint": "eslint",
     "format": "prettier --write . && eslint --fix",
-    "check": "prettier --check ."
+    "check": "prettier --check .",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",

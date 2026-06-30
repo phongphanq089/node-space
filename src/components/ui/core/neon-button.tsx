@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import React from 'react'
 // ---- Types -------------------------------------------------
 
@@ -159,6 +159,8 @@ export interface BaseCornerCutButtonProps {
    * Defaults to `black` for solid variant and the accent color for outline/ghost.
    */
   textColor?: CCBColor
+  className?: string
+  style?: React.CSSProperties
 }
 
 export type CornerCutButtonProps<T extends React.ElementType = 'button'> =
@@ -317,6 +319,7 @@ export function CornerCutButton<T extends React.ElementType = 'button'>({
     textColor,
     className,
     style,
+    children: undefined,
   })
 
   return (
