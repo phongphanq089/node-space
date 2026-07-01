@@ -46,7 +46,7 @@ export default function RegisterPage() {
           Already have an account?{' '}
           <Link
             to="/login"
-            className="font-semibold text-ns-accent-lt no-underline transition-colors hover:text-ns-accent"
+            className="text-ns-primary-lt hover:text-ns-primary font-semibold no-underline transition-colors"
           >
             Log in
           </Link>
@@ -59,7 +59,10 @@ export default function RegisterPage() {
       >
         {FIELDS.map((f) => (
           <div key={f.id} className="flex flex-col gap-1.5">
-            <label htmlFor={f.id} className="text-[0.62rem] font-bold tracking-wider text-ns-muted uppercase">
+            <label
+              htmlFor={f.id}
+              className="text-[0.62rem] font-bold tracking-wider text-ns-muted uppercase"
+            >
               {f.label}
             </label>
             <Input
@@ -72,12 +75,11 @@ export default function RegisterPage() {
           </div>
         ))}
 
-        <Button
-          size="lg"
-          className="w-full cursor-pointer mt-2"
-        >
+        <Button size="lg" className="mt-2 w-full cursor-pointer">
           <span>Create account</span>
-          <span className="ml-1 transition-transform group-hover/button:translate-x-1">→</span>
+          <span className="ml-1 transition-transform group-hover/button:translate-x-1">
+            →
+          </span>
         </Button>
       </form>
     </AuthCard>

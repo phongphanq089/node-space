@@ -23,7 +23,7 @@ import {
 
 // ── Node Detail Modal ─────────────────────────────────────────────
 interface NodeDetailModalProps {
-  node: typeof NODES[number] & { thumbnail?: string }
+  node: (typeof NODES)[number] & { thumbnail?: string }
   onClose: () => void
 }
 
@@ -51,7 +51,7 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
       {/* Modal Header */}
       <div className="flex items-center gap-3 border-b border-ns-border-soft px-5 py-3">
         {/* Node info */}
-        <div className="flex items-center gap-3 min-w-0 flex-1">
+        <div className="flex min-w-0 flex-1 items-center gap-3">
           {node.thumbnail && (
             <img
               src={node.thumbnail}
@@ -63,7 +63,7 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
             <h2 className="truncate text-sm font-extrabold text-ns-text">
               {node.title}
             </h2>
-            <div className="flex items-center gap-2 mt-0.5">
+            <div className="mt-0.5 flex items-center gap-2">
               {node.tag && (
                 <span
                   className="text-[0.58rem] font-bold tracking-wider uppercase"
@@ -84,18 +84,28 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-1 flex-shrink-0">
+        <div className="flex flex-shrink-0 items-center gap-1">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-ns-ghost transition-all hover:bg-ns-hover hover:text-ns-accent-lt"
+            className="hover:text-ns-primary-lt flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-ns-ghost transition-all hover:bg-ns-hover"
             title={sidebarOpen ? 'Hide notes panel' : 'Show notes panel'}
           >
-            {sidebarOpen ? <PanelLeftClose size={14} /> : <PanelLeftOpen size={14} />}
+            {sidebarOpen ? (
+              <PanelLeftClose size={14} />
+            ) : (
+              <PanelLeftOpen size={14} />
+            )}
           </button>
-          <button className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-ns-ghost transition-all hover:bg-ns-hover hover:text-ns-accent-lt" title="Edit node">
+          <button
+            className="hover:text-ns-primary-lt flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-ns-ghost transition-all hover:bg-ns-hover"
+            title="Edit node"
+          >
             <Edit2 size={13} />
           </button>
-          <button className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-ns-ghost transition-all hover:bg-ns-hover hover:text-ns-accent-lt" title="More options">
+          <button
+            className="hover:text-ns-primary-lt flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-ns-ghost transition-all hover:bg-ns-hover"
+            title="More options"
+          >
             <MoreHorizontal size={14} />
           </button>
           <div className="mx-1 h-5 w-px bg-ns-border-soft" />
@@ -113,15 +123,15 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
       <div className="flex flex-1 overflow-hidden">
         {/* ── Left: Notes Sidebar (collapsible) ── */}
         <div
-          className={`flex flex-col border-r border-ns-border-soft bg-ns-panel transition-all duration-300 ease-in-out overflow-hidden ${
+          className={`flex flex-col overflow-hidden border-r border-ns-border-soft bg-ns-panel transition-all duration-300 ease-in-out ${
             sidebarOpen ? 'w-64 min-w-[256px]' : 'w-0 min-w-0'
           }`}
         >
-          <div className="flex items-center justify-between px-3 py-2.5 border-b border-ns-border-soft">
+          <div className="flex items-center justify-between border-b border-ns-border-soft px-3 py-2.5">
             <span className="text-[0.6rem] font-bold tracking-wider text-ns-muted uppercase">
               Notes
             </span>
-            <span className="rounded-full bg-ns-active px-1.5 py-0.5 text-[0.55rem] font-bold text-ns-accent-lt">
+            <span className="text-ns-primary-lt rounded-full bg-ns-active px-1.5 py-0.5 text-[0.55rem] font-bold">
               {NOTES.length}
             </span>
           </div>
@@ -141,7 +151,7 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
                   <div
                     className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg shadow-inner transition-colors ${
                       isActive
-                        ? 'bg-ns-accent/20 text-ns-accent-lt'
+                        ? 'bg-ns-primary/20 text-ns-primary-lt'
                         : 'bg-ns-active/60 text-ns-ghost'
                     }`}
                   >
@@ -150,19 +160,23 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-1">
                       <p
-                        className={`truncate text-xs font-bold ${isActive ? 'text-ns-accent-lt' : 'text-ns-text'}`}
+                        className={`truncate text-xs font-bold ${isActive ? 'text-ns-primary-lt' : 'text-ns-text'}`}
                       >
                         {note.title}
                       </p>
                       {note.starred && (
-                        <Star size={10} fill="#fbbf24" className="flex-shrink-0 text-amber-400" />
+                        <Star
+                          size={10}
+                          fill="#fbbf24"
+                          className="flex-shrink-0 text-amber-400"
+                        />
                       )}
                     </div>
                     <div className="mt-1 flex flex-wrap gap-1">
                       {note.tags.slice(0, 2).map((t) => (
                         <span
                           key={t}
-                          className="rounded border border-ns-border/30 bg-ns-hover/60 px-1 py-0.5 text-[0.52rem] font-semibold text-ns-accent-lt"
+                          className="text-ns-primary-lt rounded border border-ns-border/30 bg-ns-hover/60 px-1 py-0.5 text-[0.52rem] font-semibold"
                         >
                           {t}
                         </span>
@@ -178,7 +192,7 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
           </div>
           {/* Add note button */}
           <div className="border-t border-ns-border-soft p-2">
-            <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-ns-border-soft py-2 text-[0.65rem] font-bold text-ns-ghost transition-all hover:border-ns-accent/40 hover:text-ns-accent-lt">
+            <button className="hover:border-ns-primary/40 hover:text-ns-primary-lt flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-ns-border-soft py-2 text-[0.65rem] font-bold text-ns-ghost transition-all">
               <Plus size={12} />
               <span>New Note</span>
             </button>
@@ -203,7 +217,7 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
               <button
                 key={title}
                 title={title}
-                className="flex h-6 w-6 cursor-pointer items-center justify-center rounded text-ns-ghost transition-all hover:bg-ns-hover hover:text-ns-accent-lt"
+                className="hover:text-ns-primary-lt flex h-6 w-6 cursor-pointer items-center justify-center rounded text-ns-ghost transition-all hover:bg-ns-hover"
               >
                 <Icon size={13} />
               </button>
@@ -221,29 +235,69 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               spellCheck={false}
-              className="flex-1 resize-none border-0 bg-transparent p-6 font-mono text-sm leading-7 text-ns-text-2 placeholder-ns-placeholder outline-none selection:bg-ns-accent/20"
+              className="selection:bg-ns-primary/20 flex-1 resize-none border-0 bg-transparent p-6 font-mono text-sm leading-7 text-ns-text-2 placeholder-ns-placeholder outline-none"
               placeholder="Start writing your note in Markdown..."
-              style={{ fontFamily: "'Geist Variable', 'Courier New', monospace" }}
+              style={{
+                fontFamily: "'Geist Variable', 'Courier New', monospace",
+              }}
             />
             {/* Divider */}
             <div className="w-px bg-ns-border-soft" />
             {/* Preview pane */}
             <div className="flex-1 overflow-y-auto p-6">
-              <div className="prose prose-sm prose-invert max-w-none">
+              <div className="prose prose-sm max-w-none prose-invert">
                 {content.split('\n').map((line, i) => {
                   if (line.startsWith('# '))
-                    return <h1 key={i} className="text-xl font-extrabold text-ns-text mb-3 mt-0">{line.slice(2)}</h1>
+                    return (
+                      <h1
+                        key={i}
+                        className="mt-0 mb-3 text-xl font-extrabold text-ns-text"
+                      >
+                        {line.slice(2)}
+                      </h1>
+                    )
                   if (line.startsWith('## '))
-                    return <h2 key={i} className="text-base font-bold text-ns-text-2 mb-2 mt-4">{line.slice(3)}</h2>
+                    return (
+                      <h2
+                        key={i}
+                        className="mt-4 mb-2 text-base font-bold text-ns-text-2"
+                      >
+                        {line.slice(3)}
+                      </h2>
+                    )
                   if (line.startsWith('- '))
-                    return <li key={i} className="ml-4 text-ns-muted text-xs leading-6">{line.slice(2)}</li>
+                    return (
+                      <li
+                        key={i}
+                        className="ml-4 text-xs leading-6 text-ns-muted"
+                      >
+                        {line.slice(2)}
+                      </li>
+                    )
                   if (line.startsWith('- [x] '))
-                    return <li key={i} className="ml-4 text-ns-muted text-xs leading-6 line-through opacity-60">{line.slice(6)}</li>
+                    return (
+                      <li
+                        key={i}
+                        className="ml-4 text-xs leading-6 text-ns-muted line-through opacity-60"
+                      >
+                        {line.slice(6)}
+                      </li>
+                    )
                   if (line.startsWith('- [ ] '))
-                    return <li key={i} className="ml-4 text-ns-muted text-xs leading-6">{line.slice(6)}</li>
-                  if (line === '')
-                    return <br key={i} />
-                  return <p key={i} className="text-xs leading-6 text-ns-muted">{line}</p>
+                    return (
+                      <li
+                        key={i}
+                        className="ml-4 text-xs leading-6 text-ns-muted"
+                      >
+                        {line.slice(6)}
+                      </li>
+                    )
+                  if (line === '') return <br key={i} />
+                  return (
+                    <p key={i} className="text-xs leading-6 text-ns-muted">
+                      {line}
+                    </p>
+                  )
                 })}
               </div>
             </div>
@@ -255,13 +309,15 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
 }
 
 // ── All Nodes List ────────────────────────────────────────────────
-type NodeWithThumbnail = typeof NODES[number] & { thumbnail?: string }
+type NodeWithThumbnail = (typeof NODES)[number] & { thumbnail?: string }
 
 export default function NodesList() {
   const [nodes, setNodes] = useState<NodeWithThumbnail[]>(() =>
     NODES.map((n) => ({ ...n }))
   )
-  const [selectedNode, setSelectedNode] = useState<NodeWithThumbnail | null>(null)
+  const [selectedNode, setSelectedNode] = useState<NodeWithThumbnail | null>(
+    null
+  )
   const [search, setSearch] = useState('')
 
   const toggleStar = (e: React.MouseEvent, title: string) => {
@@ -289,7 +345,7 @@ export default function NodesList() {
             className="flex-1 border-none bg-transparent text-xs text-ns-text-2 placeholder-ns-placeholder outline-none"
           />
         </div>
-        <button className="flex flex-shrink-0 cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-ns-accent to-ns-secondary px-4 py-2 text-xs font-bold text-white shadow-md shadow-ns-accent/10 transition-all hover:opacity-90">
+        <button className="from-ns-primary shadow-ns-primary/10 flex flex-shrink-0 cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r to-ns-secondary px-4 py-2 text-xs font-bold text-white shadow-md transition-all hover:opacity-90">
           <Plus size={13} />
           <span className="hidden sm:inline">New Node</span>
         </button>
@@ -301,7 +357,7 @@ export default function NodesList() {
           <div
             key={node.title}
             onClick={() => setSelectedNode(node)}
-            className="group relative flex cursor-pointer flex-col gap-3 rounded-xl border border-ns-border bg-ns-panel p-4 shadow-sm transition-all hover:border-ns-border-md hover:shadow-md hover:shadow-ns-accent/5"
+            className="group hover:shadow-ns-primary/5 relative flex cursor-pointer flex-col gap-3 rounded-xl border border-ns-border bg-ns-panel p-4 shadow-sm transition-all hover:border-ns-border-md hover:shadow-md"
           >
             {/* Top: thumbnail + title + star */}
             <div className="flex items-start gap-3">
@@ -318,7 +374,7 @@ export default function NodesList() {
               )}
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-1.5">
-                  <h3 className="line-clamp-2 text-xs font-bold text-ns-text transition-colors group-hover:text-ns-accent-lt">
+                  <h3 className="group-hover:text-ns-primary-lt line-clamp-2 text-xs font-bold text-ns-text transition-colors">
                     {node.title}
                   </h3>
                   <button
@@ -329,11 +385,15 @@ export default function NodesList() {
                     <Star
                       size={12}
                       fill={node.starred ? '#fbbf24' : 'none'}
-                      className={node.starred ? 'text-amber-400' : 'text-ns-ghost'}
+                      className={
+                        node.starred ? 'text-amber-400' : 'text-ns-ghost'
+                      }
                     />
                   </button>
                 </div>
-                <span className="text-[0.6rem] text-ns-faint">{node.updated}</span>
+                <span className="text-[0.6rem] text-ns-faint">
+                  {node.updated}
+                </span>
               </div>
             </div>
 
@@ -355,7 +415,7 @@ export default function NodesList() {
 
             {/* Footer actions */}
             <div className="flex items-center justify-between border-t border-ns-border-soft pt-2.5">
-              <span className="flex cursor-pointer items-center gap-1 text-[0.65rem] font-bold text-ns-accent-lt transition-colors hover:text-white">
+              <span className="text-ns-primary-lt flex cursor-pointer items-center gap-1 text-[0.65rem] font-bold transition-colors hover:text-white">
                 View details
                 <ArrowUpRight size={11} />
               </span>

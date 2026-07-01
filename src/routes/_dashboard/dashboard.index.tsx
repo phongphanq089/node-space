@@ -15,7 +15,7 @@ function DashboardHome() {
       {/* Compact nodes section below */}
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-2">
-          <span className="text-[0.6rem] font-bold tracking-[0.12em] text-ns-accent-lt uppercase">
+          <span className="text-ns-primary-lt text-[0.6rem] font-bold tracking-[0.12em] uppercase">
             Workspace
           </span>
           <div className="h-px flex-1 bg-ns-border-soft" />

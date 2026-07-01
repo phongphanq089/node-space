@@ -26,7 +26,7 @@ const NavMenu = () => {
             to={item.to}
             className={`flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium no-underline transition-all ${
               isActive
-                ? 'bg-ns-active text-ns-accent-lt shadow-[inset_0_0_0_1px_var(--color-ns-border-em)]'
+                ? 'text-ns-primary-lt bg-ns-active shadow-[inset_0_0_0_1px_var(--color-ns-border-em)]'
                 : 'text-ns-muted hover:bg-ns-hover hover:text-ns-text-2'
             }`}
           >

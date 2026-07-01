@@ -214,7 +214,7 @@ export const FEATURES: readonly FeatureItem[] = [
   {
     title: 'Markdown Editor',
     desc: 'Supports Markdown and syntax highlighting',
-    color: 'ns-accent',
+    color: 'ns-primary',
   },
   {
     title: 'Graph View',

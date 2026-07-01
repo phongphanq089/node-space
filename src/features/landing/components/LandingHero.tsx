@@ -24,7 +24,7 @@ export default function LandingHero() {
           {/* Subheading */}
           <p className="m-0 mb-4 text-xl leading-snug font-bold text-white sm:text-2xl">
             A{' '}
-            <span className="bg-gradient-to-r from-ns-accent-lt to-ns-purple bg-clip-text text-transparent">
+            <span className="from-ns-primary-lt bg-gradient-to-r to-ns-purple bg-clip-text text-transparent">
               completely new experience
             </span>{' '}
             is being crafted.
@@ -44,11 +44,7 @@ export default function LandingHero() {
             >
               <Link to="/login">Login</Link>
             </Button>
-            <Button
-              asChild
-              size="lg"
-              className="cursor-pointer"
-            >
+            <Button asChild size="lg" className="cursor-pointer">
               <Link to="/register">Get started free</Link>
             </Button>
           </div>
@@ -56,7 +52,7 @@ export default function LandingHero() {
 
         {/* ── Right: Floating graphic ── */}
         <div className="relative flex items-center justify-center">
-          <div className="absolute h-72 w-72 rounded-full bg-ns-accent/10 blur-[90px]" />
+          <div className="bg-ns-primary/10 absolute h-72 w-72 rounded-full blur-[90px]" />
           <img
             src="/icon-banner.png"
             alt="NodeSpace graphic"

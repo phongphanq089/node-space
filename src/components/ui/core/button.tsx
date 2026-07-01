@@ -11,16 +11,16 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-gradient-to-r from-ns-accent to-ns-secondary text-white shadow-md shadow-ns-accent/15 transition-all duration-300 hover:scale-[1.01] hover:opacity-90 hover:shadow-ns-accent/25',
+          'from-ns-primary shadow-ns-primary/15 hover:shadow-ns-primary/25 bg-gradient-to-r to-ns-secondary text-white shadow-md transition-all duration-300 hover:scale-[1.01] hover:opacity-90',
         outline:
-          'border border-ns-border bg-ns-bg/30 text-ns-accent-lt transition-all duration-300 hover:bg-ns-accent/10 hover:text-white',
+          'text-ns-primary-lt hover:bg-ns-primary/10 border border-ns-border bg-ns-bg/30 transition-all duration-300 hover:text-white',
         secondary:
           'bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground',
         ghost:
           'text-ns-muted transition-all duration-200 hover:bg-ns-hover hover:text-ns-text-2 aria-expanded:bg-ns-hover aria-expanded:text-ns-text-2',
         destructive:
           'bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40',
-        link: 'text-ns-accent-lt underline-offset-4 hover:underline',
+        link: 'text-ns-primary-lt underline-offset-4 hover:underline',
       },
       size: {
         default:

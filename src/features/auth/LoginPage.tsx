@@ -16,7 +16,7 @@ export default function LoginPage() {
           Don't have an account?{' '}
           <Link
             to="/register"
-            className="font-semibold text-ns-accent-lt no-underline transition-colors hover:text-ns-accent"
+            className="text-ns-primary-lt hover:text-ns-primary font-semibold no-underline transition-colors"
           >
             Sign up for free
           </Link>
@@ -49,20 +49,18 @@ export default function LoginPage() {
               At least 8 characters
             </span>
           </div>
-          <Input
-            type="password"
-            placeholder="••••••••"
-            required
-          />
+          <Input type="password" placeholder="••••••••" required />
         </div>
 
         <Button
           onClick={() => navigate({ to: '/dashboard' })}
           size="lg"
-          className="w-full cursor-pointer mt-2"
+          className="mt-2 w-full cursor-pointer"
         >
           <span>Log in</span>
-          <span className="ml-1 transition-transform group-hover/button:translate-x-1">→</span>
+          <span className="ml-1 transition-transform group-hover/button:translate-x-1">
+            →
+          </span>
         </Button>
       </form>
     </AuthCard>

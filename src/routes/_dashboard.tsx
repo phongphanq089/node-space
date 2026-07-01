@@ -207,10 +207,10 @@ function DashboardLayout() {
         <Drawer direction="right">
           <DrawerTrigger asChild>
             <button
-              className="group fixed right-6 bottom-6 z-40 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-gradient-to-r from-ns-accent to-ns-secondary text-white shadow-[0_0_20px_rgba(124,58,237,0.6)] transition-all hover:scale-110 active:scale-95"
+              className="group from-ns-primary fixed right-6 bottom-6 z-40 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-gradient-to-r to-ns-secondary text-white shadow-[0_0_20px_rgba(124,58,237,0.6)] transition-all hover:scale-110 active:scale-95"
               title="Open Lofi Player"
             >
-              <span className="absolute inset-0 animate-ping rounded-full bg-ns-accent opacity-20 transition-transform duration-1000 group-hover:scale-110" />
+              <span className="bg-ns-primary absolute inset-0 animate-ping rounded-full opacity-20 transition-transform duration-1000 group-hover:scale-110" />
               <div className="relative flex items-center justify-center">
                 <svg
                   className="h-6 w-6 animate-pulse"
@@ -239,7 +239,7 @@ function DashboardLayout() {
                 </DrawerDescription>
               </div>
               <DrawerClose asChild>
-                <button className="cursor-pointer text-xs font-bold text-ns-ghost hover:text-ns-accent-lt">
+                <button className="hover:text-ns-primary-lt cursor-pointer text-xs font-bold text-ns-ghost">
                   Close
                 </button>
               </DrawerClose>

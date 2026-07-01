@@ -30,7 +30,7 @@ const DashboardSidebar = () => {
         <SidebarGroup className="mt-2">
           <SidebarGroupLabel className="flex items-center justify-between px-3 text-[0.65rem] font-bold tracking-wider text-ns-faint uppercase">
             <span>Workspaces</span>
-            <button className="cursor-pointer text-ns-ghost transition-colors hover:text-ns-accent-lt">
+            <button className="hover:text-ns-primary-lt cursor-pointer text-ns-ghost transition-colors">
               <Plus size={12} />
             </button>
           </SidebarGroupLabel>

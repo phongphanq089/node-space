@@ -14,7 +14,7 @@ function IconBtn({ id, title, onClick, children }: IconBtnProps) {
       id={id}
       title={title}
       onClick={onClick}
-      className="relative flex h-8 w-8 items-center justify-center rounded-xl border border-transparent text-ns-ghost transition-all hover:border-ns-border hover:bg-ns-hover-md hover:text-ns-accent-lt"
+      className="hover:text-ns-primary-lt relative flex h-8 w-8 items-center justify-center rounded-xl border border-transparent text-ns-ghost transition-all hover:border-ns-border hover:bg-ns-hover-md"
     >
       {children}
     </button>
@@ -31,7 +31,7 @@ export default function DashboardTopbar() {
         {/* Search */}
         <div
           id="search-bar"
-          className="flex flex-1 items-center gap-2 rounded-xl border border-ns-border bg-ns-input px-3 py-1.5 transition-all focus-within:border-ns-accent hover:border-ns-border-md"
+          className="focus-within:border-ns-primary flex flex-1 items-center gap-2 rounded-xl border border-ns-border bg-ns-input px-3 py-1.5 transition-all hover:border-ns-border-md"
         >
           <Search size={14} className="text-ns-ghost" />
           <input

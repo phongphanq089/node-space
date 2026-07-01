@@ -39,7 +39,7 @@ export default function MusicPlayer() {
         </span>
         <Link
           to="/dashboard/music"
-          className="flex cursor-pointer items-center gap-1.5 rounded bg-ns-active px-2.5 py-1 text-[0.62rem] font-bold text-ns-accent-lt no-underline transition-all hover:bg-ns-hover"
+          className="text-ns-primary-lt flex cursor-pointer items-center gap-1.5 rounded bg-ns-active px-2.5 py-1 text-[0.62rem] font-bold no-underline transition-all hover:bg-ns-hover"
           title="Manage focus music playlist"
         >
           <Settings size={11} />
@@ -48,7 +48,7 @@ export default function MusicPlayer() {
       </div>
 
       {/* Category chips */}
-      <div className="no-scrollbar mx-4 mt-3 flex flex-shrink-0 gap-1.5 overflow-x-auto pb-1">
+      <div className="mx-4 mt-3 no-scrollbar flex flex-shrink-0 gap-1.5 overflow-x-auto pb-1">
         {categories.map((cat) => (
           <button
             key={cat}
@@ -56,7 +56,7 @@ export default function MusicPlayer() {
             type="button"
             className={`cursor-pointer rounded-lg px-2.5 py-1 text-[0.6rem] font-bold transition-all ${
               selectedCategory === cat
-                ? 'bg-ns-active text-ns-accent-lt shadow-inner'
+                ? 'text-ns-primary-lt bg-ns-active shadow-inner'
                 : 'text-ns-muted hover:bg-ns-hover/50 hover:text-ns-text-2'
             }`}
           >
@@ -66,7 +66,7 @@ export default function MusicPlayer() {
       </div>
 
       {/* Track List */}
-      <div className="no-scrollbar mt-2 flex flex-col gap-0.5 overflow-y-auto px-2 pb-3">
+      <div className="mt-2 no-scrollbar flex flex-col gap-0.5 overflow-y-auto px-2 pb-3">
         {filteredPlaylist.map((track) => {
           const originalIndex = playlist.findIndex((t) => t.url === track.url)
           const isActive = originalIndex === currentTrackIndex
@@ -82,7 +82,7 @@ export default function MusicPlayer() {
               }`}
             >
               {/* Thumbnail */}
-              <div className="relative h-9 w-9 flex-shrink-0 overflow-hidden rounded-lg border border-ns-border bg-gradient-to-br from-ns-accent/20 to-ns-secondary/20">
+              <div className="from-ns-primary/20 relative h-9 w-9 flex-shrink-0 overflow-hidden rounded-lg border border-ns-border bg-gradient-to-br to-ns-secondary/20">
                 {track.cover && (
                   <div
                     className="absolute inset-0 bg-cover bg-center opacity-80"
@@ -99,7 +99,7 @@ export default function MusicPlayer() {
               {/* Title & Artist */}
               <div className="min-w-0 flex-1 text-left">
                 <p
-                  className={`truncate text-xs font-bold leading-tight ${isActive ? 'text-ns-accent-lt' : 'text-ns-text'}`}
+                  className={`truncate text-xs leading-tight font-bold ${isActive ? 'text-ns-primary-lt' : 'text-ns-text'}`}
                 >
                   {track.title}
                 </p>
@@ -114,7 +114,7 @@ export default function MusicPlayer() {
                   {[0.15, 0.3, 0.2].map((d, i) => (
                     <span
                       key={i}
-                      className="animate-soundbar w-[1.5px] rounded-full bg-ns-accent-lt"
+                      className="animate-soundbar bg-ns-primary-lt w-[1.5px] rounded-full"
                       style={{ animationDelay: `${d}s`, height: '10px' }}
                     />
                   ))}
@@ -123,7 +123,7 @@ export default function MusicPlayer() {
 
               {/* Now playing dot if active but not playing */}
               {isActive && !isPlaying && (
-                <div className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-ns-accent-lt opacity-60" />
+                <div className="bg-ns-primary-lt h-1.5 w-1.5 flex-shrink-0 rounded-full opacity-60" />
               )}
             </button>
           )
@@ -142,7 +142,7 @@ export default function MusicPlayer() {
       {/* Currently playing strip */}
       {currentTrack && (
         <div className="border-t border-ns-border-soft bg-ns-active/20 px-3 py-2">
-          <p className="truncate text-[0.6rem] font-bold text-ns-accent-lt">
+          <p className="text-ns-primary-lt truncate text-[0.6rem] font-bold">
             ♪ {currentTrack.title}
           </p>
           <p className="text-[0.55rem] text-ns-faint">{currentTrack.artist}</p>
