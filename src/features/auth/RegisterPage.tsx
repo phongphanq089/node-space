@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 
-import CornerCutButton from '@/components/ui/core/neon-button'
-import NeonInput from '@/components/ui/core/neon-input'
+import { Button } from '@/components/ui/core/button'
+import { Input } from '@/components/ui/core/input'
 
 import AuthCard from './components/AuthCard'
 
@@ -58,17 +58,27 @@ export default function RegisterPage() {
         className="flex flex-col gap-4"
       >
         {FIELDS.map((f) => (
-          <NeonInput key={f.id} {...f} color="purple" />
+          <div key={f.id} className="flex flex-col gap-1.5">
+            <label htmlFor={f.id} className="text-[0.62rem] font-bold tracking-wider text-ns-muted uppercase">
+              {f.label}
+            </label>
+            <Input
+              id={f.id}
+              type={f.type}
+              placeholder={f.placeholder}
+              autoComplete={f.autoComplete}
+              required
+            />
+          </div>
         ))}
 
-        <CornerCutButton
-          color="pink"
-          showArrow
-          hoverEffect="glow"
-          className="text-center"
+        <Button
+          size="lg"
+          className="w-full cursor-pointer mt-2"
         >
-          Create account
-        </CornerCutButton>
+          <span>Create account</span>
+          <span className="ml-1 transition-transform group-hover/button:translate-x-1">→</span>
+        </Button>
       </form>
     </AuthCard>
   )

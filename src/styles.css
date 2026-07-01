@@ -1,8 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
-@import './styles/neon-input.css';
-@import './styles/corner-cut-button.css';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 @import '@fontsource-variable/geist';

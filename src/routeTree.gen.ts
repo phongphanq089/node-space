@@ -13,11 +13,11 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardSplatRouteImport } from './routes/_dashboard/$'
 import { Route as DashboardDashboardIndexRouteImport } from './routes/_dashboard/dashboard.index'
 import { Route as DashboardDashboardTrashRouteImport } from './routes/_dashboard/dashboard.trash'
 import { Route as DashboardDashboardTagsRouteImport } from './routes/_dashboard/dashboard.tags'
 import { Route as DashboardDashboardRecentRouteImport } from './routes/_dashboard/dashboard.recent'
-import { Route as DashboardDashboardNodesRouteImport } from './routes/_dashboard/dashboard.nodes'
 import { Route as DashboardDashboardMusicRouteImport } from './routes/_dashboard/dashboard.music'
 import { Route as DashboardDashboardFavoritesRouteImport } from './routes/_dashboard/dashboard.favorites'
 
@@ -40,6 +40,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardSplatRoute = DashboardSplatRouteImport.update({
+  id: '/$',
+  path: '/$',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardDashboardIndexRoute = DashboardDashboardIndexRouteImport.update({
   id: '/dashboard/',
   path: '/dashboard/',
@@ -61,11 +66,6 @@ const DashboardDashboardRecentRoute =
     path: '/dashboard/recent',
     getParentRoute: () => DashboardRoute,
   } as any)
-const DashboardDashboardNodesRoute = DashboardDashboardNodesRouteImport.update({
-  id: '/dashboard/nodes',
-  path: '/dashboard/nodes',
-  getParentRoute: () => DashboardRoute,
-} as any)
 const DashboardDashboardMusicRoute = DashboardDashboardMusicRouteImport.update({
   id: '/dashboard/music',
   path: '/dashboard/music',
@@ -82,9 +82,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/$': typeof DashboardSplatRoute
   '/dashboard/favorites': typeof DashboardDashboardFavoritesRoute
   '/dashboard/music': typeof DashboardDashboardMusicRoute
-  '/dashboard/nodes': typeof DashboardDashboardNodesRoute
   '/dashboard/recent': typeof DashboardDashboardRecentRoute
   '/dashboard/tags': typeof DashboardDashboardTagsRoute
   '/dashboard/trash': typeof DashboardDashboardTrashRoute
@@ -94,9 +94,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/$': typeof DashboardSplatRoute
   '/dashboard/favorites': typeof DashboardDashboardFavoritesRoute
   '/dashboard/music': typeof DashboardDashboardMusicRoute
-  '/dashboard/nodes': typeof DashboardDashboardNodesRoute
   '/dashboard/recent': typeof DashboardDashboardRecentRoute
   '/dashboard/tags': typeof DashboardDashboardTagsRoute
   '/dashboard/trash': typeof DashboardDashboardTrashRoute
@@ -108,9 +108,9 @@ export interface FileRoutesById {
   '/_dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/_dashboard/$': typeof DashboardSplatRoute
   '/_dashboard/dashboard/favorites': typeof DashboardDashboardFavoritesRoute
   '/_dashboard/dashboard/music': typeof DashboardDashboardMusicRoute
-  '/_dashboard/dashboard/nodes': typeof DashboardDashboardNodesRoute
   '/_dashboard/dashboard/recent': typeof DashboardDashboardRecentRoute
   '/_dashboard/dashboard/tags': typeof DashboardDashboardTagsRoute
   '/_dashboard/dashboard/trash': typeof DashboardDashboardTrashRoute
@@ -122,9 +122,9 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
+    | '/$'
     | '/dashboard/favorites'
     | '/dashboard/music'
-    | '/dashboard/nodes'
     | '/dashboard/recent'
     | '/dashboard/tags'
     | '/dashboard/trash'
@@ -134,9 +134,9 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
+    | '/$'
     | '/dashboard/favorites'
     | '/dashboard/music'
-    | '/dashboard/nodes'
     | '/dashboard/recent'
     | '/dashboard/tags'
     | '/dashboard/trash'
@@ -147,9 +147,9 @@ export interface FileRouteTypes {
     | '/_dashboard'
     | '/login'
     | '/register'
+    | '/_dashboard/$'
     | '/_dashboard/dashboard/favorites'
     | '/_dashboard/dashboard/music'
-    | '/_dashboard/dashboard/nodes'
     | '/_dashboard/dashboard/recent'
     | '/_dashboard/dashboard/tags'
     | '/_dashboard/dashboard/trash'
@@ -193,6 +193,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_dashboard/$': {
+      id: '/_dashboard/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof DashboardSplatRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/_dashboard/dashboard/': {
       id: '/_dashboard/dashboard/'
       path: '/dashboard'
@@ -221,13 +228,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardDashboardRecentRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_dashboard/dashboard/nodes': {
-      id: '/_dashboard/dashboard/nodes'
-      path: '/dashboard/nodes'
-      fullPath: '/dashboard/nodes'
-      preLoaderRoute: typeof DashboardDashboardNodesRouteImport
-      parentRoute: typeof DashboardRoute
-    }
     '/_dashboard/dashboard/music': {
       id: '/_dashboard/dashboard/music'
       path: '/dashboard/music'
@@ -246,9 +246,9 @@ declare module '@tanstack/react-router' {
 }
 
 interface DashboardRouteChildren {
+  DashboardSplatRoute: typeof DashboardSplatRoute
   DashboardDashboardFavoritesRoute: typeof DashboardDashboardFavoritesRoute
   DashboardDashboardMusicRoute: typeof DashboardDashboardMusicRoute
-  DashboardDashboardNodesRoute: typeof DashboardDashboardNodesRoute
   DashboardDashboardRecentRoute: typeof DashboardDashboardRecentRoute
   DashboardDashboardTagsRoute: typeof DashboardDashboardTagsRoute
   DashboardDashboardTrashRoute: typeof DashboardDashboardTrashRoute
@@ -256,9 +256,9 @@ interface DashboardRouteChildren {
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardSplatRoute: DashboardSplatRoute,
   DashboardDashboardFavoritesRoute: DashboardDashboardFavoritesRoute,
   DashboardDashboardMusicRoute: DashboardDashboardMusicRoute,
-  DashboardDashboardNodesRoute: DashboardDashboardNodesRoute,
   DashboardDashboardRecentRoute: DashboardDashboardRecentRoute,
   DashboardDashboardTagsRoute: DashboardDashboardTagsRoute,
   DashboardDashboardTrashRoute: DashboardDashboardTrashRoute,

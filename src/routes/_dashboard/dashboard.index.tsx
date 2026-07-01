@@ -1,6 +1,5 @@
 import BannerMusic from '@/features/dashboard-home/components/banner-music'
 import NodesList from '@/features/dashboard-home/components/nodes-list'
-import NotesList from '@/features/dashboard-home/components/notes-list'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_dashboard/dashboard/')({
@@ -9,11 +8,19 @@ export const Route = createFileRoute('/_dashboard/dashboard/')({
 
 function DashboardHome() {
   return (
-    <div className="relative flex-1 flex flex-col bg-ns-bg lg:overflow-hidden">
-      <div className="grid grid-cols-1 gap-6 lg:flex-1 lg:grid-cols-3">
+    <div className="relative flex flex-1 flex-col gap-5 bg-ns-bg">
+      {/* Full-width Music Banner at top */}
+      <BannerMusic />
+
+      {/* Compact nodes section below */}
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center gap-2">
+          <span className="text-[0.6rem] font-bold tracking-[0.12em] text-ns-accent-lt uppercase">
+            Workspace
+          </span>
+          <div className="h-px flex-1 bg-ns-border-soft" />
+        </div>
         <NodesList />
-        <NotesList />
-        <BannerMusic />
       </div>
     </div>
   )

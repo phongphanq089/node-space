@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import CornerCutButton from '@/components/ui/core/neon-button'
+import { Button } from '@/components/ui/core/button'
 
 export default function LandingHero() {
   return (
@@ -36,23 +36,21 @@ export default function LandingHero() {
             who think differently.
           </p>
           <div className="flex items-center gap-4">
-            <CornerCutButton
-              as={Link}
-              to="/login"
-              color="red"
+            <Button
+              asChild
               variant="outline"
+              size="lg"
+              className="cursor-pointer"
             >
-              Login
-            </CornerCutButton>
-            <CornerCutButton
-              as={Link}
-              to="/register"
-              color="pink"
-              hoverEffect="pulse"
-              glowIntensity="high"
+              <Link to="/login">Login</Link>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              className="cursor-pointer"
             >
-              Get started free
-            </CornerCutButton>
+              <Link to="/register">Get started free</Link>
+            </Button>
           </div>
         </div>
 

@@ -9,7 +9,6 @@
   "scripts": {
     "dev": "vite dev --port 8080",
     "build": "tsc -b && node --max-old-space-size=4096 node_modules/vite/bin/vite.js build",
-    "build:nitro": "pnpm run build",
     "preview:cloudflare": "wrangler dev",
     "start": "node .output/server/index.mjs",
     "preview": "vite preview",

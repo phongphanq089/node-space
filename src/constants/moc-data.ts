@@ -43,7 +43,6 @@ export interface PlaylistItem {
 // ── Navigation ─────────────────────────────────────────────────
 export const NAV: readonly NavItem[] = [
   { icon: 'home', label: 'Home', to: '/dashboard', exact: true },
-  { icon: 'hexagon', label: 'All Nodes', to: '/dashboard/nodes' },
   { icon: 'star', label: 'Favorites', to: '/dashboard/favorites' },
   { icon: 'clock', label: 'Recent', to: '/dashboard/recent' },
   { icon: 'tag', label: 'Tags', to: '/dashboard/tags' },

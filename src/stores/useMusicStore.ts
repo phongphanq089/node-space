@@ -44,48 +44,42 @@ const DEMO_PLAYLIST: TrackItem[] = [
     title: 'Lofi Cyberpunk Live Stream',
     artist: 'ChilledCow / Lofi Girl',
     url: 'https://www.youtube.com/watch?v=H3urFo3u-lo',
-    cover:
-      'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=150&auto=format&fit=crop&q=60',
+    cover: '/hero-banner.png',
     category: 'Lofi',
   },
   {
     title: 'Lofi Cafe Ambient',
     artist: 'Lofi Girl',
     url: 'https://www.youtube.com/watch?v=a7Gr-Uey1W4',
-    cover:
-      'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?w=150&auto=format&fit=crop&q=60',
+    cover: '/hero-banner.png',
     category: 'Lofi',
   },
   {
     title: 'SoundHelix Song 1 (MP3)',
     artist: 'SoundHelix',
     url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-    cover:
-      'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=60',
+    cover: '/hero-banner.png',
     category: 'Chill',
   },
   {
     title: 'SoundHelix Song 2 (MP3)',
     artist: 'SoundHelix',
     url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-    cover:
-      'https://images.unsplash.com/photo-1544256718-3bcf237f3974?w=150&auto=format&fit=crop&q=60',
+    cover: '/hero-banner.png',
     category: 'Chill',
   },
   {
     title: 'SoundHelix Song 3 (MP3)',
     artist: 'SoundHelix',
     url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
-    cover:
-      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=150&auto=format&fit=crop&q=60',
+    cover: '/hero-banner.png',
     category: 'US-UK',
   },
   {
     title: 'SoundHelix Song 4 (MP3)',
     artist: 'SoundHelix',
     url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
-    cover:
-      'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=150&auto=format&fit=crop&q=60',
+    cover: '/hero-banner.png',
     category: 'US-UK',
   },
 ]
