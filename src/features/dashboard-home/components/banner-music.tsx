@@ -46,9 +46,12 @@ const BannerMusic = () => {
     setRepeatMode,
     isExpanded,
     setIsExpanded,
+    youtubePlayerMode,
+    setYoutubePlayerMode,
   } = useMusicStore()
 
   const currentTrack = playlist[currentTrackIndex] as TrackItem | undefined
+  const isYoutube = currentTrack ? isYoutubeUrl(currentTrack.url) : false
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0
 
   useEffect(() => {
@@ -159,7 +162,16 @@ const BannerMusic = () => {
 
               {/* Play/Pause */}
               <button
-                onClick={() => setIsPlaying(!isPlaying)}
+                onClick={() => {
+                  if (
+                    !isPlaying &&
+                    isYoutube &&
+                    youtubePlayerMode === 'closed'
+                  ) {
+                    setYoutubePlayerMode('modal')
+                  }
+                  setIsPlaying(!isPlaying)
+                }}
                 type="button"
                 className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white shadow-lg shadow-violet-500/20 transition-all hover:scale-105 active:scale-95"
                 title={isPlaying ? 'Pause' : 'Play'}
@@ -218,7 +230,7 @@ const BannerMusic = () => {
 
               {/* Expand/Maximize */}
               <button
-                onClick={() => setIsExpanded(true)}
+                onClick={() => isYoutube ? setYoutubePlayerMode('modal') : setIsExpanded(true)}
                 type="button"
                 className="cursor-pointer text-white/40 transition-all hover:text-white/80"
                 title="Immersive player"
@@ -229,42 +241,41 @@ const BannerMusic = () => {
           </div>
 
           {/* Row 2: Progress Slider */}
-          <div className="flex items-center gap-2.5">
-            <span className="w-8 text-right text-[0.55rem] text-white/40 tabular-nums">
-              {formatTime(currentTime)}
-            </span>
-            <div className="group relative flex-1">
-              <div className="h-[3px] w-full rounded-full bg-white/15">
+          {!isYoutube && (
+            <div className="flex items-center gap-2.5">
+              <span className="w-8 text-right text-[0.55rem] text-white/40 tabular-nums">
+                {formatTime(currentTime)}
+              </span>
+              <div className="group relative flex-1">
+                <div className="h-[3px] w-full rounded-full bg-white/15">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-violet-500 to-indigo-400 transition-all duration-300"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                </div>
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-violet-500 to-indigo-400 transition-all duration-300"
-                  style={{ width: `${progressPercent}%` }}
+                  className="pointer-events-none absolute top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-white shadow-[0_0_6px_rgba(139,92,246,0.9)]"
+                  style={{ left: `calc(${progressPercent}% - 5px)` }}
+                />
+                <input
+                  type="range"
+                  min={0}
+                  max={duration || 180}
+                  value={currentTime}
+                  onChange={(e) => triggerSeek(Number(e.target.value))}
+                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                 />
               </div>
-              <div
-                className="pointer-events-none absolute top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-white shadow-[0_0_6px_rgba(139,92,246,0.9)]"
-                style={{ left: `calc(${progressPercent}% - 5px)` }}
-              />
-              <input
-                type="range"
-                min={0}
-                max={duration || 180}
-                value={currentTime}
-                onChange={(e) => triggerSeek(Number(e.target.value))}
-                className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-              />
+              <span className="w-8 text-[0.55rem] text-white/40 tabular-nums">
+                {formatTime(duration)}
+              </span>
             </div>
-            <span className="w-8 text-[0.55rem] text-white/40 tabular-nums">
-              {formatTime(duration)}
-            </span>
-          </div>
+          )}
         </div>
       </div>
 
       {/* ── Immersive Fullscreen Player Overlay ── */}
-      {isExpanded && (
-        <ImmersivePlayer onClose={() => setIsExpanded(false)} />
-      )}
-
+      {isExpanded && <ImmersivePlayer onClose={() => setIsExpanded(false)} />}
     </>
   )
 }

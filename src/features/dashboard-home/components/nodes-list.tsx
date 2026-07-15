@@ -6,7 +6,6 @@ import {
   Plus,
   Star,
   MessageSquare,
-  ArrowUpRight,
   Edit2,
   Trash2,
   X,
@@ -19,6 +18,8 @@ import {
   Code2,
   Link2,
   Heading2,
+  Clock,
+  ArrowRight,
 } from 'lucide-react'
 
 // ── Node Detail Modal ─────────────────────────────────────────────
@@ -87,7 +88,7 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
         <div className="flex flex-shrink-0 items-center gap-1">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="hover:text-ns-primary-lt flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-ns-ghost transition-all hover:bg-ns-hover"
+            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-ns-ghost transition-all hover:bg-ns-hover hover:text-ns-primary-lt"
             title={sidebarOpen ? 'Hide notes panel' : 'Show notes panel'}
           >
             {sidebarOpen ? (
@@ -97,13 +98,13 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
             )}
           </button>
           <button
-            className="hover:text-ns-primary-lt flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-ns-ghost transition-all hover:bg-ns-hover"
+            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-ns-ghost transition-all hover:bg-ns-hover hover:text-ns-primary-lt"
             title="Edit node"
           >
             <Edit2 size={13} />
           </button>
           <button
-            className="hover:text-ns-primary-lt flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-ns-ghost transition-all hover:bg-ns-hover"
+            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg text-ns-ghost transition-all hover:bg-ns-hover hover:text-ns-primary-lt"
             title="More options"
           >
             <MoreHorizontal size={14} />
@@ -131,7 +132,7 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
             <span className="text-[0.6rem] font-bold tracking-wider text-ns-muted uppercase">
               Notes
             </span>
-            <span className="text-ns-primary-lt rounded-full bg-ns-active px-1.5 py-0.5 text-[0.55rem] font-bold">
+            <span className="rounded-full bg-ns-active px-1.5 py-0.5 text-[0.55rem] font-bold text-ns-primary-lt">
               {NOTES.length}
             </span>
           </div>
@@ -176,7 +177,7 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
                       {note.tags.slice(0, 2).map((t) => (
                         <span
                           key={t}
-                          className="text-ns-primary-lt rounded border border-ns-border/30 bg-ns-hover/60 px-1 py-0.5 text-[0.52rem] font-semibold"
+                          className="rounded border border-ns-border/30 bg-ns-hover/60 px-1 py-0.5 text-[0.52rem] font-semibold text-ns-primary-lt"
                         >
                           {t}
                         </span>
@@ -192,7 +193,7 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
           </div>
           {/* Add note button */}
           <div className="border-t border-ns-border-soft p-2">
-            <button className="hover:border-ns-primary/40 hover:text-ns-primary-lt flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-ns-border-soft py-2 text-[0.65rem] font-bold text-ns-ghost transition-all">
+            <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-ns-border-soft py-2 text-[0.65rem] font-bold text-ns-ghost transition-all hover:border-ns-primary/40 hover:text-ns-primary-lt">
               <Plus size={12} />
               <span>New Note</span>
             </button>
@@ -217,7 +218,7 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
               <button
                 key={title}
                 title={title}
-                className="hover:text-ns-primary-lt flex h-6 w-6 cursor-pointer items-center justify-center rounded text-ns-ghost transition-all hover:bg-ns-hover"
+                className="flex h-6 w-6 cursor-pointer items-center justify-center rounded text-ns-ghost transition-all hover:bg-ns-hover hover:text-ns-primary-lt"
               >
                 <Icon size={13} />
               </button>
@@ -235,7 +236,7 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               spellCheck={false}
-              className="selection:bg-ns-primary/20 flex-1 resize-none border-0 bg-transparent p-6 font-mono text-sm leading-7 text-ns-text-2 placeholder-ns-placeholder outline-none"
+              className="flex-1 resize-none border-0 bg-transparent p-6 font-mono text-sm leading-7 text-ns-text-2 placeholder-ns-placeholder outline-none selection:bg-ns-primary/20"
               placeholder="Start writing your note in Markdown..."
               style={{
                 fontFamily: "'Geist Variable', 'Courier New', monospace",
@@ -345,95 +346,106 @@ export default function NodesList() {
             className="flex-1 border-none bg-transparent text-xs text-ns-text-2 placeholder-ns-placeholder outline-none"
           />
         </div>
-        <button className="from-ns-primary shadow-ns-primary/10 flex flex-shrink-0 cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r to-ns-secondary px-4 py-2 text-xs font-bold text-white shadow-md transition-all hover:opacity-90">
+        <button className="flex flex-shrink-0 cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-ns-primary to-ns-secondary px-4 py-2 text-xs font-bold text-white shadow-md shadow-ns-primary/10 transition-all hover:opacity-90">
           <Plus size={13} />
           <span className="hidden sm:inline">New Node</span>
         </button>
       </div>
 
       {/* ── Nodes Grid ── */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {filteredNodes.map((node) => (
           <div
             key={node.title}
             onClick={() => setSelectedNode(node)}
-            className="group hover:shadow-ns-primary/5 relative flex cursor-pointer flex-col gap-3 rounded-xl border border-ns-border bg-ns-panel p-4 shadow-sm transition-all hover:border-ns-border-md hover:shadow-md"
+            className="group flex cursor-pointer items-stretch gap-4 rounded-2xl border border-ns-border bg-ns-panel p-4 shadow-sm transition-all hover:border-ns-border-md hover:shadow-md hover:shadow-ns-primary/5"
           >
-            {/* Top: thumbnail + title + star */}
-            <div className="flex items-start gap-3">
-              {node.thumbnail ? (
-                <img
-                  src={node.thumbnail}
-                  alt={node.title}
-                  className="h-10 w-10 flex-shrink-0 rounded-lg border border-ns-border object-cover shadow-sm"
-                />
-              ) : (
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-ns-active to-ns-hover text-sm font-bold text-white">
-                  N
-                </div>
-              )}
-              <div className="min-w-0 flex-1">
-                <div className="flex items-start justify-between gap-1.5">
-                  <h3 className="group-hover:text-ns-primary-lt line-clamp-2 text-xs font-bold text-ns-text transition-colors">
-                    {node.title}
-                  </h3>
-                  <button
-                    onClick={(e) => toggleStar(e, node.title)}
-                    className="flex-shrink-0 cursor-pointer rounded p-0.5 transition-all hover:bg-ns-hover/80"
-                    title={node.starred ? 'Unstar' : 'Star'}
+            {/* Left: Thumbnail */}
+            {node.thumbnail ? (
+              <img
+                src={node.thumbnail}
+                alt={node.title}
+                className="h-28 w-28 flex-shrink-0 rounded-xl border border-ns-border object-cover shadow-sm transition-all group-hover:border-ns-border-md"
+              />
+            ) : (
+              <div className="flex h-28 w-28 flex-shrink-0 items-center justify-center rounded-2xl border border-ns-border bg-gradient-to-br from-ns-active to-ns-hover text-lg font-bold text-white transition-all group-hover:border-ns-border-md">
+                N
+              </div>
+            )}
+
+            {/* Right: Info Area */}
+            <div className="flex min-w-0 flex-1 flex-col justify-between">
+              {/* Row 1: Title & Star */}
+              <div className="flex items-start justify-between gap-2">
+                <h3 className="line-clamp-2 text-sm font-bold text-white transition-colors group-hover:text-ns-primary-lt">
+                  {node.title}
+                </h3>
+                <button
+                  onClick={(e) => toggleStar(e, node.title)}
+                  className="flex-shrink-0 cursor-pointer rounded p-1 text-ns-ghost transition-all hover:bg-ns-hover/80 hover:text-amber-400"
+                  title={node.starred ? 'Unstar' : 'Star'}
+                >
+                  <Star
+                    size={13}
+                    fill={node.starred ? '#fbbf24' : 'none'}
+                    className={
+                      node.starred ? 'text-amber-400' : 'text-ns-ghost'
+                    }
+                  />
+                </button>
+              </div>
+
+              {/* Row 2: Time Updated */}
+              <div className="mt-1 flex items-center gap-1.5 text-[0.68rem] text-ns-faint">
+                <Clock size={11} className="flex-shrink-0" />
+                <span>{node.updated}</span>
+              </div>
+
+              {/* Row 3: Notes count & Tag */}
+              <div className="mt-2.5 flex items-center justify-between">
+                <span className="flex items-center gap-1 rounded border border-ns-border-soft bg-ns-active/40 px-2 py-0.5 text-[0.62rem] font-bold text-ns-muted">
+                  <FileText size={10} className="text-ns-ghost" />
+                  <span>{node.count} notes</span>
+                </span>
+                {node.tag && (
+                  <span
+                    className="text-[0.68rem] font-bold tracking-wider uppercase"
+                    style={{ color: node.tagColor }}
                   >
-                    <Star
-                      size={12}
-                      fill={node.starred ? '#fbbf24' : 'none'}
-                      className={
-                        node.starred ? 'text-amber-400' : 'text-ns-ghost'
-                      }
-                    />
+                    {node.tag}
+                  </span>
+                )}
+              </div>
+
+              {/* Row 4: View Details & Edit/Delete actions */}
+              <div className="mt-3 flex items-center justify-between border-t border-ns-border-soft/60 pt-2.5">
+                <span className="group/link flex items-center gap-1.5 text-[0.68rem] font-bold text-ns-primary-lt transition-colors hover:text-white">
+                  <span>View details</span>
+                  <ArrowRight
+                    size={11}
+                    className="transition-transform group-hover/link:translate-x-0.5"
+                  />
+                </span>
+                <div className="flex gap-1 text-ns-ghost">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                    }}
+                    className="cursor-pointer rounded p-1 transition-colors hover:bg-ns-hover hover:text-ns-text-2"
+                    title="Edit"
+                  >
+                    <Edit2 size={11} />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                    }}
+                    className="cursor-pointer rounded p-1 transition-colors hover:bg-ns-hover hover:text-red-400"
+                    title="Delete"
+                  >
+                    <Trash2 size={11} />
                   </button>
                 </div>
-                <span className="text-[0.6rem] text-ns-faint">
-                  {node.updated}
-                </span>
-              </div>
-            </div>
-
-            {/* Meta row */}
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-1 rounded border border-ns-border/30 bg-ns-input/60 px-2 py-0.5 text-[0.58rem] font-bold text-ns-muted">
-                <MessageSquare size={9} />
-                {node.count} notes
-              </span>
-              {node.tag && (
-                <span
-                  className="text-[0.6rem] font-bold tracking-wider uppercase"
-                  style={{ color: node.tagColor }}
-                >
-                  {node.tag}
-                </span>
-              )}
-            </div>
-
-            {/* Footer actions */}
-            <div className="flex items-center justify-between border-t border-ns-border-soft pt-2.5">
-              <span className="text-ns-primary-lt flex cursor-pointer items-center gap-1 text-[0.65rem] font-bold transition-colors hover:text-white">
-                View details
-                <ArrowUpRight size={11} />
-              </span>
-              <div className="flex gap-0.5">
-                <button
-                  onClick={(e) => e.stopPropagation()}
-                  className="cursor-pointer rounded p-1 text-ns-ghost transition-colors hover:bg-ns-hover hover:text-ns-text-2"
-                  title="Edit"
-                >
-                  <Edit2 size={11} />
-                </button>
-                <button
-                  onClick={(e) => e.stopPropagation()}
-                  className="cursor-pointer rounded p-1 text-ns-ghost transition-colors hover:bg-ns-hover hover:text-red-400"
-                  title="Delete"
-                >
-                  <Trash2 size={11} />
-                </button>
               </div>
             </div>
           </div>

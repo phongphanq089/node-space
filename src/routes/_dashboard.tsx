@@ -11,6 +11,7 @@ import {
   DrawerClose,
 } from '@/components/ui/core/drawer'
 import MusicPlayer from '@/features/music-player/components/music-player'
+import YoutubePlayer from '@/features/music-player/components/youtube-player'
 import DashboardSidebar from '@/components/dashboard-sidebar/dashboard-sidebar'
 import Content from '@/components/dashboard-sidebar/content'
 import { useEffect, useRef } from 'react'
@@ -25,19 +26,8 @@ function isYoutubeUrl(url: string) {
   return url.includes('youtube.com') || url.includes('youtu.be')
 }
 
-function getYoutubeId(url: string) {
-  try {
-    const urlObj = new URL(url)
-    if (urlObj.hostname === 'youtu.be') {
-      return urlObj.pathname.substring(1)
-    }
-    return urlObj.searchParams.get('v') || ''
-  } catch {
-    if (url.includes('v=')) {
-      return url.split('v=')[1]?.split('&')[0] || ''
-    }
-    return url
-  }
+function isVideoUrl(url: string) {
+  return url.toLowerCase().endsWith('.mp4') || url.toLowerCase().includes('/video/') || url.toLowerCase().includes('.webm')
 }
 
 function DashboardLayout() {
@@ -46,126 +36,54 @@ function DashboardLayout() {
     currentTrackIndex,
     isPlaying,
     isMuted,
-    // currentTime,
-    // duration,
     seekTo,
     setIsPlaying,
     setCurrentTime,
     setDuration,
     clearSeek,
     nextTrack,
+    isExpanded,
   } = useMusicStore()
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
-  const iframeRef = useRef<HTMLIFrameElement | null>(null)
+  const videoRef = useRef<HTMLVideoElement | null>(null)
   const currentTrack = playlist[currentTrackIndex] as TrackItem | undefined
   const isYoutube = currentTrack ? isYoutubeUrl(currentTrack.url) : false
+  const isVideo = currentTrack ? isVideoUrl(currentTrack.url) : false
 
-  // Control native HTML5 audio playback (play/pause)
+  // Control native HTML5 audio/video playback (play/pause)
   useEffect(() => {
-    if (audioRef.current && !isYoutube) {
+    const mediaEl = isVideo ? videoRef.current : audioRef.current
+    if (mediaEl && !isYoutube) {
       if (isPlaying) {
-        audioRef.current.play().catch((err) => {
-          console.warn('Audio playback was prevented:', err)
+        mediaEl.play().catch((err) => {
+          console.warn('Playback was prevented:', err)
         })
       } else {
-        audioRef.current.pause()
+        mediaEl.pause()
       }
     }
-  }, [isPlaying, isYoutube, currentTrack])
+  }, [isPlaying, isVideo, isYoutube, currentTrack])
 
-  // Sync seekTo requests with the native audio ref or YouTube iframe postMessage
+  // Sync seekTo requests with the native audio/video ref
   useEffect(() => {
     if (seekTo !== null) {
-      if (audioRef.current && !isYoutube) {
+      if (isVideo && videoRef.current) {
+        videoRef.current.currentTime = seekTo
+      } else if (audioRef.current && !isYoutube) {
         audioRef.current.currentTime = seekTo
-      } else if (isYoutube) {
-        setCurrentTime(seekTo)
-        // Seek YouTube player via postMessage
-        if (iframeRef.current && iframeRef.current.contentWindow) {
-          const command = {
-            event: 'command',
-            func: 'seekTo',
-            args: [seekTo, true],
-          }
-          iframeRef.current.contentWindow.postMessage(
-            JSON.stringify(command),
-            '*'
-          )
-        }
       }
       clearSeek()
     }
-  }, [seekTo, isYoutube, clearSeek, setCurrentTime])
-
-  // Sync Play/Pause state to YouTube iframe
-  useEffect(() => {
-    if (isYoutube && iframeRef.current && iframeRef.current.contentWindow) {
-      const command = {
-        event: 'command',
-        func: isPlaying ? 'playVideo' : 'pauseVideo',
-        args: [],
-      }
-      iframeRef.current.contentWindow.postMessage(JSON.stringify(command), '*')
-    }
-  }, [isPlaying, isYoutube])
-
-  // Sync Mute state to YouTube iframe
-  useEffect(() => {
-    if (isYoutube && iframeRef.current && iframeRef.current.contentWindow) {
-      const command = {
-        event: 'command',
-        func: isMuted ? 'mute' : 'unMute',
-        args: [],
-      }
-      iframeRef.current.contentWindow.postMessage(JSON.stringify(command), '*')
-    }
-  }, [isMuted, isYoutube])
-
-  // Simulated YouTube progress timer using Zustand direct state edits (to avoid re-renders resetting intervals)
-  useEffect(() => {
-    let interval: any
-    if (isYoutube && isPlaying) {
-      interval = setInterval(() => {
-        const state = useMusicStore.getState()
-        const newTime = state.currentTime + 1
-        if (newTime >= state.duration) {
-          clearInterval(interval)
-          if (state.repeatMode === 'one') {
-            setCurrentTime(0)
-            if (iframeRef.current && iframeRef.current.contentWindow) {
-              iframeRef.current.contentWindow.postMessage(
-                JSON.stringify({
-                  event: 'command',
-                  func: 'seekTo',
-                  args: [0, true],
-                }),
-                '*'
-              )
-            }
-          } else if (state.repeatMode === 'all') {
-            nextTrack()
-          } else {
-            if (state.currentTrackIndex < state.playlist.length - 1) {
-              nextTrack()
-            } else {
-              setIsPlaying(false)
-            }
-          }
-        } else {
-          setCurrentTime(newTime)
-        }
-      }, 1000)
-    }
-    return () => clearInterval(interval)
-  }, [isYoutube, isPlaying, nextTrack, setCurrentTime, setIsPlaying])
+  }, [seekTo, isVideo, isYoutube, clearSeek])
 
   const handleTrackEnded = () => {
     const state = useMusicStore.getState()
     if (state.repeatMode === 'one') {
-      if (audioRef.current) {
-        audioRef.current.currentTime = 0
-        audioRef.current.play().catch((err) => console.warn(err))
+      const mediaEl = isVideo ? videoRef.current : audioRef.current
+      if (mediaEl) {
+        mediaEl.currentTime = 0
+        mediaEl.play().catch((err) => console.warn(err))
       }
     } else if (state.repeatMode === 'all') {
       nextTrack()
@@ -184,16 +102,28 @@ function DashboardLayout() {
         <DashboardSidebar />
         <Content />
 
-        {currentTrack && isYoutube && (
-          <iframe
-            ref={iframeRef}
-            className="pointer-events-none absolute -left-[9999px] h-[1px] w-[1px] opacity-0"
-            src={`https://www.youtube.com/embed/${getYoutubeId(currentTrack.url)}?enablejsapi=1&autoplay=${isPlaying ? 1 : 0}&mute=${isMuted ? 1 : 0}`}
-            title="Background YouTube Player"
-            allow="autoplay"
+        {/* YouTube Stream Modal & PIP Player */}
+        <YoutubePlayer />
+
+        {/* Native Video player (Visible in center if expanded, floating bottom-left if in dashboard view) */}
+        {currentTrack && !isYoutube && isVideo && (
+          <video
+            ref={videoRef}
+            src={currentTrack.url}
+            muted={isMuted}
+            onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
+            onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
+            onEnded={handleTrackEnded}
+            className={`fixed transition-all duration-300 pointer-events-auto object-cover ${
+              isExpanded
+                ? 'top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-[640px] aspect-video z-[1000] rounded-2xl border border-white/10 shadow-2xl bg-black'
+                : 'bottom-24 right-6 z-[45] w-[240px] aspect-video rounded-xl border border-ns-border bg-black shadow-2xl hover:scale-105'
+            }`}
           />
         )}
-        {currentTrack && !isYoutube && (
+
+        {/* Native Audio player */}
+        {currentTrack && !isYoutube && !isVideo && (
           <audio
             ref={audioRef}
             src={currentTrack.url}

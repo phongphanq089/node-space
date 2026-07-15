@@ -3,10 +3,6 @@ import { Settings } from 'lucide-react'
 import { useMusicStore } from '@/stores/useMusicStore'
 import type { TrackItem } from '@/stores/useMusicStore'
 
-function isYoutubeUrl(url: string) {
-  return url.includes('youtube.com') || url.includes('youtu.be')
-}
-
 export default function MusicPlayer() {
   const {
     playlist,
@@ -15,6 +11,8 @@ export default function MusicPlayer() {
     playTrack,
     selectedCategory,
     setSelectedCategory,
+    setYoutubePlayerMode,
+    setIsPlaying,
   } = useMusicStore()
 
   const currentTrack = playlist[currentTrackIndex] as TrackItem | undefined
@@ -70,10 +68,25 @@ export default function MusicPlayer() {
         {filteredPlaylist.map((track) => {
           const originalIndex = playlist.findIndex((t) => t.url === track.url)
           const isActive = originalIndex === currentTrackIndex
+
+          const handleTrackClick = () => {
+            if (isActive) {
+              setIsPlaying(!isPlaying)
+              if (track.type === 'youtube' && !isPlaying) {
+                setYoutubePlayerMode('modal')
+              }
+            } else {
+              playTrack(originalIndex)
+              if (track.type === 'youtube') {
+                setYoutubePlayerMode('modal')
+              }
+            }
+          }
+
           return (
             <button
               key={`${track.title}-${originalIndex}`}
-              onClick={() => playTrack(originalIndex)}
+              onClick={handleTrackClick}
               type="button"
               className={`flex w-full cursor-pointer items-center gap-3 rounded-xl border p-2.5 transition-all ${
                 isActive
@@ -91,7 +104,7 @@ export default function MusicPlayer() {
                 )}
                 <div className="absolute inset-0 flex items-center justify-center bg-black/20">
                   <span className="text-[0.55rem] font-bold text-white">
-                    {isYoutubeUrl(track.url) ? '▶' : '♫'}
+                    {track.type === 'youtube' ? '▶' : '♫'}
                   </span>
                 </div>
               </div>

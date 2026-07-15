@@ -6,6 +6,7 @@ export interface TrackItem {
   url: string
   cover?: string
   category?: string
+  type: 'youtube' | 'native'
 }
 
 interface MusicState {
@@ -37,6 +38,8 @@ interface MusicState {
   setRepeatMode: (mode: 'off' | 'all' | 'one') => void
   isExpanded: boolean
   setIsExpanded: (expanded: boolean) => void
+  youtubePlayerMode: 'modal' | 'pip' | 'closed'
+  setYoutubePlayerMode: (mode: 'modal' | 'pip' | 'closed') => void
 }
 
 const DEMO_PLAYLIST: TrackItem[] = [
@@ -46,6 +49,7 @@ const DEMO_PLAYLIST: TrackItem[] = [
     url: 'https://www.youtube.com/watch?v=H3urFo3u-lo',
     cover: '/hero-banner.png',
     category: 'Lofi',
+    type: 'youtube',
   },
   {
     title: 'Lofi Cafe Ambient',
@@ -53,6 +57,7 @@ const DEMO_PLAYLIST: TrackItem[] = [
     url: 'https://www.youtube.com/watch?v=a7Gr-Uey1W4',
     cover: '/hero-banner.png',
     category: 'Lofi',
+    type: 'youtube',
   },
   {
     title: 'SoundHelix Song 1 (MP3)',
@@ -60,6 +65,7 @@ const DEMO_PLAYLIST: TrackItem[] = [
     url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
     cover: '/hero-banner.png',
     category: 'Chill',
+    type: 'native',
   },
   {
     title: 'SoundHelix Song 2 (MP3)',
@@ -67,6 +73,7 @@ const DEMO_PLAYLIST: TrackItem[] = [
     url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
     cover: '/hero-banner.png',
     category: 'Chill',
+    type: 'native',
   },
   {
     title: 'SoundHelix Song 3 (MP3)',
@@ -74,6 +81,7 @@ const DEMO_PLAYLIST: TrackItem[] = [
     url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
     cover: '/hero-banner.png',
     category: 'US-UK',
+    type: 'native',
   },
   {
     title: 'SoundHelix Song 4 (MP3)',
@@ -81,6 +89,7 @@ const DEMO_PLAYLIST: TrackItem[] = [
     url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
     cover: '/hero-banner.png',
     category: 'US-UK',
+    type: 'native',
   },
 ]
 
@@ -96,11 +105,13 @@ export const useMusicStore = create<MusicState>((set, get) => ({
   isShuffled: false,
   repeatMode: 'off',
   isExpanded: false,
+  youtubePlayerMode: 'closed',
 
   setSelectedCategory: (selectedCategory) => set({ selectedCategory }),
   setIsShuffled: (isShuffled) => set({ isShuffled }),
   setRepeatMode: (repeatMode) => set({ repeatMode }),
   setIsExpanded: (isExpanded) => set({ isExpanded }),
+  setYoutubePlayerMode: (youtubePlayerMode) => set({ youtubePlayerMode }),
   setPlaylist: (playlist) =>
     set({ playlist, currentTrackIndex: 0, currentTime: 0 }),
   setCurrentTrackIndex: (currentTrackIndex) =>

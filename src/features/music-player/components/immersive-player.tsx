@@ -1,5 +1,6 @@
 import { useMusicStore } from '@/stores/useMusicStore'
 import type { TrackItem } from '@/stores/useMusicStore'
+import { useEffect } from 'react'
 import {
   Minimize2,
   Pause,
@@ -20,6 +21,10 @@ function formatTime(seconds: number) {
   return `${mins}:${secs < 10 ? '0' : ''}${secs}`
 }
 
+function isVideoUrl(url: string) {
+  return url.toLowerCase().endsWith('.mp4') || url.toLowerCase().includes('/video/') || url.toLowerCase().includes('.webm')
+}
+
 export default function ImmersivePlayer({ onClose }: ImmersivePlayerProps) {
   const {
     playlist,
@@ -35,10 +40,20 @@ export default function ImmersivePlayer({ onClose }: ImmersivePlayerProps) {
     setIsShuffled,
     repeatMode,
     setRepeatMode,
+    setYoutubePlayerMode,
   } = useMusicStore()
 
   const currentTrack = playlist[currentTrackIndex] as TrackItem | undefined
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0
+  const isVideo = currentTrack ? isVideoUrl(currentTrack.url) : false
+
+  // Automatically redirect to YouTube Modal if a YouTube track is playing
+  useEffect(() => {
+    if (currentTrack?.type === 'youtube') {
+      onClose?.()
+      setYoutubePlayerMode('modal')
+    }
+  }, [currentTrack, onClose, setYoutubePlayerMode])
 
   return (
     <div className="fixed inset-0 z-[999] flex flex-col justify-between bg-neutral-950/96 p-8 text-white backdrop-blur-xl md:p-12 animate-in fade-in zoom-in-95 duration-200">
@@ -64,36 +79,41 @@ export default function ImmersivePlayer({ onClose }: ImmersivePlayerProps) {
 
       {/* Main player UI */}
       <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center gap-12 md:flex-row md:gap-20">
-        {/* Spinning Vinyl Vinyl disc */}
-        <div className="relative flex flex-shrink-0 items-center justify-center">
-          <div className="absolute h-[240px] w-[240px] animate-pulse rounded-full border border-white/10 bg-neutral-900 shadow-[0_0_50px_rgba(0,0,0,0.8)] md:h-[320px] md:w-[320px]" />
-          <div
-            className={`relative flex h-[220px] w-[220px] items-center justify-center rounded-full border-4 border-neutral-800 bg-black md:h-[300px] md:w-[300px] ${isPlaying ? 'animate-spin-slow' : ''}`}
-            style={{
-              backgroundImage:
-                'repeating-radial-gradient(circle, #171717, #0a0a0a 2px, #171717 4px)',
-            }}
-          >
-            <div className="h-[80px] w-[80px] overflow-hidden rounded-full border-2 border-neutral-900 bg-gradient-to-br from-violet-600 to-purple-800 md:h-[110px] md:w-[110px]">
-              {currentTrack?.cover && (
-                <img
-                  src={currentTrack.cover}
-                  alt="Vinyl Cover"
-                  className="h-full w-full object-cover"
-                />
-              )}
+        {isVideo ? (
+          /* Spacer for absolute positioned Video player in layout shell */
+          <div className="w-full max-w-[640px] aspect-video flex-shrink-0" />
+        ) : (
+          /* Spinning Vinyl Vinyl disc */
+          <div className="relative flex flex-shrink-0 items-center justify-center">
+            <div className="absolute h-[240px] w-[240px] animate-pulse rounded-full border border-white/10 bg-neutral-900 shadow-[0_0_50px_rgba(0,0,0,0.8)] md:h-[320px] md:w-[320px]" />
+            <div
+              className={`relative flex h-[220px] w-[220px] items-center justify-center rounded-full border-4 border-neutral-800 bg-black md:h-[300px] md:w-[300px] ${isPlaying ? 'animate-spin-slow' : ''}`}
+              style={{
+                backgroundImage:
+                  'repeating-radial-gradient(circle, #171717, #0a0a0a 2px, #171717 4px)',
+              }}
+            >
+              <div className="h-[80px] w-[80px] overflow-hidden rounded-full border-2 border-neutral-900 bg-gradient-to-br from-violet-600 to-purple-800 md:h-[110px] md:w-[110px]">
+                {currentTrack?.cover && (
+                  <img
+                    src={currentTrack.cover}
+                    alt="Vinyl Cover"
+                    className="h-full w-full object-cover"
+                  />
+                )}
+              </div>
+              <div className="absolute h-3 w-3 rounded-full border border-white/15 bg-neutral-950" />
             </div>
-            <div className="absolute h-3 w-3 rounded-full border border-white/15 bg-neutral-950" />
+            <div
+              className={`absolute top-0 right-[-10px] h-32 w-24 origin-top-left transition-transform duration-700 md:right-[-20px] ${isPlaying ? 'rotate-[20deg]' : 'rotate-0'}`}
+              aria-hidden="true"
+            >
+              <div className="ml-10 h-20 w-1.5 rounded-full border border-neutral-500 bg-neutral-400 shadow" />
+              <div className="-mt-2 ml-8 h-6 w-4 rounded border border-neutral-500 bg-neutral-600 shadow" />
+              <div className="ml-6 h-1 w-6 rounded bg-neutral-500 shadow" />
+            </div>
           </div>
-          <div
-            className={`absolute top-0 right-[-10px] h-32 w-24 origin-top-left transition-transform duration-700 md:right-[-20px] ${isPlaying ? 'rotate-[20deg]' : 'rotate-0'}`}
-            aria-hidden="true"
-          >
-            <div className="ml-10 h-20 w-1.5 rounded-full border border-neutral-500 bg-neutral-400 shadow" />
-            <div className="-mt-2 ml-8 h-6 w-4 rounded border border-neutral-500 bg-neutral-600 shadow" />
-            <div className="ml-6 h-1 w-6 rounded bg-neutral-500 shadow" />
-          </div>
-        </div>
+        )}
 
         {/* Track details & controls */}
         <div className="flex w-full min-w-0 flex-1 flex-col justify-center gap-6 text-center md:text-left">

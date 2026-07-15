@@ -44,7 +44,6 @@ export interface PlaylistItem {
 export const NAV: readonly NavItem[] = [
   { icon: 'home', label: 'Home', to: '/dashboard', exact: true },
   { icon: 'star', label: 'Favorites', to: '/dashboard/favorites' },
-  { icon: 'clock', label: 'Recent', to: '/dashboard/recent' },
   { icon: 'tag', label: 'Tags', to: '/dashboard/tags' },
   { icon: 'trash', label: 'Trash', to: '/dashboard/trash' },
   { icon: 'music', label: 'Music Manager', to: '/dashboard/music' },
@@ -156,51 +155,6 @@ export const NOTES: readonly NoteItem[] = [
     title: 'Benefits & Value',
     tags: ['#benefit', '#value'],
     updated: '2 days ago',
-  },
-  {
-    title: 'Integrations & Extensions',
-    tags: ['#integration', '#extend'],
-    updated: '3 days ago',
-  },
-  {
-    title: 'Benefits & Value',
-    tags: ['#benefit', '#value'],
-    updated: '2 days ago',
-  },
-  {
-    title: 'Integrations & Extensions',
-    tags: ['#integration', '#extend'],
-    updated: '3 days ago',
-  },
-  {
-    title: 'Benefits & Value',
-    tags: ['#benefit', '#value'],
-    updated: '2 days ago',
-  },
-  {
-    title: 'Integrations & Extensions',
-    tags: ['#integration', '#extend'],
-    updated: '3 days ago',
-  },
-  {
-    title: 'Benefits & Value',
-    tags: ['#benefit', '#value'],
-    updated: '2 days ago',
-  },
-  {
-    title: 'Integrations & Extensions',
-    tags: ['#integration', '#extend'],
-    updated: '3 days ago',
-  },
-  {
-    title: 'Benefits & Value',
-    tags: ['#benefit', '#value'],
-    updated: '2 days ago',
-  },
-  {
-    title: 'Integrations & Extensions',
-    tags: ['#integration', '#extend'],
-    updated: '3 days ago',
   },
 ]
 
