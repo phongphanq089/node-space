@@ -16,7 +16,8 @@
     "lint": "eslint",
     "format": "prettier --write . && eslint --fix",
     "check": "prettier --check .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "prepare": "husky"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.9",
@@ -30,6 +31,7 @@
     "@tanstack/router-plugin": "^1.132.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "husky": "^9.1.7",
     "lucide-react": "^0.545.0",
     "nitro": "3.0.260522-beta",
     "radix-ui": "^1.6.0",
@@ -70,9 +72,25 @@
     "wrangler": "^4.100.0"
   },
   "pnpm": {
+    "overrides": {
+      "@tanstack/react-router": "1.168.10",
+      "@tanstack/react-start": "1.167.16",
+      "@tanstack/router-core": "1.168.9",
+      "@tanstack/router-plugin": "1.167.12",
+      "@tanstack/start-plugin-core": "1.167.17"
+    },
     "onlyBuiltDependencies": [
       "esbuild",
       "lightningcss"
+    ]
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{json,css,md}": [
+      "prettier --write"
     ]
   }
 }
