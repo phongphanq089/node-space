@@ -43,9 +43,7 @@ export interface PlaylistItem {
 // ── Navigation ─────────────────────────────────────────────────
 export const NAV: readonly NavItem[] = [
   { icon: 'home', label: 'Home', to: '/dashboard', exact: true },
-  { icon: 'hexagon', label: 'All Nodes', to: '/dashboard/nodes' },
   { icon: 'star', label: 'Favorites', to: '/dashboard/favorites' },
-  { icon: 'clock', label: 'Recent', to: '/dashboard/recent' },
   { icon: 'tag', label: 'Tags', to: '/dashboard/tags' },
   { icon: 'trash', label: 'Trash', to: '/dashboard/trash' },
   { icon: 'music', label: 'Music Manager', to: '/dashboard/music' },
@@ -158,51 +156,6 @@ export const NOTES: readonly NoteItem[] = [
     tags: ['#benefit', '#value'],
     updated: '2 days ago',
   },
-  {
-    title: 'Integrations & Extensions',
-    tags: ['#integration', '#extend'],
-    updated: '3 days ago',
-  },
-  {
-    title: 'Benefits & Value',
-    tags: ['#benefit', '#value'],
-    updated: '2 days ago',
-  },
-  {
-    title: 'Integrations & Extensions',
-    tags: ['#integration', '#extend'],
-    updated: '3 days ago',
-  },
-  {
-    title: 'Benefits & Value',
-    tags: ['#benefit', '#value'],
-    updated: '2 days ago',
-  },
-  {
-    title: 'Integrations & Extensions',
-    tags: ['#integration', '#extend'],
-    updated: '3 days ago',
-  },
-  {
-    title: 'Benefits & Value',
-    tags: ['#benefit', '#value'],
-    updated: '2 days ago',
-  },
-  {
-    title: 'Integrations & Extensions',
-    tags: ['#integration', '#extend'],
-    updated: '3 days ago',
-  },
-  {
-    title: 'Benefits & Value',
-    tags: ['#benefit', '#value'],
-    updated: '2 days ago',
-  },
-  {
-    title: 'Integrations & Extensions',
-    tags: ['#integration', '#extend'],
-    updated: '3 days ago',
-  },
 ]
 
 // ── Feature highlights ──────────────────────────────────────────
@@ -215,7 +168,7 @@ export const FEATURES: readonly FeatureItem[] = [
   {
     title: 'Markdown Editor',
     desc: 'Supports Markdown and syntax highlighting',
-    color: 'ns-accent',
+    color: 'ns-primary',
   },
   {
     title: 'Graph View',

@@ -30,7 +30,7 @@ export default function AuthCard({
       />
 
       {/* Card */}
-      <div className="rise-in relative z-10 w-full max-w-[420px]">
+      <div className="relative z-10 w-full max-w-[420px]">
         <div className="rounded-2xl border border-ns-border-md bg-ns-surface p-8 shadow-[0_24px_64px_rgba(0,0,0,.5)] backdrop-blur-xl">
           <div className="mb-7">
             <BrandLogo />

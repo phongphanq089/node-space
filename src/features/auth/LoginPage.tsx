@@ -1,7 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router'
 
-import CornerCutButton from '@/components/ui/core/neon-button'
-import NeonInput from '@/components/ui/core/neon-input'
+import { Button } from '@/components/ui/core/button'
+import { Input } from '@/components/ui/core/input'
 
 import AuthCard from './components/AuthCard'
 
@@ -16,7 +16,7 @@ export default function LoginPage() {
           Don't have an account?{' '}
           <Link
             to="/register"
-            className="font-semibold text-ns-accent-lt no-underline transition-colors hover:text-ns-accent"
+            className="text-ns-primary-lt hover:text-ns-primary font-semibold no-underline transition-colors"
           >
             Sign up for free
           </Link>
@@ -27,34 +27,41 @@ export default function LoginPage() {
         onSubmit={(e) => e.preventDefault()}
         className="flex flex-col gap-4"
       >
-        <NeonInput
-          type="email"
-          label="Password"
-          placeholder="you@example.com"
-          color="purple"
-          autoComplete="email"
-        />
-
-        {/* Password — has an extra "Forgot password" link next to label */}
         <div className="flex flex-col gap-1.5">
-          <NeonInput
-            type="password"
-            label="Password"
-            placeholder="••••••••"
-            color="purple"
-            hint="At least 8 characters"
+          <label className="text-[0.62rem] font-bold tracking-wider text-ns-muted uppercase">
+            Email Address
+          </label>
+          <Input
+            type="email"
+            placeholder="you@example.com"
+            autoComplete="email"
+            required
           />
         </div>
 
-        <CornerCutButton
+        {/* Password — has an extra "Forgot password" link next to label */}
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center justify-between">
+            <label className="text-[0.62rem] font-bold tracking-wider text-ns-muted uppercase">
+              Password
+            </label>
+            <span className="text-[0.58rem] font-medium text-ns-faint">
+              At least 8 characters
+            </span>
+          </div>
+          <Input type="password" placeholder="••••••••" required />
+        </div>
+
+        <Button
           onClick={() => navigate({ to: '/dashboard' })}
-          color="pink"
-          showArrow
-          hoverEffect="glow"
-          className="text-center"
+          size="lg"
+          className="mt-2 w-full cursor-pointer"
         >
-          Log in
-        </CornerCutButton>
+          <span>Log in</span>
+          <span className="ml-1 transition-transform group-hover/button:translate-x-1">
+            →
+          </span>
+        </Button>
       </form>
     </AuthCard>
   )
