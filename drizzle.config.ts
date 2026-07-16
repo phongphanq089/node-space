@@ -17,7 +17,7 @@ function getLocalD1DbPath(): string {
           file.length > 40
       )
       if (dbFile) {
-        console.log(dbFile, 'sdjaskldjakl')
+        console.log(dbFile, '<============= dbFile load in local ==========>')
         return path.join(d1BaseDir, dbFile)
       }
     }
