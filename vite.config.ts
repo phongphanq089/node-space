@@ -26,6 +26,17 @@ export default defineConfig(() => ({
     }),
     tailwindcss(),
     viteReact(),
-    isDev && devtools(),
+    isDev &&
+      devtools({
+        injectSource: {
+          enabled: true,
+          ignore: {
+            // __root.tsx renders the HTML shell (<html>/<head>/<body>) via SSR.
+            // The transform produces different line numbers on server vs client,
+            // causing a hydration mismatch for every data-tsd-source attribute.
+            files: [/routes\/__root\.tsx/],
+          },
+        },
+      }),
   ],
 }))
