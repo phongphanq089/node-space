@@ -2,12 +2,16 @@ import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
 
 // --- Better Auth Schema Tables ---
 
+export const SYSTEM_ROLES = ['user', 'lifetime', 'admin'] as const
+export type SystemRole = (typeof SYSTEM_ROLES)[number]
+
 export const users = sqliteTable('user', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
   emailVerified: integer('emailVerified', { mode: 'boolean' }).notNull(),
   image: text('image'),
+  role: text('role', { enum: SYSTEM_ROLES }).default('user').notNull(),
   createdAt: integer('createdAt', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull(),
 })
