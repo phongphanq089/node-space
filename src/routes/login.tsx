@@ -14,7 +14,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { signIn } from '@/lib/auth-client'
-import { getSessionFn } from '@/features/auth/auth.server'
+import { getSessionFn } from '@/features/auth/auth.fns'
 
 import {
   Field,
@@ -23,6 +23,7 @@ import {
   FieldLabel,
 } from '@/components/ui/core/field'
 import PasswordStrengthIndicator from '@/features/auth/components/PasswordStrengthIndicator'
+import { toast } from 'sonner'
 
 export const Route = createFileRoute('/login')({
   beforeLoad: async () => {
@@ -39,7 +40,6 @@ export const Route = createFileRoute('/login')({
 function LoginPage() {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
-  const [errorMsg, setErrorMsg] = useState('')
 
   const form = useForm<LoginSchemaValues>({
     resolver: zodResolver(loginSchema as any),
@@ -54,7 +54,7 @@ function LoginPage() {
 
   const onSubmit = async (data: LoginSchemaValues) => {
     setLoading(true)
-    setErrorMsg('')
+
     try {
       await signIn.email({
         email: data.email,
@@ -62,16 +62,26 @@ function LoginPage() {
         callbackURL: '/dashboard',
         fetchOptions: {
           onError: (ctx) => {
-            setErrorMsg(ctx.error.message || 'Login failed')
+            toast.error('failed', {
+              position: 'top-center',
+              description: ctx.error.message,
+            })
             setLoading(false)
           },
           onSuccess: () => {
             navigate({ to: '/dashboard' })
+            toast.success('Login success !', {
+              position: 'top-center',
+            })
           },
         },
       })
     } catch (err) {
-      setErrorMsg('An unexpected error occurred')
+      toast.error('failed', {
+        position: 'top-center',
+        description: 'An unexpected error occurred',
+      })
+
       setLoading(false)
     }
   }
@@ -135,12 +145,6 @@ function LoginPage() {
               )
             }}
           />
-
-          {errorMsg && (
-            <p className="mt-1 text-center text-xs font-semibold text-destructive">
-              {errorMsg}
-            </p>
-          )}
 
           <Button
             type="submit"

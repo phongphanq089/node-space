@@ -21,7 +21,7 @@ import {
 } from '@tanstack/react-router'
 import { Controller, useForm } from 'react-hook-form'
 import { useState } from 'react'
-import { getSessionFn } from '@/features/auth/auth.server'
+import { getSessionFn } from '@/features/auth/auth.fns'
 
 export const Route = createFileRoute('/register')({
   beforeLoad: async () => {

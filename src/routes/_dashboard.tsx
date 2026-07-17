@@ -1,7 +1,7 @@
 import { SidebarProvider } from '@/components/ui/core/sidebar'
 
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import { getSessionFn } from '@/features/auth/auth.server'
+import { getSessionFn } from '@/features/auth/auth.fns'
 import {
   Drawer,
   DrawerTrigger,
