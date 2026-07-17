@@ -15,6 +15,7 @@ import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardSplatRouteImport } from './routes/_dashboard/$'
 import { Route as DashboardDashboardIndexRouteImport } from './routes/_dashboard/dashboard.index'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as DashboardDashboardTrashRouteImport } from './routes/_dashboard/dashboard.trash'
 import { Route as DashboardDashboardTagsRouteImport } from './routes/_dashboard/dashboard.tags'
 import { Route as DashboardDashboardMusicRouteImport } from './routes/_dashboard/dashboard.music'
@@ -49,6 +50,11 @@ const DashboardDashboardIndexRoute = DashboardDashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardDashboardTrashRoute = DashboardDashboardTrashRouteImport.update({
   id: '/dashboard/trash',
   path: '/dashboard/trash',
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/music': typeof DashboardDashboardMusicRoute
   '/dashboard/tags': typeof DashboardDashboardTagsRoute
   '/dashboard/trash': typeof DashboardDashboardTrashRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/dashboard/': typeof DashboardDashboardIndexRoute
 }
 export interface FileRoutesByTo {
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/dashboard/music': typeof DashboardDashboardMusicRoute
   '/dashboard/tags': typeof DashboardDashboardTagsRoute
   '/dashboard/trash': typeof DashboardDashboardTrashRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/dashboard': typeof DashboardDashboardIndexRoute
 }
 export interface FileRoutesById {
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/_dashboard/dashboard/music': typeof DashboardDashboardMusicRoute
   '/_dashboard/dashboard/tags': typeof DashboardDashboardTagsRoute
   '/_dashboard/dashboard/trash': typeof DashboardDashboardTrashRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/_dashboard/dashboard/': typeof DashboardDashboardIndexRoute
 }
 export interface FileRouteTypes {
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/dashboard/music'
     | '/dashboard/tags'
     | '/dashboard/trash'
+    | '/api/auth/$'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/dashboard/music'
     | '/dashboard/tags'
     | '/dashboard/trash'
+    | '/api/auth/$'
     | '/dashboard'
   id:
     | '__root__'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/_dashboard/dashboard/music'
     | '/_dashboard/dashboard/tags'
     | '/_dashboard/dashboard/trash'
+    | '/api/auth/$'
     | '/_dashboard/dashboard/'
   fileRoutesById: FileRoutesById
 }
@@ -148,6 +160,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRouteWithChildren
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -193,6 +206,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardDashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_dashboard/dashboard/trash': {
       id: '/_dashboard/dashboard/trash'
@@ -244,7 +264,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
-  DashboardRouteChildren,
+  DashboardRouteChildren
 )
 
 const rootRouteChildren: RootRouteChildren = {
@@ -252,6 +272,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

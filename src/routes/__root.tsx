@@ -32,11 +32,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       style={{ colorScheme: 'dark' }}
       suppressHydrationWarning
     >
-      <head>
+      <head suppressHydrationWarning>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
       </head>
-      <body className="font-sans wrap-anywhere antialiased">
+      <body
+        className="font-sans wrap-anywhere antialiased"
+        suppressHydrationWarning
+      >
         {children}
         {/* <TanStackDevtools
           config={{ position: 'bottom-left' }}

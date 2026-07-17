@@ -1,12 +1,24 @@
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 
 import { Button } from '@/components/ui/core/button'
 import { Input } from '@/components/ui/core/input'
 
 import AuthCard from './components/AuthCard'
+import { signIn, useSession } from '@/lib/auth-client'
 
 export default function LoginPage() {
-  const navigate = useNavigate()
+  const { data: session, isPending } = useSession()
+
+  const handleLogin = async () => {
+    await signIn.email({
+      email: 'test@example.com',
+      password: 'securepassword',
+      callbackURL: '/dashboard',
+    })
+  }
+
+  if (isPending) return <div>Loading...</div>
+  if (session) return <div>Hi, {session.user.name}</div>
   return (
     <AuthCard
       title="Welcome back"
@@ -16,7 +28,7 @@ export default function LoginPage() {
           Don't have an account?{' '}
           <Link
             to="/register"
-            className="text-ns-primary-lt hover:text-ns-primary font-semibold no-underline transition-colors"
+            className="font-semibold text-ns-primary-lt no-underline transition-colors hover:text-ns-primary"
           >
             Sign up for free
           </Link>
@@ -53,7 +65,8 @@ export default function LoginPage() {
         </div>
 
         <Button
-          onClick={() => navigate({ to: '/dashboard' })}
+          // onClick={() => navigate({ to: '/dashboard' })}
+          onClick={handleLogin}
           size="lg"
           className="mt-2 w-full cursor-pointer"
         >
