@@ -5,7 +5,7 @@ import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
 export const SYSTEM_ROLES = ['user', 'lifetime', 'admin'] as const
 export type SystemRole = (typeof SYSTEM_ROLES)[number]
 
-export const users = sqliteTable('user', {
+export const user = sqliteTable('user', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
@@ -20,7 +20,7 @@ export const session = sqliteTable('session', {
   id: text('id').primaryKey(),
   userId: text('userId')
     .notNull()
-    .references(() => users.id),
+    .references(() => user.id),
   token: text('token').notNull().unique(),
   expiresAt: integer('expiresAt', { mode: 'timestamp' }).notNull(),
   ipAddress: text('ipAddress'),
@@ -33,7 +33,7 @@ export const account = sqliteTable('account', {
   id: text('id').primaryKey(),
   userId: text('userId')
     .notNull()
-    .references(() => users.id),
+    .references(() => user.id),
   accountId: text('accountId').notNull(),
   providerId: text('providerId').notNull(),
   password: text('password'),
