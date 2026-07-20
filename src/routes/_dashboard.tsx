@@ -27,6 +27,11 @@ export const Route = createFileRoute('/_dashboard')({
         to: '/login',
       })
     }
+    if (!session.user.emailVerified) {
+      throw redirect({
+        to: '/verify-email',
+      })
+    }
     return {
       session,
     }

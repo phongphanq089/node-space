@@ -23,12 +23,15 @@
     "db:migrate:remote": "wrangler d1 migrations apply note-space-db --remote",
     "db:studio": "drizzle-kit studio",
     "db:drop": "drizzle-kit drop",
-    "db:pull": "drizzle-kit pull"
+    "db:pull": "drizzle-kit pull",
+    "email:dev": "email dev --dir src/features/auth/emails"
   },
   "dependencies": {
     "@better-auth/drizzle-adapter": "^1.6.23",
     "@fontsource-variable/geist": "^5.2.9",
     "@hookform/resolvers": "^5.4.0",
+    "@react-email/components": "^1.0.12",
+    "@react-email/render": "^2.1.0",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-devtools": "^0.10.5",
     "@tanstack/react-query": "^5.101.1",
@@ -42,11 +45,13 @@
     "clsx": "^2.1.1",
     "drizzle-orm": "1.0.0-rc.4",
     "husky": "^9.1.7",
+    "input-otp": "^1.4.2",
     "lucide-react": "^0.545.0",
     "nitro": "3.0.260522-beta",
     "radix-ui": "^1.6.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-email": "6.9.0",
     "react-hook-form": "^7.81.0",
     "shadcn": "^4.11.0",
     "sonner": "^2.0.7",
@@ -61,6 +66,7 @@
   "devDependencies": {
     "@cloudflare/vite-plugin": "^1.40.2",
     "@cloudflare/workers-types": "^4.20241218.0",
+    "@react-email/ui": "6.9.0",
     "@tailwindcss/typography": "^0.5.16",
     "@tanstack/devtools-vite": "^0.7.0",
     "@tanstack/eslint-config": "^0.4.0",

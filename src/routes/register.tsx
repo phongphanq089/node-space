@@ -68,6 +68,7 @@ function RegisterPage() {
             setLoading(false)
           },
           onSuccess: () => {
+            form.reset()
             navigate({ to: '/dashboard' })
           },
         },
@@ -124,7 +125,7 @@ function RegisterPage() {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="reg-mail">Full Name</FieldLabel>
+                <FieldLabel htmlFor="reg-mail">Email</FieldLabel>
                 <Input
                   {...field}
                   type="email"

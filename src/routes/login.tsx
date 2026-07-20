@@ -69,10 +69,11 @@ function LoginPage() {
             setLoading(false)
           },
           onSuccess: () => {
-            navigate({ to: '/dashboard' })
             toast.success('Login success !', {
               position: 'top-center',
             })
+            form.reset()
+            navigate({ to: '/dashboard' })
           },
         },
       })
@@ -133,7 +134,15 @@ function LoginPage() {
             render={({ field, fieldState }) => {
               return (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="reg-password">Password</FieldLabel>
+                  <div className="flex items-center justify-between">
+                    <FieldLabel htmlFor="reg-password">Password</FieldLabel>
+                    <Link
+                      to="/forgot-password"
+                      className="text-xs font-semibold text-ns-primary-lt no-underline hover:text-ns-primary"
+                    >
+                      Forgot password?
+                    </Link>
+                  </div>
                   <Input
                     {...field}
                     type="password"
