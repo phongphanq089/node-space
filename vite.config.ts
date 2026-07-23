@@ -14,6 +14,9 @@ export default defineConfig(() => ({
   resolve: {
     tsconfigPaths: true,
   },
+  ssr: {
+    noExternal: ['sonner'],
+  },
   plugins: [
     cloudflare({ viteEnvironment: { name: 'ssr' } }),
     tanstackStart({

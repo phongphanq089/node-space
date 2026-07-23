@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import {
   CircleCheckIcon,
   InfoIcon,
@@ -10,6 +11,15 @@ import {
 import { Toaster as Sonner, type ToasterProps } from 'sonner'
 
 const Toaster = ({ ...props }: ToasterProps) => {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
   return (
     <Sonner
       theme="dark"

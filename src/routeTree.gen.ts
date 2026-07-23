@@ -304,7 +304,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
-  DashboardRouteChildren
+  DashboardRouteChildren,
 )
 
 const rootRouteChildren: RootRouteChildren = {
