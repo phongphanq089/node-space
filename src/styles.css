@@ -4,13 +4,14 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 @import '@fontsource-variable/geist';
+@import './styles/dotmatrix-loader.css';
 
 @custom-variant dark (&:is(.dark *));
 /* ─────────────────────────────────────────────────────────────
-   Design Tokens
-   primary  : #7c3aed  (violet-700)
-   secondary: #6366f1  (indigo-500)
-   accent-lt: #a78bfa  (violet-400) — lighter tint / highlight
+  Design Tokens
+  primary  : #7c3aed  (violet-700)
+  secondary: #6366f1  (indigo-500)
+  accent-lt: #a78bfa  (violet-400) — lighter tint / highlight
    ───────────────────────────────────────────────────────────── */
 @theme {
   --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
@@ -27,19 +28,19 @@
   --color-ns-active: rgba(124, 58, 237, 0.22);
 
   /* Borders */
-  --color-ns-border: rgba(124, 58, 237, 0.12);
+  --color-ns-border: rgba(124, 58, 237, 0.4);
   --color-ns-border-soft: rgba(124, 58, 237, 0.08);
   --color-ns-border-md: rgba(124, 58, 237, 0.2);
   --color-ns-border-em: rgba(124, 58, 237, 0.35);
   --color-ns-input-focus: rgba(124, 58, 237, 0.5);
 
   /* Colors — primary / secondary / accent */
-  --color-ns-primary: #7c3aed; /* primary   — violet-700  */
-  --color-ns-secondary: #6366f1; /* secondary — indigo-500  */
-  --color-ns-primary-lt: #a78bfa; /* highlight — violet-400  */
-  --color-ns-purple: #6366f1; /* alias → secondary (backward compat) */
-  --color-ns-pink: #e05c9a; /* optional third          */
-  --color-ns-amber: #f59e0b; /* optional warning/badge  */
+  --color-ns-primary: #7c3aed;
+  --color-ns-secondary: #6366f1;
+  --color-ns-primary-lt: #a78bfa;
+  --color-ns-purple: #6366f1;
+  --color-ns-pink: #e05c9a;
+  --color-ns-amber: #f59e0b;
 
   /* Text */
   --color-ns-text: #f5f3ff;

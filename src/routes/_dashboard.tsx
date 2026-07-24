@@ -1,6 +1,7 @@
 import { SidebarProvider } from '@/components/ui/core/sidebar'
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { getSessionFn } from '@/features/auth/auth.fns'
 import {
   Drawer,
   DrawerTrigger,
@@ -19,6 +20,22 @@ import { useMusicStore } from '@/stores/useMusicStore'
 import type { TrackItem } from '@/stores/useMusicStore'
 
 export const Route = createFileRoute('/_dashboard')({
+  beforeLoad: async () => {
+    const session = await getSessionFn()
+    if (!session) {
+      throw redirect({
+        to: '/login',
+      })
+    }
+    if (!session.user.emailVerified) {
+      throw redirect({
+        to: '/verify-email',
+      })
+    }
+    return {
+      session,
+    }
+  },
   component: DashboardLayout,
 })
 
@@ -27,7 +44,11 @@ function isYoutubeUrl(url: string) {
 }
 
 function isVideoUrl(url: string) {
-  return url.toLowerCase().endsWith('.mp4') || url.toLowerCase().includes('/video/') || url.toLowerCase().includes('.webm')
+  return (
+    url.toLowerCase().endsWith('.mp4') ||
+    url.toLowerCase().includes('/video/') ||
+    url.toLowerCase().includes('.webm')
+  )
 }
 
 function DashboardLayout() {
@@ -114,10 +135,10 @@ function DashboardLayout() {
             onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
             onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
             onEnded={handleTrackEnded}
-            className={`fixed transition-all duration-300 pointer-events-auto object-cover ${
+            className={`pointer-events-auto fixed object-cover transition-all duration-300 ${
               isExpanded
-                ? 'top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-[640px] aspect-video z-[1000] rounded-2xl border border-white/10 shadow-2xl bg-black'
-                : 'bottom-24 right-6 z-[45] w-[240px] aspect-video rounded-xl border border-ns-border bg-black shadow-2xl hover:scale-105'
+                ? 'top-[40%] left-1/2 z-[1000] aspect-video w-[85vw] max-w-[640px] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-white/10 bg-black shadow-2xl'
+                : 'right-6 bottom-24 z-[45] aspect-video w-[240px] rounded-xl border border-ns-border bg-black shadow-2xl hover:scale-105'
             }`}
           />
         )}
@@ -137,10 +158,10 @@ function DashboardLayout() {
         <Drawer direction="right">
           <DrawerTrigger asChild>
             <button
-              className="group from-ns-primary fixed right-6 bottom-6 z-40 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-gradient-to-r to-ns-secondary text-white shadow-[0_0_20px_rgba(124,58,237,0.6)] transition-all hover:scale-110 active:scale-95"
+              className="group fixed right-6 bottom-6 z-40 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-gradient-to-r from-ns-primary to-ns-secondary text-white shadow-[0_0_20px_rgba(124,58,237,0.6)] transition-all hover:scale-110 active:scale-95"
               title="Open Lofi Player"
             >
-              <span className="bg-ns-primary absolute inset-0 animate-ping rounded-full opacity-20 transition-transform duration-1000 group-hover:scale-110" />
+              <span className="absolute inset-0 animate-ping rounded-full bg-ns-primary opacity-20 transition-transform duration-1000 group-hover:scale-110" />
               <div className="relative flex items-center justify-center">
                 <svg
                   className="h-6 w-6 animate-pulse"
@@ -169,7 +190,7 @@ function DashboardLayout() {
                 </DrawerDescription>
               </div>
               <DrawerClose asChild>
-                <button className="hover:text-ns-primary-lt cursor-pointer text-xs font-bold text-ns-ghost">
+                <button className="cursor-pointer text-xs font-bold text-ns-ghost hover:text-ns-primary-lt">
                   Close
                 </button>
               </DrawerClose>
