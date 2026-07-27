@@ -1,29 +1,24 @@
-import { useState } from 'react'
-import { NODES, NOTES } from '@/constants/moc-data'
-import type { NoteItem } from '@/constants/moc-data'
+/* eslint-disable import/consistent-type-specifier-style */
+import { NOTES, type NODES, type NoteItem } from '@/constants/moc-data'
 import {
-  Search,
-  Plus,
-  Star,
-  MessageSquare,
+  Bold,
+  Code2,
   Edit2,
-  Trash2,
-  X,
+  FileText,
+  Folder,
+  Heading2,
+  Italic,
+  Link2,
+  MessageSquare,
+  MoreHorizontal,
   PanelLeftClose,
   PanelLeftOpen,
-  FileText,
-  MoreHorizontal,
-  Bold,
-  Italic,
-  Code2,
-  Link2,
-  Heading2,
-  Clock,
-  ArrowRight,
+  Plus,
+  Star,
+  X,
 } from 'lucide-react'
-import { GlowCard, GlowCardGrid } from '@/components/shared/glow-card-grid'
+import { useState } from 'react'
 
-// ── Node Detail Modal ─────────────────────────────────────────────
 interface NodeDetailModalProps {
   node: (typeof NODES)[number] & { thumbnail?: string }
   onClose: () => void
@@ -36,7 +31,7 @@ const MOCK_CONTENT: Record<string, string> = {
   default: `# ${Math.random()}\n\nStart writing your note here...\n\nThis is a **markdown** editor with support for:\n- *italic text*\n- **bold text**\n- \`inline code\`\n- [links](https://example.com)\n\n## Heading Example\n\nYour content goes here.`,
 }
 
-function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
+export function NoteDetailModal({ node, onClose }: NodeDetailModalProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [selectedNote, setSelectedNote] = useState<NoteItem>(NOTES[0])
   const [content, setContent] = useState(
@@ -66,6 +61,12 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
               {node.title}
             </h2>
             <div className="mt-0.5 flex items-center gap-2">
+              {node.folderName && (
+                <span className="flex items-center gap-1 text-[0.58rem] font-bold text-ns-primary-lt">
+                  <Folder size={9} />
+                  {node.folderName}
+                </span>
+              )}
               {node.tag && (
                 <span
                   className="text-[0.58rem] font-bold tracking-wider uppercase"
@@ -307,164 +308,5 @@ function NodeDetailModal({ node, onClose }: NodeDetailModalProps) {
         </div>
       </div>
     </div>
-  )
-}
-
-// ── All Nodes List ────────────────────────────────────────────────
-type NodeWithThumbnail = (typeof NODES)[number] & { thumbnail?: string }
-
-export default function NodesList() {
-  const [nodes, setNodes] = useState<NodeWithThumbnail[]>(() =>
-    NODES.map((n) => ({ ...n }))
-  )
-  const [selectedNode, setSelectedNode] = useState<NodeWithThumbnail | null>(
-    null
-  )
-  const [search, setSearch] = useState('')
-
-  const toggleStar = (e: React.MouseEvent, title: string) => {
-    e.stopPropagation()
-    setNodes((prev) =>
-      prev.map((n) => (n.title === title ? { ...n, starred: !n.starred } : n))
-    )
-  }
-
-  const filteredNodes = nodes.filter((n) =>
-    n.title.toLowerCase().includes(search.toLowerCase())
-  )
-
-  return (
-    <>
-      {/* ── Header Controls ── */}
-      <div className="flex items-center gap-3">
-        <div className="flex flex-1 items-center gap-2 rounded-xl border border-ns-border bg-ns-panel px-3 py-2 transition-all focus-within:border-ns-border-md">
-          <Search size={13} className="flex-shrink-0 text-ns-ghost" />
-          <input
-            type="search"
-            placeholder="Search nodes..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 border-none bg-transparent text-xs text-ns-text-2 placeholder-ns-placeholder outline-none"
-          />
-        </div>
-        <button className="flex flex-shrink-0 cursor-pointer items-center gap-2 rounded-xl bg-gradient-to-r from-ns-primary to-ns-secondary px-4 py-2 text-xs font-bold text-white shadow-md shadow-ns-primary/10 transition-all hover:opacity-90">
-          <Plus size={13} />
-          <span className="hidden sm:inline">New Node</span>
-        </button>
-      </div>
-
-      {/* ── Nodes Grid ── */}
-      <GlowCardGrid className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {filteredNodes.map((node) => (
-          <GlowCard
-            key={node.title}
-            avatar={node.thumbnail}
-            className="cursor-pointer"
-          >
-            <div
-              onClick={() => setSelectedNode(node)}
-              className="group flex items-stretch gap-4 p-4"
-            >
-              {/* Left: Thumbnail */}
-              {node.thumbnail ? (
-                <img
-                  src={node.thumbnail}
-                  alt={node.title}
-                  className="h-24 w-24 flex-shrink-0 rounded-2xl border border-ns-border object-cover shadow-sm transition-all group-hover:border-ns-border-md"
-                />
-              ) : (
-                <div className="flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-2xl border border-ns-border bg-gradient-to-br from-ns-active to-ns-hover text-lg font-bold text-white transition-all group-hover:border-ns-border-md">
-                  N
-                </div>
-              )}
-
-              {/* Right: Info Area */}
-              <div className="flex min-w-0 flex-1 flex-col justify-between">
-                {/* Row 1: Title & Star */}
-                <div className="flex items-start justify-between gap-2">
-                  <h3 className="line-clamp-2 text-sm font-bold text-white transition-colors group-hover:text-ns-primary-lt">
-                    {node.title}
-                  </h3>
-                  <button
-                    onClick={(e) => toggleStar(e, node.title)}
-                    className="flex-shrink-0 cursor-pointer rounded p-1 text-ns-ghost transition-all hover:bg-ns-hover/80 hover:text-amber-400"
-                    title={node.starred ? 'Unstar' : 'Star'}
-                  >
-                    <Star
-                      size={13}
-                      fill={node.starred ? '#fbbf24' : 'none'}
-                      className={
-                        node.starred ? 'text-amber-400' : 'text-ns-ghost'
-                      }
-                    />
-                  </button>
-                </div>
-
-                {/* Row 2: Time Updated */}
-                <div className="mt-1 flex items-center gap-1.5 text-[0.68rem] text-ns-faint">
-                  <Clock size={11} className="flex-shrink-0" />
-                  <span>{node.updated}</span>
-                </div>
-
-                {/* Row 3: Notes count & Tag */}
-                <div className="mt-2.5 flex items-center justify-between">
-                  <span className="flex items-center gap-1 rounded border border-ns-border-soft bg-ns-active/40 px-2 py-0.5 text-[0.62rem] font-bold text-ns-muted">
-                    <FileText size={10} className="text-ns-ghost" />
-                    <span>{node.count} notes</span>
-                  </span>
-                  {node.tag && (
-                    <span
-                      className="text-[0.68rem] font-bold tracking-wider uppercase"
-                      style={{ color: node.tagColor }}
-                    >
-                      {node.tag}
-                    </span>
-                  )}
-                </div>
-
-                {/* Row 4: View Details & Edit/Delete actions */}
-                <div className="mt-3 flex items-center justify-between border-t border-ns-border-soft/60 pt-2.5">
-                  <span className="group/link flex items-center gap-1.5 text-[0.68rem] font-bold text-ns-primary-lt transition-colors hover:text-white">
-                    <span>View details</span>
-                    <ArrowRight
-                      size={11}
-                      className="transition-transform group-hover/link:translate-x-0.5"
-                    />
-                  </span>
-                  <div className="flex gap-1 text-ns-ghost">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                      }}
-                      className="cursor-pointer rounded p-1 transition-colors hover:bg-ns-hover hover:text-ns-text-2"
-                      title="Edit"
-                    >
-                      <Edit2 size={11} />
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                      }}
-                      className="cursor-pointer rounded p-1 transition-colors hover:bg-ns-hover hover:text-red-400"
-                      title="Delete"
-                    >
-                      <Trash2 size={11} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </GlowCard>
-        ))}
-      </GlowCardGrid>
-
-      {/* Node Detail Modal */}
-      {selectedNode && (
-        <NodeDetailModal
-          node={selectedNode}
-          onClose={() => setSelectedNode(null)}
-        />
-      )}
-    </>
   )
 }

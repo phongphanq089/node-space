@@ -45,6 +45,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head suppressHydrationWarning>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
+        {/* <script
+          crossOrigin="anonymous"
+          src="//unpkg.com/react-scan/dist/auto.global.js"
+        ></script> */}
       </head>
       <body
         className="font-sans wrap-anywhere antialiased"

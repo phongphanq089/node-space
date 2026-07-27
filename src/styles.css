@@ -54,6 +54,13 @@
 
   /* On-color */
   --color-ns-on-accent: #ffffff;
+
+  /* Breakpoint */
+  --breakpoint-old: 350px;
+  --breakpoint-small: 400px;
+  --breakpoint-xs: 450px;
+  --breakpoint-3xl: 1800px;
+  --breakpoint-xl: 1280px;
 }
 
 /* ── Global Reset ─────────────────────────────────────────── */

@@ -11,12 +11,21 @@ export interface WorkspaceItem {
   name: string
 }
 
+export interface FolderItem {
+  id: string
+  name: string
+  color?: string
+  count?: number
+}
+
 export interface NodeItem {
   title: string
   count: number
   updated: string
   tag?: string
   tagColor?: string
+  folderId?: string
+  folderName?: string
   active?: boolean
   starred?: boolean
 }
@@ -58,6 +67,15 @@ export const WORKSPACES: readonly WorkspaceItem[] = [
   { color: '#3b82f6', name: 'Archive' },
 ]
 
+// ── Folders (matching `folder` schema) ──────────────────────────
+export const FOLDERS: readonly FolderItem[] = [
+  { id: 'f-1', name: 'Documentation', color: '#a78bfa', count: 2 },
+  { id: 'f-2', name: 'Algorithms', color: '#34d399', count: 1 },
+  { id: 'f-3', name: 'DevOps & Systems', color: '#60a5fa', count: 1 },
+  { id: 'f-4', name: 'Reading List', color: '#f87171', count: 1 },
+  { id: 'f-5', name: 'Database & Architecture', color: '#f97316', count: 2 },
+]
+
 // ── Nodes ───────────────────────────────────────────────────────
 export const NODES: readonly (NodeItem & { thumbnail?: string })[] = [
   {
@@ -66,6 +84,8 @@ export const NODES: readonly (NodeItem & { thumbnail?: string })[] = [
     updated: 'Updated 2 hours ago',
     tag: '#productivity',
     tagColor: '#a78bfa',
+    folderId: 'f-1',
+    folderName: 'Documentation',
     active: true,
     starred: true,
     thumbnail:
@@ -77,6 +97,8 @@ export const NODES: readonly (NodeItem & { thumbnail?: string })[] = [
     updated: 'Updated 5 hours ago',
     tag: '#algorithm',
     tagColor: '#34d399',
+    folderId: 'f-2',
+    folderName: 'Algorithms',
     starred: true,
     thumbnail:
       'https://images.unsplash.com/photo-1544256718-3bcf237f3974?w=150&auto=format&fit=crop&q=60',
@@ -87,6 +109,8 @@ export const NODES: readonly (NodeItem & { thumbnail?: string })[] = [
     updated: 'Updated 1 day ago',
     tag: '#devops',
     tagColor: '#60a5fa',
+    folderId: 'f-3',
+    folderName: 'DevOps & Systems',
     thumbnail:
       'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=150&auto=format&fit=crop&q=60',
   },
@@ -96,6 +120,8 @@ export const NODES: readonly (NodeItem & { thumbnail?: string })[] = [
     updated: 'Updated 2 days ago',
     tag: '#book',
     tagColor: '#f87171',
+    folderId: 'f-4',
+    folderName: 'Reading List',
     thumbnail:
       'https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=150&auto=format&fit=crop&q=60',
   },
@@ -105,6 +131,8 @@ export const NODES: readonly (NodeItem & { thumbnail?: string })[] = [
     updated: 'Updated 3 days ago',
     tag: '#database',
     tagColor: '#f97316',
+    folderId: 'f-5',
+    folderName: 'Database & Architecture',
     thumbnail:
       'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=150&auto=format&fit=crop&q=60',
   },
@@ -114,6 +142,8 @@ export const NODES: readonly (NodeItem & { thumbnail?: string })[] = [
     updated: 'Updated 3 days ago',
     tag: '#clean-code',
     tagColor: '#3b82f6',
+    folderId: 'f-1',
+    folderName: 'Documentation',
     thumbnail:
       'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=150&auto=format&fit=crop&q=60',
   },
@@ -123,6 +153,8 @@ export const NODES: readonly (NodeItem & { thumbnail?: string })[] = [
     updated: 'Updated 4 days ago',
     tag: '#linux',
     tagColor: '#a855f7',
+    folderId: 'f-5',
+    folderName: 'Database & Architecture',
     thumbnail:
       'https://images.unsplash.com/photo-1518770660439-4636190af475?w=150&auto=format&fit=crop&q=60',
   },
