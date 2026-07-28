@@ -9,33 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VerifyEmailRouteImport } from './routes/verify-email'
-import { Route as RegisterRouteImport } from './routes/register'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
-import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardRouteImport } from './routes/_dashboard'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as DashboardSplatRouteImport } from './routes/_dashboard/$'
 import { Route as DashboardDashboardIndexRouteImport } from './routes/_dashboard/dashboard.index'
-import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
-import { Route as DashboardDashboardTrashRouteImport } from './routes/_dashboard/dashboard.trash'
-import { Route as DashboardDashboardTagsRouteImport } from './routes/_dashboard/dashboard.tags'
-import { Route as DashboardDashboardMusicRouteImport } from './routes/_dashboard/dashboard.music'
 import { Route as DashboardDashboardFavoritesRouteImport } from './routes/_dashboard/dashboard.favorites'
+import { Route as DashboardDashboardMusicRouteImport } from './routes/_dashboard/dashboard.music'
+import { Route as DashboardDashboardTagsRouteImport } from './routes/_dashboard/dashboard.tags'
+import { Route as DashboardDashboardTrashRouteImport } from './routes/_dashboard/dashboard.trash'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
-const VerifyEmailRoute = VerifyEmailRouteImport.update({
-  id: '/verify-email',
-  path: '/verify-email',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RegisterRoute = RegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/_dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
@@ -43,13 +37,19 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/_dashboard',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerifyEmailRoute = VerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardSplatRoute = DashboardSplatRouteImport.update({
@@ -62,14 +62,15 @@ const DashboardDashboardIndexRoute = DashboardDashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => DashboardRoute,
 } as any)
-const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
-  id: '/api/auth/$',
-  path: '/api/auth/$',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardDashboardTrashRoute = DashboardDashboardTrashRouteImport.update({
-  id: '/dashboard/trash',
-  path: '/dashboard/trash',
+const DashboardDashboardFavoritesRoute =
+  DashboardDashboardFavoritesRouteImport.update({
+    id: '/dashboard/favorites',
+    path: '/dashboard/favorites',
+    getParentRoute: () => DashboardRoute,
+  } as any)
+const DashboardDashboardMusicRoute = DashboardDashboardMusicRouteImport.update({
+  id: '/dashboard/music',
+  path: '/dashboard/music',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardDashboardTagsRoute = DashboardDashboardTagsRouteImport.update({
@@ -77,17 +78,16 @@ const DashboardDashboardTagsRoute = DashboardDashboardTagsRouteImport.update({
   path: '/dashboard/tags',
   getParentRoute: () => DashboardRoute,
 } as any)
-const DashboardDashboardMusicRoute = DashboardDashboardMusicRouteImport.update({
-  id: '/dashboard/music',
-  path: '/dashboard/music',
+const DashboardDashboardTrashRoute = DashboardDashboardTrashRouteImport.update({
+  id: '/dashboard/trash',
+  path: '/dashboard/trash',
   getParentRoute: () => DashboardRoute,
 } as any)
-const DashboardDashboardFavoritesRoute =
-  DashboardDashboardFavoritesRouteImport.update({
-    id: '/dashboard/favorites',
-    path: '/dashboard/favorites',
-    getParentRoute: () => DashboardRoute,
-  } as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -191,32 +191,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/verify-email': {
-      id: '/verify-email'
-      path: '/verify-email'
-      fullPath: '/verify-email'
-      preLoaderRoute: typeof VerifyEmailRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/register': {
-      id: '/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof RegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/forgot-password': {
-      id: '/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof ForgotPasswordRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_dashboard': {
@@ -226,11 +205,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify-email': {
+      id: '/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof VerifyEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_dashboard/$': {
@@ -247,25 +247,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardDashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/api/auth/$': {
-      id: '/api/auth/$'
-      path: '/api/auth/$'
-      fullPath: '/api/auth/$'
-      preLoaderRoute: typeof ApiAuthSplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_dashboard/dashboard/trash': {
-      id: '/_dashboard/dashboard/trash'
-      path: '/dashboard/trash'
-      fullPath: '/dashboard/trash'
-      preLoaderRoute: typeof DashboardDashboardTrashRouteImport
-      parentRoute: typeof DashboardRoute
-    }
-    '/_dashboard/dashboard/tags': {
-      id: '/_dashboard/dashboard/tags'
-      path: '/dashboard/tags'
-      fullPath: '/dashboard/tags'
-      preLoaderRoute: typeof DashboardDashboardTagsRouteImport
+    '/_dashboard/dashboard/favorites': {
+      id: '/_dashboard/dashboard/favorites'
+      path: '/dashboard/favorites'
+      fullPath: '/dashboard/favorites'
+      preLoaderRoute: typeof DashboardDashboardFavoritesRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/_dashboard/dashboard/music': {
@@ -275,12 +261,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardDashboardMusicRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/_dashboard/dashboard/favorites': {
-      id: '/_dashboard/dashboard/favorites'
-      path: '/dashboard/favorites'
-      fullPath: '/dashboard/favorites'
-      preLoaderRoute: typeof DashboardDashboardFavoritesRouteImport
+    '/_dashboard/dashboard/tags': {
+      id: '/_dashboard/dashboard/tags'
+      path: '/dashboard/tags'
+      fullPath: '/dashboard/tags'
+      preLoaderRoute: typeof DashboardDashboardTagsRouteImport
       parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/dashboard/trash': {
+      id: '/_dashboard/dashboard/trash'
+      path: '/dashboard/trash'
+      fullPath: '/dashboard/trash'
+      preLoaderRoute: typeof DashboardDashboardTrashRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }

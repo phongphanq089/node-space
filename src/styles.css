@@ -335,3 +335,59 @@ button {
   );
   filter: blur(60px);
 }
+
+/* ── FilePond Custom Dark Theme ───────────────────────────── */
+.filepond--root {
+  font-family: var(--font-sans);
+  margin-bottom: 0;
+}
+
+.filepond--panel-root {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+  border: 1px dashed rgba(124, 58, 237, 0.3) !important;
+  border-radius: 0.75rem !important;
+  transition: all 0.2s ease;
+}
+
+.filepond--root:hover .filepond--panel-root,
+.filepond--root[data-filepond-drag-over] .filepond--panel-root {
+  border-color: var(--color-ns-primary-lt) !important;
+  background-color: rgba(124, 58, 237, 0.06) !important;
+}
+
+.filepond--drop-label {
+  color: var(--color-ns-muted) !important;
+  font-size: 0.75rem !important;
+  min-height: 4.5em !important;
+}
+
+.filepond--label-action {
+  color: var(--color-ns-primary-lt) !important;
+  font-weight: 700 !important;
+  text-decoration-color: var(--color-ns-primary-lt) !important;
+  cursor: pointer;
+}
+
+.filepond--item-panel {
+  background-color: var(--color-ns-surface) !important;
+  border-radius: 0.5rem !important;
+}
+
+.filepond--file-action-button {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  color: #ffffff !important;
+}
+
+.filepond--file-action-button:hover,
+.filepond--file-action-button:focus {
+  background-color: var(--color-ns-primary) !important;
+}
+
+.filepond--file {
+  color: #ffffff !important;
+}
+
+.filepond--credits {
+  display: none !important;
+}

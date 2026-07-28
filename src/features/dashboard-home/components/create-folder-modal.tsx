@@ -1,15 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { z } from 'zod'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  FolderPlus,
-  Palette,
-  Layers,
-  Image as ImageIcon,
-  Sparkles,
-  Folder,
-} from 'lucide-react'
+import { FolderPlus, Palette, Layers, Sparkles, Upload } from 'lucide-react'
 import { WORKSPACES } from '@/constants/moc-data'
 import {
   Dialog,
@@ -29,6 +22,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/core/select'
+import { FilePond, registerPlugin } from 'react-filepond'
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
+import type { FilePondInitialFile } from 'filepond'
+import 'filepond/dist/filepond.min.css'
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
+
+registerPlugin(FilePondPluginImagePreview)
 
 export const createFolderSchema = z.object({
   name: z
@@ -56,6 +56,7 @@ interface CreateFolderModalProps {
     workspaceId?: string
     color?: string
     image?: string
+    files?: File[]
   }) => void
 }
 
@@ -75,6 +76,8 @@ export function CreateFolderModal({
   onClose,
   onSubmit,
 }: CreateFolderModalProps) {
+  const [files, setFiles] = useState<FilePondInitialFile[] | any[]>([])
+
   const form = useForm<CreateFolderSchemaValues>({
     resolver: zodResolver(createFolderSchema as any),
     criteriaMode: 'all',
@@ -94,11 +97,10 @@ export function CreateFolderModal({
         color: PRESET_COLORS[0],
         image: '',
       })
+      setFiles([])
     }
   }, [isOpen, form])
 
-  const nameValue = form.watch('name')
-  const workspaceIdValue = form.watch('workspaceId')
   const selectedColor = form.watch('color') || PRESET_COLORS[0]
 
   const handleSubmit = (data: CreateFolderSchemaValues) => {
@@ -108,6 +110,9 @@ export function CreateFolderModal({
         workspaceId: data.workspaceId,
         color: data.color,
         image: data.image,
+        files: files
+          .map((f) => (f instanceof File ? f : f?.file))
+          .filter((f): f is File => f instanceof File),
       })
     }
     onClose()
@@ -132,33 +137,10 @@ export function CreateFolderModal({
             </div>
           </div>
         </DialogHeader>
-
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
           className="flex flex-col gap-4 pt-2"
         >
-          {/* Folder Preview */}
-          <div className="flex items-center gap-3 rounded-xl border border-ns-border-soft bg-ns-bg/50 p-3">
-            <div
-              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl shadow-md transition-all"
-              style={{
-                backgroundColor: `${selectedColor}20`,
-                color: selectedColor,
-              }}
-            >
-              <Folder size={20} />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-xs font-bold text-white">
-                {nameValue ? nameValue.trim() || 'Folder Name Preview' : ''}
-              </p>
-              <span className="text-[0.62rem] text-ns-faint">
-                {workspaceIdValue || 'Default Workspace'}
-              </span>
-            </div>
-          </div>
-
-          {/* Folder Name Field */}
           <Controller
             name="name"
             control={form.control}
@@ -178,8 +160,6 @@ export function CreateFolderModal({
               </Field>
             )}
           />
-
-          {/* Workspace Select Field */}
           <Controller
             name="workspaceId"
             control={form.control}
@@ -207,14 +187,12 @@ export function CreateFolderModal({
               </Field>
             )}
           />
-
-          {/* Color Accent Selector */}
           <div className="flex flex-col gap-1.5">
             <FieldLabel className="flex items-center gap-1.5">
               <Palette size={11} className="text-ns-ghost" />
               Accent Color
             </FieldLabel>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 py-2">
               {PRESET_COLORS.map((c) => (
                 <button
                   key={c}
@@ -223,39 +201,33 @@ export function CreateFolderModal({
                   style={{ backgroundColor: c }}
                   className={`h-6 w-6 cursor-pointer rounded-full transition-all hover:scale-110 ${
                     selectedColor === c
-                      ? 'scale-110 ring-2 ring-white ring-offset-2 ring-offset-ns-panel'
+                      ? 'scale-110 ring-2 ring-white'
                       : 'opacity-70 hover:opacity-100'
                   }`}
                 />
               ))}
             </div>
           </div>
-
-          {/* Thumbnail Image URL Field */}
-          <Controller
-            name="image"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel className="flex items-center gap-1.5">
-                  <ImageIcon size={11} className="text-ns-ghost" />
-                  Cover Image URL{' '}
-                  <span className="text-[0.6rem] font-normal text-ns-faint">
-                    (Optional)
-                  </span>
-                </FieldLabel>
-                <Input
-                  {...field}
-                  type="url"
-                  placeholder="https://images.unsplash.com/..."
-                  aria-invalid={fieldState.invalid}
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
+          <div className="flex flex-col gap-1.5">
+            <FieldLabel className="flex items-center gap-1.5">
+              <Upload size={11} className="text-ns-ghost" />
+              Attach Files / Assets{' '}
+              <span className="text-[0.6rem] font-normal text-ns-faint">
+                (Optional)
+              </span>
+            </FieldLabel>
+            <FilePond
+              files={files}
+              onupdatefiles={setFiles}
+              allowMultiple={false}
+              allowImagePreview={true}
+              acceptedFileTypes={['image/*']}
+              name="files"
+              labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+              labelFileTypeNotAllowed="File is of invalid type"
+              credits={false}
+            />
+          </div>
 
           {/* Modal Actions */}
           <DialogFooter className="-mx-0 mt-2 -mb-0 flex items-center justify-end gap-2 rounded-none border-t border-ns-border-soft bg-transparent p-0 pt-3">
