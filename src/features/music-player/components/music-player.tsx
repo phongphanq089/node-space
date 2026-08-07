@@ -36,8 +36,8 @@ export default function MusicPlayer() {
           Chill &amp; Focus
         </span>
         <Link
-          to="/dashboard/music"
-          className="text-ns-primary-lt flex cursor-pointer items-center gap-1.5 rounded bg-ns-active px-2.5 py-1 text-[0.62rem] font-bold no-underline transition-all hover:bg-ns-hover"
+          to="/workspace/music"
+          className="flex cursor-pointer items-center gap-1.5 rounded bg-ns-active px-2.5 py-1 text-[0.62rem] font-bold text-ns-primary-lt no-underline transition-all hover:bg-ns-hover"
           title="Manage focus music playlist"
         >
           <Settings size={11} />
@@ -54,7 +54,7 @@ export default function MusicPlayer() {
             type="button"
             className={`cursor-pointer rounded-lg px-2.5 py-1 text-[0.6rem] font-bold transition-all ${
               selectedCategory === cat
-                ? 'text-ns-primary-lt bg-ns-active shadow-inner'
+                ? 'bg-ns-active text-ns-primary-lt shadow-inner'
                 : 'text-ns-muted hover:bg-ns-hover/50 hover:text-ns-text-2'
             }`}
           >
@@ -95,7 +95,7 @@ export default function MusicPlayer() {
               }`}
             >
               {/* Thumbnail */}
-              <div className="from-ns-primary/20 relative h-9 w-9 flex-shrink-0 overflow-hidden rounded-lg border border-ns-border bg-gradient-to-br to-ns-secondary/20">
+              <div className="relative h-9 w-9 flex-shrink-0 overflow-hidden rounded-lg border border-ns-border bg-gradient-to-br from-ns-primary/20 to-ns-secondary/20">
                 {track.cover && (
                   <div
                     className="absolute inset-0 bg-cover bg-center opacity-80"
@@ -127,7 +127,7 @@ export default function MusicPlayer() {
                   {[0.15, 0.3, 0.2].map((d, i) => (
                     <span
                       key={i}
-                      className="animate-soundbar bg-ns-primary-lt w-[1.5px] rounded-full"
+                      className="animate-soundbar w-[1.5px] rounded-full bg-ns-primary-lt"
                       style={{ animationDelay: `${d}s`, height: '10px' }}
                     />
                   ))}
@@ -136,7 +136,7 @@ export default function MusicPlayer() {
 
               {/* Now playing dot if active but not playing */}
               {isActive && !isPlaying && (
-                <div className="bg-ns-primary-lt h-1.5 w-1.5 flex-shrink-0 rounded-full opacity-60" />
+                <div className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-ns-primary-lt opacity-60" />
               )}
             </button>
           )
@@ -155,7 +155,7 @@ export default function MusicPlayer() {
       {/* Currently playing strip */}
       {currentTrack && (
         <div className="border-t border-ns-border-soft bg-ns-active/20 px-3 py-2">
-          <p className="text-ns-primary-lt truncate text-[0.6rem] font-bold">
+          <p className="truncate text-[0.6rem] font-bold text-ns-primary-lt">
             ♪ {currentTrack.title}
           </p>
           <p className="text-[0.55rem] text-ns-faint">{currentTrack.artist}</p>

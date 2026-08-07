@@ -51,11 +51,11 @@ export interface PlaylistItem {
 
 // ── Navigation ─────────────────────────────────────────────────
 export const NAV: readonly NavItem[] = [
-  { icon: 'home', label: 'Home', to: '/dashboard', exact: true },
-  { icon: 'star', label: 'Favorites', to: '/dashboard/favorites' },
-  { icon: 'tag', label: 'Tags', to: '/dashboard/tags' },
-  { icon: 'trash', label: 'Trash', to: '/dashboard/trash' },
-  { icon: 'music', label: 'Music Manager', to: '/dashboard/music' },
+  { icon: 'home', label: 'Home', to: '/workspace', exact: true },
+  { icon: 'star', label: 'Favorites', to: '/workspace/favorites' },
+  { icon: 'tag', label: 'Tags', to: '/workspace/tags' },
+  { icon: 'trash', label: 'Trash', to: '/workspace/trash' },
+  { icon: 'music', label: 'Music Manager', to: '/workspace/music' },
 ]
 
 // ── Workspaces ──────────────────────────────────────────────────

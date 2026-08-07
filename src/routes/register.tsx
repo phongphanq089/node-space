@@ -28,7 +28,7 @@ export const Route = createFileRoute('/register')({
     const session = await getSessionFn()
     if (session) {
       throw redirect({
-        to: '/dashboard',
+        to: '/workspace',
       })
     }
   },
@@ -61,7 +61,7 @@ function RegisterPage() {
         email: data.email,
         password: data.password,
         name: data.fullName,
-        callbackURL: '/dashboard',
+        callbackURL: '/workspace',
         fetchOptions: {
           onError: (ctx) => {
             setErrorMsg(ctx.error.message || 'Registration failed')
@@ -69,7 +69,7 @@ function RegisterPage() {
           },
           onSuccess: () => {
             form.reset()
-            navigate({ to: '/dashboard' })
+            navigate({ to: '/workspace' })
           },
         },
       })

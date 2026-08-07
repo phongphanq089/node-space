@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Tag, Search, Hash } from 'lucide-react'
 
-export const Route = createFileRoute('/_dashboard/dashboard/tags')({
+export const Route = createFileRoute('/_workspace/workspace/tags')({
   component: TagsPage,
 })
 
@@ -99,7 +99,7 @@ function TagsPage() {
       <section className="relative overflow-hidden rounded-xl border border-ns-border bg-ns-panel p-6 shadow-lg">
         <div className="ns-hero-blur-accent-30 pointer-events-none absolute -top-16 -left-16 h-56 w-56 rounded-full opacity-20" />
         <div className="relative">
-          <p className="text-ns-primary-lt mb-1 text-[0.65rem] font-bold tracking-[0.12em] uppercase">
+          <p className="mb-1 text-[0.65rem] font-bold tracking-[0.12em] text-ns-primary-lt uppercase">
             Content Classification
           </p>
           <h1 className="mb-2 flex items-center gap-2 text-xl font-bold text-ns-text">
@@ -113,7 +113,7 @@ function TagsPage() {
       </section>
 
       {/* Search tag bar */}
-      <div className="focus-within:border-ns-primary flex w-full items-center gap-2 rounded-xl border border-ns-border bg-ns-panel px-3 py-2 transition-all sm:max-w-xs">
+      <div className="flex w-full items-center gap-2 rounded-xl border border-ns-border bg-ns-panel px-3 py-2 transition-all focus-within:border-ns-primary sm:max-w-xs">
         <Search size={14} className="text-ns-ghost" />
         <input
           type="search"
@@ -136,7 +136,7 @@ function TagsPage() {
               >
                 <Hash size={13} />
               </div>
-              <span className="group-hover:text-ns-primary-lt truncate text-xs font-bold text-ns-text transition-colors">
+              <span className="truncate text-xs font-bold text-ns-text transition-colors group-hover:text-ns-primary-lt">
                 {tag.name}
               </span>
             </div>
