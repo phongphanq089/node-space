@@ -7,7 +7,7 @@ import {
   FileText,
 } from 'lucide-react'
 
-export const Route = createFileRoute('/_dashboard/dashboard/trash')({
+export const Route = createFileRoute('/_workspace/workspace/trash')({
   component: TrashPage,
 })
 
@@ -82,7 +82,7 @@ function TrashPage() {
               <div
                 className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg ${
                   item.type === 'node'
-                    ? 'text-ns-primary-lt bg-ns-active/40'
+                    ? 'bg-ns-active/40 text-ns-primary-lt'
                     : 'bg-ns-hover/60 text-ns-secondary'
                 }`}
               >
@@ -93,7 +93,7 @@ function TrashPage() {
                 )}
               </div>
               <div className="min-w-0">
-                <h3 className="group-hover:text-ns-primary-lt truncate text-xs font-bold text-ns-text transition-colors">
+                <h3 className="truncate text-xs font-bold text-ns-text transition-colors group-hover:text-ns-primary-lt">
                   {item.title}
                 </h3>
                 <span className="mt-0.5 block text-[0.58rem] font-medium text-ns-faint">
@@ -105,7 +105,7 @@ function TrashPage() {
 
             <div className="flex items-center gap-1.5 text-ns-ghost">
               <button
-                className="hover:text-ns-primary-lt cursor-pointer rounded-lg p-2 transition-colors hover:bg-ns-hover"
+                className="cursor-pointer rounded-lg p-2 transition-colors hover:bg-ns-hover hover:text-ns-primary-lt"
                 title="Restore"
               >
                 <RotateCcw size={13} />

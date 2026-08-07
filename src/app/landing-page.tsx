@@ -1,4 +1,4 @@
-import LandingHero from './components/LandingHero'
+import LandingHero from '@/features/landing/components/LandingHero'
 
 export default function LandingPage() {
   return (

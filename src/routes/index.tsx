@@ -2,8 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { getDb } from '@/db'
 import { sql } from 'drizzle-orm'
-
-import LandingPage from '@/features/landing/LandingPage'
+import LandingPage from '@/app/landing-page'
 
 const testD1Connection = createServerFn({ method: 'GET' }).handler(async () => {
   try {

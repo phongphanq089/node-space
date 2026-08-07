@@ -1,50 +1,20 @@
-import { SidebarProvider } from '@/components/ui/core/sidebar'
-
-import { createFileRoute, redirect } from '@tanstack/react-router'
-import { getSessionFn } from '@/features/auth/auth.fns'
+import Content from '@/components/dashboard-sidebar/content'
+import DashboardSidebar from '@/components/dashboard-sidebar/dashboard-sidebar'
 import {
   Drawer,
-  DrawerTrigger,
+  DrawerClose,
   DrawerContent,
+  DrawerDescription,
   DrawerHeader,
   DrawerTitle,
-  DrawerDescription,
-  DrawerClose,
+  DrawerTrigger,
 } from '@/components/ui/core/drawer'
+import { SidebarProvider } from '@/components/ui/core/sidebar'
 import MusicPlayer from '@/features/music-player/components/music-player'
 import YoutubePlayer from '@/features/music-player/components/youtube-player'
-import DashboardSidebar from '@/components/dashboard-sidebar/dashboard-sidebar'
-import Content from '@/components/dashboard-sidebar/content'
-import { useEffect, useRef } from 'react'
 import { useMusicStore } from '@/stores/useMusicStore'
 import type { TrackItem } from '@/stores/useMusicStore'
-import { registerPlugin } from 'react-filepond'
-import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
-import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type'
-import 'filepond/dist/filepond.min.css'
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
-
-registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType)
-
-export const Route = createFileRoute('/_dashboard')({
-  beforeLoad: async () => {
-    const session = await getSessionFn()
-    if (!session) {
-      throw redirect({
-        to: '/login',
-      })
-    }
-    if (!session.user.emailVerified) {
-      throw redirect({
-        to: '/verify-email',
-      })
-    }
-    return {
-      session,
-    }
-  },
-  component: DashboardLayout,
-})
+import { useEffect, useRef } from 'react'
 
 function isYoutubeUrl(url: string) {
   return url.includes('youtube.com') || url.includes('youtu.be')
@@ -58,7 +28,7 @@ function isVideoUrl(url: string) {
   )
 }
 
-function DashboardLayout() {
+const Workspace = () => {
   const {
     playlist,
     currentTrackIndex,
@@ -212,3 +182,5 @@ function DashboardLayout() {
     </SidebarProvider>
   )
 }
+
+export default Workspace

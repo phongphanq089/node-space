@@ -2,7 +2,7 @@ import { NODES, NOTES } from '@/constants/moc-data'
 import { createFileRoute } from '@tanstack/react-router'
 import { Star, FileText, ArrowUpRight, Heart } from 'lucide-react'
 
-export const Route = createFileRoute('/_dashboard/dashboard/favorites')({
+export const Route = createFileRoute('/_workspace/workspace/favorites')({
   component: FavoritesPage,
 })
 
@@ -54,7 +54,7 @@ function FavoritesPage() {
                 )}
 
                 <div className="min-w-0 flex-1">
-                  <h3 className="group-hover:text-ns-primary-lt truncate text-xs font-bold text-ns-text transition-colors">
+                  <h3 className="truncate text-xs font-bold text-ns-text transition-colors group-hover:text-ns-primary-lt">
                     {node.title}
                   </h3>
                   <span className="mt-0.5 block text-[0.62rem] text-ns-faint">
@@ -62,7 +62,7 @@ function FavoritesPage() {
                   </span>
                 </div>
 
-                <button className="hover:text-ns-primary-lt cursor-pointer rounded-lg p-2 text-ns-ghost transition-colors hover:bg-ns-hover">
+                <button className="cursor-pointer rounded-lg p-2 text-ns-ghost transition-colors hover:bg-ns-hover hover:text-ns-primary-lt">
                   <ArrowUpRight size={14} />
                 </button>
               </div>
@@ -87,19 +87,19 @@ function FavoritesPage() {
                 key={note.title}
                 className="group animate-fade-in flex items-start gap-3 rounded-xl border border-ns-border bg-ns-panel p-3.5 transition-all hover:border-ns-border-md"
               >
-                <div className="text-ns-primary-lt flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-ns-active shadow-inner">
+                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-ns-active text-ns-primary-lt shadow-inner">
                   <FileText size={14} />
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <h3 className="group-hover:text-ns-primary-lt truncate text-xs font-bold text-ns-text transition-colors">
+                  <h3 className="truncate text-xs font-bold text-ns-text transition-colors group-hover:text-ns-primary-lt">
                     {note.title}
                   </h3>
                   <div className="mt-1 flex flex-wrap gap-1">
                     {note.tags.map((t) => (
                       <span
                         key={t}
-                        className="text-ns-primary-lt rounded bg-ns-hover px-1.5 py-0.5 text-[0.58rem] font-bold"
+                        className="rounded bg-ns-hover px-1.5 py-0.5 text-[0.58rem] font-bold text-ns-primary-lt"
                       >
                         {t}
                       </span>
@@ -107,7 +107,7 @@ function FavoritesPage() {
                   </div>
                 </div>
 
-                <button className="hover:text-ns-primary-lt cursor-pointer rounded-lg p-2 text-ns-ghost transition-colors hover:bg-ns-hover">
+                <button className="cursor-pointer rounded-lg p-2 text-ns-ghost transition-colors hover:bg-ns-hover hover:text-ns-primary-lt">
                   <ArrowUpRight size={14} />
                 </button>
               </div>

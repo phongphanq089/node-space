@@ -15,12 +15,16 @@ import {
   ExternalLink,
 } from 'lucide-react'
 
-export const Route = createFileRoute('/_dashboard/dashboard/music')({
+export const Route = createFileRoute('/_workspace/workspace/music')({
   component: MusicManagerPage,
 })
 
 function isVideoUrl(url: string) {
-  return url.toLowerCase().endsWith('.mp4') || url.toLowerCase().includes('/video/') || url.toLowerCase().includes('.webm')
+  return (
+    url.toLowerCase().endsWith('.mp4') ||
+    url.toLowerCase().includes('/video/') ||
+    url.toLowerCase().includes('.webm')
+  )
 }
 
 function MusicManagerPage() {
@@ -55,7 +59,9 @@ function MusicManagerPage() {
   const categories = [
     'All',
     ...Array.from(
-      new Set(filteredByType.map((t) => t.category).filter((c): c is string => !!c))
+      new Set(
+        filteredByType.map((t) => t.category).filter((c): c is string => !!c)
+      )
     ),
   ]
 
@@ -151,15 +157,16 @@ function MusicManagerPage() {
       <section className="relative overflow-hidden rounded-xl border border-ns-border bg-ns-panel p-6 shadow-lg">
         <div className="ns-hero-blur-purple-25 pointer-events-none absolute -top-16 -left-16 h-56 w-56 rounded-full opacity-20" />
         <div className="relative">
-          <p className="text-ns-primary-lt mb-1 text-[0.65rem] font-bold tracking-[0.12em] uppercase">
+          <p className="mb-1 text-[0.65rem] font-bold tracking-[0.12em] text-ns-primary-lt uppercase">
             Media Studio
           </p>
           <h1 className="mb-2 flex items-center gap-2 text-xl font-bold text-ns-text">
             <span>Music Manager</span>
-            <Radio size={18} className="text-ns-primary-lt animate-pulse" />
+            <Radio size={18} className="animate-pulse text-ns-primary-lt" />
           </h1>
           <p className="max-w-2xl text-xs leading-5 text-ns-muted">
-            Manage your audio tracks, video streams, Lofi categories, and media playback libraries.
+            Manage your audio tracks, video streams, Lofi categories, and media
+            playback libraries.
           </p>
         </div>
       </section>
@@ -168,9 +175,9 @@ function MusicManagerPage() {
       <div className="flex gap-4 border-b border-ns-border-soft pb-0.5">
         <button
           onClick={() => handleTabChange('youtube')}
-          className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-bold transition-all cursor-pointer ${
+          className={`flex cursor-pointer items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-bold transition-all ${
             activeTab === 'youtube'
-              ? 'border-red-500 text-red-500 bg-red-500/5'
+              ? 'border-red-500 bg-red-500/5 text-red-500'
               : 'border-transparent text-ns-muted hover:text-ns-text'
           }`}
         >
@@ -179,9 +186,9 @@ function MusicManagerPage() {
         </button>
         <button
           onClick={() => handleTabChange('native')}
-          className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-bold transition-all cursor-pointer ${
+          className={`flex cursor-pointer items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-bold transition-all ${
             activeTab === 'native'
-              ? 'border-violet-500 text-violet-500 bg-violet-500/5'
+              ? 'border-violet-500 bg-violet-500/5 text-violet-500'
               : 'border-transparent text-ns-muted hover:text-ns-text'
           }`}
         >
@@ -217,8 +224,12 @@ function MusicManagerPage() {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder={activeTab === 'youtube' ? 'e.g. Lofi Girl Live' : 'e.g. SoundHelix Song'}
-                className="focus:border-ns-primary rounded-lg border border-ns-border-soft bg-ns-input px-3 py-2 text-xs text-ns-text placeholder-ns-placeholder transition-colors outline-none"
+                placeholder={
+                  activeTab === 'youtube'
+                    ? 'e.g. Lofi Girl Live'
+                    : 'e.g. SoundHelix Song'
+                }
+                className="rounded-lg border border-ns-border-soft bg-ns-input px-3 py-2 text-xs text-ns-text placeholder-ns-placeholder transition-colors outline-none focus:border-ns-primary"
                 required
               />
             </div>
@@ -237,7 +248,7 @@ function MusicManagerPage() {
                 value={artist}
                 onChange={(e) => setArtist(e.target.value)}
                 placeholder="e.g. Lofi Records"
-                className="focus:border-ns-primary rounded-lg border border-ns-border-soft bg-ns-input px-3 py-2 text-xs text-ns-text placeholder-ns-placeholder transition-colors outline-none"
+                className="rounded-lg border border-ns-border-soft bg-ns-input px-3 py-2 text-xs text-ns-text placeholder-ns-placeholder transition-colors outline-none focus:border-ns-primary"
               />
             </div>
 
@@ -256,7 +267,7 @@ function MusicManagerPage() {
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="https://www.youtube.com/watch?v=..."
-                  className="focus:border-ns-primary rounded-lg border border-ns-border-soft bg-ns-input px-3 py-2 text-xs text-ns-text placeholder-ns-placeholder transition-colors outline-none"
+                  className="rounded-lg border border-ns-border-soft bg-ns-input px-3 py-2 text-xs text-ns-text placeholder-ns-placeholder transition-colors outline-none focus:border-ns-primary"
                   required
                 />
               </div>
@@ -265,7 +276,7 @@ function MusicManagerPage() {
                 <label className="text-[0.6rem] font-bold text-ns-muted uppercase">
                   Select Media File *
                 </label>
-                <div className="hover:border-ns-primary/50 relative flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-ns-border-soft bg-ns-bg/30 p-4 text-center transition-all">
+                <div className="relative flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-ns-border-soft bg-ns-bg/30 p-4 text-center transition-all hover:border-ns-primary/50">
                   <input
                     type="file"
                     accept="audio/*,video/*,audio/mp3,video/mp4"
@@ -301,7 +312,7 @@ function MusicManagerPage() {
                 value={cover}
                 onChange={(e) => setCover(e.target.value)}
                 placeholder="https://images.unsplash.com/photo-..."
-                className="focus:border-ns-primary rounded-lg border border-ns-border-soft bg-ns-input px-3 py-2 text-xs text-ns-text placeholder-ns-placeholder transition-colors outline-none"
+                className="rounded-lg border border-ns-border-soft bg-ns-input px-3 py-2 text-xs text-ns-text placeholder-ns-placeholder transition-colors outline-none focus:border-ns-primary"
               />
             </div>
 
@@ -321,7 +332,7 @@ function MusicManagerPage() {
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   placeholder="e.g. Lofi, Chill, US-UK"
-                  className="focus:border-ns-primary flex-1 rounded-lg border border-ns-border-soft bg-ns-input px-3 py-2 text-xs text-ns-text placeholder-ns-placeholder transition-colors outline-none"
+                  className="flex-1 rounded-lg border border-ns-border-soft bg-ns-input px-3 py-2 text-xs text-ns-text placeholder-ns-placeholder transition-colors outline-none focus:border-ns-primary"
                 />
               </div>
               <div className="mt-1 flex flex-wrap gap-1">
@@ -332,7 +343,7 @@ function MusicManagerPage() {
                     type="button"
                     className={`cursor-pointer rounded border px-2 py-0.5 text-[0.58rem] font-bold transition-all ${
                       category === preset
-                        ? 'border-ns-primary text-ns-primary-lt bg-ns-active/40'
+                        ? 'border-ns-primary bg-ns-active/40 text-ns-primary-lt'
                         : 'border-ns-border-soft bg-ns-bg/40 text-ns-faint hover:text-ns-muted'
                     }`}
                   >
@@ -356,7 +367,7 @@ function MusicManagerPage() {
 
             <button
               type="submit"
-              className="from-ns-primary shadow-ns-primary/15 mt-2 flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r to-ns-secondary py-2.5 text-xs font-bold text-white shadow-md transition-all hover:opacity-90"
+              className="mt-2 flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-ns-primary to-ns-secondary py-2.5 text-xs font-bold text-white shadow-md shadow-ns-primary/15 transition-all hover:opacity-90"
             >
               <Plus size={14} />
               <span>Add to Library</span>
@@ -384,7 +395,7 @@ function MusicManagerPage() {
                   onClick={() => setSelectedCategory(cat)}
                   className={`cursor-pointer rounded-lg px-2.5 py-1 text-[0.6rem] font-bold transition-all ${
                     selectedCategory === cat
-                      ? 'text-ns-primary-lt bg-ns-active shadow-inner'
+                      ? 'bg-ns-active text-ns-primary-lt shadow-inner'
                       : 'text-ns-muted hover:bg-ns-hover/50 hover:text-ns-text-2'
                   }`}
                 >
@@ -425,7 +436,7 @@ function MusicManagerPage() {
                     {/* Artwork / Play State Button */}
                     <div
                       onClick={() => handlePlayToggle(originalIndex)}
-                      className="from-ns-primary/30 group/art relative h-11 w-11 flex-shrink-0 cursor-pointer overflow-hidden rounded-lg border border-ns-border bg-gradient-to-br to-ns-secondary/30 shadow-inner"
+                      className="group/art relative h-11 w-11 flex-shrink-0 cursor-pointer overflow-hidden rounded-lg border border-ns-border bg-gradient-to-br from-ns-primary/30 to-ns-secondary/30 shadow-inner"
                     >
                       {track.cover && (
                         <div
@@ -467,7 +478,7 @@ function MusicManagerPage() {
                           {track.title}
                         </span>
                         {track.category && (
-                          <span className="text-ns-primary-lt flex-shrink-0 rounded-md border border-ns-border/40 bg-ns-hover/80 px-1.5 py-0.5 text-[0.55rem] font-bold">
+                          <span className="flex-shrink-0 rounded-md border border-ns-border/40 bg-ns-hover/80 px-1.5 py-0.5 text-[0.55rem] font-bold text-ns-primary-lt">
                             {track.category}
                           </span>
                         )}

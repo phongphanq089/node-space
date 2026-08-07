@@ -91,7 +91,7 @@ const BannerMusic = () => {
             {isPlaying ? 'Now Playing' : 'Paused'}
           </span>
           <Link
-            to="/dashboard/music"
+            to="/workspace/music"
             className="flex items-center gap-1.5 rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-[0.55rem] font-bold text-white/50 uppercase no-underline backdrop-blur-md transition-all hover:border-violet-400/30 hover:text-white/80"
             title="Manage playlist"
           >
@@ -230,7 +230,11 @@ const BannerMusic = () => {
 
               {/* Expand/Maximize */}
               <button
-                onClick={() => isYoutube ? setYoutubePlayerMode('modal') : setIsExpanded(true)}
+                onClick={() =>
+                  isYoutube
+                    ? setYoutubePlayerMode('modal')
+                    : setIsExpanded(true)
+                }
                 type="button"
                 className="cursor-pointer text-white/40 transition-all hover:text-white/80"
                 title="Immersive player"

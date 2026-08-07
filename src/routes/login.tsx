@@ -30,7 +30,7 @@ export const Route = createFileRoute('/login')({
     const session = await getSessionFn()
     if (session) {
       throw redirect({
-        to: '/dashboard',
+        to: '/workspace',
       })
     }
   },
@@ -59,7 +59,7 @@ function LoginPage() {
       await signIn.email({
         email: data.email,
         password: data.password,
-        callbackURL: '/dashboard',
+        callbackURL: '/workspace',
         fetchOptions: {
           onError: (ctx) => {
             toast.error('failed', {
@@ -73,7 +73,7 @@ function LoginPage() {
               position: 'top-center',
             })
             form.reset()
-            navigate({ to: '/dashboard' })
+            navigate({ to: '/workspace' })
           },
         },
       })

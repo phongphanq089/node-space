@@ -10,17 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DashboardRouteImport } from './routes/_dashboard'
+import { Route as WorkspaceRouteImport } from './routes/_workspace'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as VerifyEmailRouteImport } from './routes/verify-email'
-import { Route as DashboardSplatRouteImport } from './routes/_dashboard/$'
-import { Route as DashboardDashboardIndexRouteImport } from './routes/_dashboard/dashboard.index'
-import { Route as DashboardDashboardFavoritesRouteImport } from './routes/_dashboard/dashboard.favorites'
-import { Route as DashboardDashboardMusicRouteImport } from './routes/_dashboard/dashboard.music'
-import { Route as DashboardDashboardTagsRouteImport } from './routes/_dashboard/dashboard.tags'
-import { Route as DashboardDashboardTrashRouteImport } from './routes/_dashboard/dashboard.trash'
+import { Route as WorkspaceSplatRouteImport } from './routes/_workspace/$'
+import { Route as WorkspaceWorkspaceIndexRouteImport } from './routes/_workspace/workspace.index'
+import { Route as WorkspaceWorkspaceFavoritesRouteImport } from './routes/_workspace/workspace.favorites'
+import { Route as WorkspaceWorkspaceFolderRouteImport } from './routes/_workspace/workspace.folder'
+import { Route as WorkspaceWorkspaceMusicRouteImport } from './routes/_workspace/workspace.music'
+import { Route as WorkspaceWorkspaceTagsRouteImport } from './routes/_workspace/workspace.tags'
+import { Route as WorkspaceWorkspaceTrashRouteImport } from './routes/_workspace/workspace.trash'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -28,8 +29,8 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/_dashboard',
+const WorkspaceRoute = WorkspaceRouteImport.update({
+  id: '/_workspace',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
@@ -52,36 +53,42 @@ const VerifyEmailRoute = VerifyEmailRouteImport.update({
   path: '/verify-email',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardSplatRoute = DashboardSplatRouteImport.update({
+const WorkspaceSplatRoute = WorkspaceSplatRouteImport.update({
   id: '/$',
   path: '/$',
-  getParentRoute: () => DashboardRoute,
+  getParentRoute: () => WorkspaceRoute,
 } as any)
-const DashboardDashboardIndexRoute = DashboardDashboardIndexRouteImport.update({
-  id: '/dashboard/',
-  path: '/dashboard/',
-  getParentRoute: () => DashboardRoute,
+const WorkspaceWorkspaceIndexRoute = WorkspaceWorkspaceIndexRouteImport.update({
+  id: '/workspace/',
+  path: '/workspace/',
+  getParentRoute: () => WorkspaceRoute,
 } as any)
-const DashboardDashboardFavoritesRoute =
-  DashboardDashboardFavoritesRouteImport.update({
-    id: '/dashboard/favorites',
-    path: '/dashboard/favorites',
-    getParentRoute: () => DashboardRoute,
+const WorkspaceWorkspaceFavoritesRoute =
+  WorkspaceWorkspaceFavoritesRouteImport.update({
+    id: '/workspace/favorites',
+    path: '/workspace/favorites',
+    getParentRoute: () => WorkspaceRoute,
   } as any)
-const DashboardDashboardMusicRoute = DashboardDashboardMusicRouteImport.update({
-  id: '/dashboard/music',
-  path: '/dashboard/music',
-  getParentRoute: () => DashboardRoute,
+const WorkspaceWorkspaceFolderRoute =
+  WorkspaceWorkspaceFolderRouteImport.update({
+    id: '/workspace/folder',
+    path: '/workspace/folder',
+    getParentRoute: () => WorkspaceRoute,
+  } as any)
+const WorkspaceWorkspaceMusicRoute = WorkspaceWorkspaceMusicRouteImport.update({
+  id: '/workspace/music',
+  path: '/workspace/music',
+  getParentRoute: () => WorkspaceRoute,
 } as any)
-const DashboardDashboardTagsRoute = DashboardDashboardTagsRouteImport.update({
-  id: '/dashboard/tags',
-  path: '/dashboard/tags',
-  getParentRoute: () => DashboardRoute,
+const WorkspaceWorkspaceTagsRoute = WorkspaceWorkspaceTagsRouteImport.update({
+  id: '/workspace/tags',
+  path: '/workspace/tags',
+  getParentRoute: () => WorkspaceRoute,
 } as any)
-const DashboardDashboardTrashRoute = DashboardDashboardTrashRouteImport.update({
-  id: '/dashboard/trash',
-  path: '/dashboard/trash',
-  getParentRoute: () => DashboardRoute,
+const WorkspaceWorkspaceTrashRoute = WorkspaceWorkspaceTrashRouteImport.update({
+  id: '/workspace/trash',
+  path: '/workspace/trash',
+  getParentRoute: () => WorkspaceRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -95,13 +102,14 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/verify-email': typeof VerifyEmailRoute
-  '/$': typeof DashboardSplatRoute
-  '/dashboard/favorites': typeof DashboardDashboardFavoritesRoute
-  '/dashboard/music': typeof DashboardDashboardMusicRoute
-  '/dashboard/tags': typeof DashboardDashboardTagsRoute
-  '/dashboard/trash': typeof DashboardDashboardTrashRoute
+  '/$': typeof WorkspaceSplatRoute
+  '/workspace/favorites': typeof WorkspaceWorkspaceFavoritesRoute
+  '/workspace/folder': typeof WorkspaceWorkspaceFolderRoute
+  '/workspace/music': typeof WorkspaceWorkspaceMusicRoute
+  '/workspace/tags': typeof WorkspaceWorkspaceTagsRoute
+  '/workspace/trash': typeof WorkspaceWorkspaceTrashRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/dashboard/': typeof DashboardDashboardIndexRoute
+  '/workspace/': typeof WorkspaceWorkspaceIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -109,29 +117,31 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/verify-email': typeof VerifyEmailRoute
-  '/$': typeof DashboardSplatRoute
-  '/dashboard/favorites': typeof DashboardDashboardFavoritesRoute
-  '/dashboard/music': typeof DashboardDashboardMusicRoute
-  '/dashboard/tags': typeof DashboardDashboardTagsRoute
-  '/dashboard/trash': typeof DashboardDashboardTrashRoute
+  '/$': typeof WorkspaceSplatRoute
+  '/workspace/favorites': typeof WorkspaceWorkspaceFavoritesRoute
+  '/workspace/folder': typeof WorkspaceWorkspaceFolderRoute
+  '/workspace/music': typeof WorkspaceWorkspaceMusicRoute
+  '/workspace/tags': typeof WorkspaceWorkspaceTagsRoute
+  '/workspace/trash': typeof WorkspaceWorkspaceTrashRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/dashboard': typeof DashboardDashboardIndexRoute
+  '/workspace': typeof WorkspaceWorkspaceIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_dashboard': typeof DashboardRouteWithChildren
+  '/_workspace': typeof WorkspaceRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/verify-email': typeof VerifyEmailRoute
-  '/_dashboard/$': typeof DashboardSplatRoute
-  '/_dashboard/dashboard/favorites': typeof DashboardDashboardFavoritesRoute
-  '/_dashboard/dashboard/music': typeof DashboardDashboardMusicRoute
-  '/_dashboard/dashboard/tags': typeof DashboardDashboardTagsRoute
-  '/_dashboard/dashboard/trash': typeof DashboardDashboardTrashRoute
+  '/_workspace/$': typeof WorkspaceSplatRoute
+  '/_workspace/workspace/favorites': typeof WorkspaceWorkspaceFavoritesRoute
+  '/_workspace/workspace/folder': typeof WorkspaceWorkspaceFolderRoute
+  '/_workspace/workspace/music': typeof WorkspaceWorkspaceMusicRoute
+  '/_workspace/workspace/tags': typeof WorkspaceWorkspaceTagsRoute
+  '/_workspace/workspace/trash': typeof WorkspaceWorkspaceTrashRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/_dashboard/dashboard/': typeof DashboardDashboardIndexRoute
+  '/_workspace/workspace/': typeof WorkspaceWorkspaceIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -142,12 +152,13 @@ export interface FileRouteTypes {
     | '/register'
     | '/verify-email'
     | '/$'
-    | '/dashboard/favorites'
-    | '/dashboard/music'
-    | '/dashboard/tags'
-    | '/dashboard/trash'
+    | '/workspace/favorites'
+    | '/workspace/folder'
+    | '/workspace/music'
+    | '/workspace/tags'
+    | '/workspace/trash'
     | '/api/auth/$'
-    | '/dashboard/'
+    | '/workspace/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -156,32 +167,34 @@ export interface FileRouteTypes {
     | '/register'
     | '/verify-email'
     | '/$'
-    | '/dashboard/favorites'
-    | '/dashboard/music'
-    | '/dashboard/tags'
-    | '/dashboard/trash'
+    | '/workspace/favorites'
+    | '/workspace/folder'
+    | '/workspace/music'
+    | '/workspace/tags'
+    | '/workspace/trash'
     | '/api/auth/$'
-    | '/dashboard'
+    | '/workspace'
   id:
     | '__root__'
     | '/'
-    | '/_dashboard'
+    | '/_workspace'
     | '/forgot-password'
     | '/login'
     | '/register'
     | '/verify-email'
-    | '/_dashboard/$'
-    | '/_dashboard/dashboard/favorites'
-    | '/_dashboard/dashboard/music'
-    | '/_dashboard/dashboard/tags'
-    | '/_dashboard/dashboard/trash'
+    | '/_workspace/$'
+    | '/_workspace/workspace/favorites'
+    | '/_workspace/workspace/folder'
+    | '/_workspace/workspace/music'
+    | '/_workspace/workspace/tags'
+    | '/_workspace/workspace/trash'
     | '/api/auth/$'
-    | '/_dashboard/dashboard/'
+    | '/_workspace/workspace/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardRoute: typeof DashboardRouteWithChildren
+  WorkspaceRoute: typeof WorkspaceRouteWithChildren
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
@@ -198,11 +211,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_dashboard': {
-      id: '/_dashboard'
+    '/_workspace': {
+      id: '/_workspace'
       path: ''
       fullPath: '/'
-      preLoaderRoute: typeof DashboardRouteImport
+      preLoaderRoute: typeof WorkspaceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forgot-password': {
@@ -233,47 +246,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifyEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_dashboard/$': {
-      id: '/_dashboard/$'
+    '/_workspace/$': {
+      id: '/_workspace/$'
       path: '/$'
       fullPath: '/$'
-      preLoaderRoute: typeof DashboardSplatRouteImport
-      parentRoute: typeof DashboardRoute
+      preLoaderRoute: typeof WorkspaceSplatRouteImport
+      parentRoute: typeof WorkspaceRoute
     }
-    '/_dashboard/dashboard/': {
-      id: '/_dashboard/dashboard/'
-      path: '/dashboard'
-      fullPath: '/dashboard/'
-      preLoaderRoute: typeof DashboardDashboardIndexRouteImport
-      parentRoute: typeof DashboardRoute
+    '/_workspace/workspace/': {
+      id: '/_workspace/workspace/'
+      path: '/workspace'
+      fullPath: '/workspace/'
+      preLoaderRoute: typeof WorkspaceWorkspaceIndexRouteImport
+      parentRoute: typeof WorkspaceRoute
     }
-    '/_dashboard/dashboard/favorites': {
-      id: '/_dashboard/dashboard/favorites'
-      path: '/dashboard/favorites'
-      fullPath: '/dashboard/favorites'
-      preLoaderRoute: typeof DashboardDashboardFavoritesRouteImport
-      parentRoute: typeof DashboardRoute
+    '/_workspace/workspace/favorites': {
+      id: '/_workspace/workspace/favorites'
+      path: '/workspace/favorites'
+      fullPath: '/workspace/favorites'
+      preLoaderRoute: typeof WorkspaceWorkspaceFavoritesRouteImport
+      parentRoute: typeof WorkspaceRoute
     }
-    '/_dashboard/dashboard/music': {
-      id: '/_dashboard/dashboard/music'
-      path: '/dashboard/music'
-      fullPath: '/dashboard/music'
-      preLoaderRoute: typeof DashboardDashboardMusicRouteImport
-      parentRoute: typeof DashboardRoute
+    '/_workspace/workspace/folder': {
+      id: '/_workspace/workspace/folder'
+      path: '/workspace/folder'
+      fullPath: '/workspace/folder'
+      preLoaderRoute: typeof WorkspaceWorkspaceFolderRouteImport
+      parentRoute: typeof WorkspaceRoute
     }
-    '/_dashboard/dashboard/tags': {
-      id: '/_dashboard/dashboard/tags'
-      path: '/dashboard/tags'
-      fullPath: '/dashboard/tags'
-      preLoaderRoute: typeof DashboardDashboardTagsRouteImport
-      parentRoute: typeof DashboardRoute
+    '/_workspace/workspace/music': {
+      id: '/_workspace/workspace/music'
+      path: '/workspace/music'
+      fullPath: '/workspace/music'
+      preLoaderRoute: typeof WorkspaceWorkspaceMusicRouteImport
+      parentRoute: typeof WorkspaceRoute
     }
-    '/_dashboard/dashboard/trash': {
-      id: '/_dashboard/dashboard/trash'
-      path: '/dashboard/trash'
-      fullPath: '/dashboard/trash'
-      preLoaderRoute: typeof DashboardDashboardTrashRouteImport
-      parentRoute: typeof DashboardRoute
+    '/_workspace/workspace/tags': {
+      id: '/_workspace/workspace/tags'
+      path: '/workspace/tags'
+      fullPath: '/workspace/tags'
+      preLoaderRoute: typeof WorkspaceWorkspaceTagsRouteImport
+      parentRoute: typeof WorkspaceRoute
+    }
+    '/_workspace/workspace/trash': {
+      id: '/_workspace/workspace/trash'
+      path: '/workspace/trash'
+      fullPath: '/workspace/trash'
+      preLoaderRoute: typeof WorkspaceWorkspaceTrashRouteImport
+      parentRoute: typeof WorkspaceRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -285,31 +305,33 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface DashboardRouteChildren {
-  DashboardSplatRoute: typeof DashboardSplatRoute
-  DashboardDashboardFavoritesRoute: typeof DashboardDashboardFavoritesRoute
-  DashboardDashboardMusicRoute: typeof DashboardDashboardMusicRoute
-  DashboardDashboardTagsRoute: typeof DashboardDashboardTagsRoute
-  DashboardDashboardTrashRoute: typeof DashboardDashboardTrashRoute
-  DashboardDashboardIndexRoute: typeof DashboardDashboardIndexRoute
+interface WorkspaceRouteChildren {
+  WorkspaceSplatRoute: typeof WorkspaceSplatRoute
+  WorkspaceWorkspaceFavoritesRoute: typeof WorkspaceWorkspaceFavoritesRoute
+  WorkspaceWorkspaceFolderRoute: typeof WorkspaceWorkspaceFolderRoute
+  WorkspaceWorkspaceMusicRoute: typeof WorkspaceWorkspaceMusicRoute
+  WorkspaceWorkspaceTagsRoute: typeof WorkspaceWorkspaceTagsRoute
+  WorkspaceWorkspaceTrashRoute: typeof WorkspaceWorkspaceTrashRoute
+  WorkspaceWorkspaceIndexRoute: typeof WorkspaceWorkspaceIndexRoute
 }
 
-const DashboardRouteChildren: DashboardRouteChildren = {
-  DashboardSplatRoute: DashboardSplatRoute,
-  DashboardDashboardFavoritesRoute: DashboardDashboardFavoritesRoute,
-  DashboardDashboardMusicRoute: DashboardDashboardMusicRoute,
-  DashboardDashboardTagsRoute: DashboardDashboardTagsRoute,
-  DashboardDashboardTrashRoute: DashboardDashboardTrashRoute,
-  DashboardDashboardIndexRoute: DashboardDashboardIndexRoute,
+const WorkspaceRouteChildren: WorkspaceRouteChildren = {
+  WorkspaceSplatRoute: WorkspaceSplatRoute,
+  WorkspaceWorkspaceFavoritesRoute: WorkspaceWorkspaceFavoritesRoute,
+  WorkspaceWorkspaceFolderRoute: WorkspaceWorkspaceFolderRoute,
+  WorkspaceWorkspaceMusicRoute: WorkspaceWorkspaceMusicRoute,
+  WorkspaceWorkspaceTagsRoute: WorkspaceWorkspaceTagsRoute,
+  WorkspaceWorkspaceTrashRoute: WorkspaceWorkspaceTrashRoute,
+  WorkspaceWorkspaceIndexRoute: WorkspaceWorkspaceIndexRoute,
 }
 
-const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
-  DashboardRouteChildren,
+const WorkspaceRouteWithChildren = WorkspaceRoute._addFileChildren(
+  WorkspaceRouteChildren
 )
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRoute: DashboardRouteWithChildren,
+  WorkspaceRoute: WorkspaceRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,

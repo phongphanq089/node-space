@@ -30,7 +30,7 @@ export const Route = createFileRoute('/verify-email')({
     console.log(session.user.emailVerified, 'session.user.emailVerified')
     if (session.user.emailVerified) {
       throw redirect({
-        to: '/dashboard',
+        to: '/workspace',
       })
     }
     return {
@@ -85,7 +85,7 @@ function VerifyEmailPage() {
         toast.success('Email verified successfully!')
         // Force the router to reload session data before navigating
         await router.invalidate()
-        navigate({ to: '/dashboard' })
+        navigate({ to: '/workspace' })
       }
     } catch (err: any) {
       toast.error('An error occurred during verification')
