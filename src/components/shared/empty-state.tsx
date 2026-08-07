@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+ 
 import React from 'react'
 import {
   FolderOpen,
@@ -10,11 +10,7 @@ import {
 import { cn } from '@/lib/utils'
 
 export type EmptyStateVariant =
-  | 'folder'
-  | 'search'
-  | 'data'
-  | 'notFound'
-  | 'default'
+  'folder' | 'search' | 'data' | 'notFound' | 'default'
 
 interface EmptyStateProps {
   icon?: React.ElementType
@@ -81,32 +77,28 @@ export function EmptyState({
         className
       )}
     >
-      {/* Background Ambient Glow */}
-      <div className="pointer-events-none absolute -top-10 left-1/2 -z-10 h-32 w-32 -translate-x-1/2 rounded-full bg-ns-primary/10 blur-2xl transition-all group-hover:bg-ns-primary/20" />
+      <div className="pointer-events-none absolute -top-10 left-1/2 -z-10 h-32 w-32 -translate-x-1/2 rounded-sm bg-ns-primary/10 blur-2xl transition-all group-hover:bg-ns-primary/20" />
 
-      {/* Icon Badge Wrapper */}
       <div className="relative mb-3 flex items-center justify-center">
-        <div className="absolute inset-0 rounded-2xl bg-ns-primary/20 blur-md transition-all group-hover:blur-lg" />
-        <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-ns-border-em/60 bg-ns-active/80 text-ns-primary-lt shadow-lg shadow-ns-primary/10 transition-all group-hover:scale-105 group-hover:text-white">
+        <div className="absolute inset-0 rounded-sm bg-ns-primary/20 blur-md transition-all group-hover:blur-lg" />
+        <div className="relative flex h-12 w-12 items-center justify-center rounded-sm border border-ns-border-em/60 bg-ns-active/80 text-ns-primary-lt shadow-lg shadow-ns-primary/10 transition-all group-hover:scale-105 group-hover:text-white">
           <Icon className={cn('h-6 w-6', compact && 'h-5 w-5')} />
         </div>
       </div>
 
-      {/* Title */}
       <h3
         className={cn(
-          'text-sm font-extrabold text-ns-text transition-colors group-hover:text-white',
+          'text-lg font-extrabold text-ns-text transition-colors group-hover:text-white',
           compact && 'text-xs'
         )}
       >
         {displayTitle}
       </h3>
 
-      {/* Description */}
       {displayDesc && (
         <p
           className={cn(
-            'mt-1 max-w-sm text-xs leading-relaxed text-ns-faint',
+            'mt-1 max-w-sm text-sm leading-relaxed text-white/70',
             compact && 'text-[0.68rem]'
           )}
         >

@@ -22,11 +22,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/core/select'
+import {
+  ColorPicker,
+  DEFAULT_PRESET_COLORS,
+} from '@/components/ui/core/color-picker'
 import { FilePond, registerPlugin } from 'react-filepond'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 import type { FilePondInitialFile } from 'filepond'
 import 'filepond/dist/filepond.min.css'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
+import { Button } from '@/components/ui/core/button'
 
 registerPlugin(FilePondPluginImagePreview)
 
@@ -60,17 +65,6 @@ interface CreateFolderModalProps {
   }) => void
 }
 
-const PRESET_COLORS = [
-  '#a78bfa',
-  '#34d399',
-  '#60a5fa',
-  '#f87171',
-  '#f97316',
-  '#fbbf24',
-  '#ec4899',
-  '#38bdf8',
-]
-
 export function CreateFolderModal({
   isOpen,
   onClose,
@@ -84,7 +78,7 @@ export function CreateFolderModal({
     defaultValues: {
       name: '',
       workspaceId: WORKSPACES[0]?.name ?? '',
-      color: PRESET_COLORS[0],
+      color: DEFAULT_PRESET_COLORS[0],
       image: '',
     },
   })
@@ -94,14 +88,12 @@ export function CreateFolderModal({
       form.reset({
         name: '',
         workspaceId: WORKSPACES[0]?.name ?? '',
-        color: PRESET_COLORS[0],
+        color: DEFAULT_PRESET_COLORS[0],
         image: '',
       })
       setFiles([])
     }
   }, [isOpen, form])
-
-  const selectedColor = form.watch('color') || PRESET_COLORS[0]
 
   const handleSubmit = (data: CreateFolderSchemaValues) => {
     if (onSubmit) {
@@ -120,11 +112,11 @@ export function CreateFolderModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="border-ns-border-em bg-ns-panel/95 p-6 text-ns-text shadow-2xl backdrop-blur-2xl sm:max-w-md">
+      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden border-ns-border-em bg-ns-panel/95 p-6 text-ns-text shadow-2xl backdrop-blur-2xl sm:max-h-[90vh] sm:max-w-md">
         <div className="pointer-events-none absolute -top-12 left-1/2 -z-10 h-32 w-48 -translate-x-1/2 rounded-full bg-ns-primary/20 blur-3xl" />
-        <DialogHeader className="gap-1 border-b border-ns-border-soft pb-1">
+        <DialogHeader className="shrink-0 gap-1 border-b border-ns-border-soft pb-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-ns-border bg-ns-active/80 text-ns-primary-lt shadow-inner">
+            <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-ns-border bg-ns-active/80 text-ns-primary-lt shadow-inner">
               <FolderPlus size={19} />
             </div>
             <div className="flex flex-col text-left">
@@ -139,113 +131,106 @@ export function CreateFolderModal({
         </DialogHeader>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
-          className="flex flex-col gap-4 pt-2"
+          className="flex min-h-0 flex-1 flex-col pt-2"
         >
-          <Controller
-            name="name"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel>
-                  Folder Name <span className="text-red-400">*</span>
-                </FieldLabel>
-                <Input
-                  {...field}
-                  placeholder="e.g. System Architecture, Project Docs..."
-                  aria-invalid={fieldState.invalid}
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-          <Controller
-            name="workspaceId"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel className="flex items-center gap-1.5">
-                  <Layers size={11} className="text-ns-ghost" />
-                  Workspace
-                </FieldLabel>
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select workspace" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {WORKSPACES.map((ws) => (
-                      <SelectItem key={ws.name} value={ws.name}>
-                        {ws.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-          <div className="flex flex-col gap-1.5">
-            <FieldLabel className="flex items-center gap-1.5">
-              <Palette size={11} className="text-ns-ghost" />
-              Accent Color
-            </FieldLabel>
-            <div className="flex items-center gap-2 py-2">
-              {PRESET_COLORS.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => form.setValue('color', c)}
-                  style={{ backgroundColor: c }}
-                  className={`h-6 w-6 cursor-pointer rounded-full transition-all hover:scale-110 ${
-                    selectedColor === c
-                      ? 'scale-110 ring-2 ring-white'
-                      : 'opacity-70 hover:opacity-100'
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <FieldLabel className="flex items-center gap-1.5">
-              <Upload size={11} className="text-ns-ghost" />
-              Attach Files / Assets{' '}
-              <span className="text-[0.6rem] font-normal text-ns-faint">
-                (Optional)
-              </span>
-            </FieldLabel>
-            <FilePond
-              files={files}
-              onupdatefiles={setFiles}
-              allowMultiple={false}
-              allowImagePreview={true}
-              acceptedFileTypes={['image/*']}
-              name="files"
-              labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-              labelFileTypeNotAllowed="File is of invalid type"
-              credits={false}
+          <div className="flex flex-1 flex-col gap-6 overflow-y-auto pt-1 pr-1.5">
+            <Controller
+              name="name"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel>
+                    Folder Name <span className="text-red-400">*</span>
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    placeholder="e.g. System Architecture, Project Docs..."
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
             />
+            <Controller
+              name="workspaceId"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel className="flex items-center gap-1.5">
+                    <Layers size={14} className="text-white" />
+                    Workspace
+                  </FieldLabel>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select workspace" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {WORKSPACES.map((ws) => (
+                        <SelectItem key={ws.name} value={ws.name}>
+                          {ws.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+            <Controller
+              name="color"
+              control={form.control}
+              render={({ field }) => (
+                <div className="flex flex-col gap-1.5">
+                  <FieldLabel className="flex items-center gap-1.5">
+                    <Palette size={14} className="text-white" />
+                    Accent Color
+                  </FieldLabel>
+                  <div className="py-1">
+                    <ColorPicker
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  </div>
+                </div>
+              )}
+            />
+            <div className="flex flex-col gap-1.5">
+              <FieldLabel className="flex items-center gap-1.5">
+                <Upload size={14} className="text-white" />
+                Attach Files / Assets{' '}
+                <span className="text-[0.6rem] font-normal text-ns-faint">
+                  (Optional)
+                </span>
+              </FieldLabel>
+              <FilePond
+                files={files}
+                onupdatefiles={setFiles}
+                allowMultiple={false}
+                allowImagePreview={true}
+                acceptedFileTypes={['image/*']}
+                name="files"
+                labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+                labelFileTypeNotAllowed="File is of invalid type"
+                credits={false}
+              />
+            </div>
           </div>
 
           {/* Modal Actions */}
-          <DialogFooter className="-mx-0 mt-2 -mb-0 flex items-center justify-end gap-2 rounded-none border-t border-ns-border-soft bg-transparent p-0 pt-3">
+          <DialogFooter className="-mx-0 mt-3 -mb-0 flex shrink-0 items-center justify-end gap-2 rounded-none border-t border-ns-border-soft bg-transparent p-0 pt-3">
             <DialogClose asChild>
-              <button
-                type="button"
-                className="cursor-pointer rounded-xl border border-ns-border-soft px-4 py-2 text-xs font-semibold text-ns-ghost transition-all hover:bg-ns-hover hover:text-white"
-              >
+              <Button variant={'outline'} type="button">
                 Cancel
-              </button>
+              </Button>
             </DialogClose>
-            <button
-              type="submit"
-              className="flex cursor-pointer items-center gap-1.5 rounded-xl bg-gradient-to-r from-ns-primary to-ns-secondary px-4 py-2 text-xs font-bold text-white shadow-md shadow-ns-primary/20 transition-all hover:opacity-90 active:scale-95"
-            >
+            <Button type="submit">
               <Sparkles size={13} />
               <span>Create Folder</span>
-            </button>
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

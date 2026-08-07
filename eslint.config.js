@@ -25,6 +25,7 @@ export default [
       '@typescript-eslint/array-type': 'off',
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/require-await': 'off',
+      '@typescript-eslint/no-unnecessary-condition': 'off',
     },
   },
   {
