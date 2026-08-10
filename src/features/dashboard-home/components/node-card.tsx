@@ -8,8 +8,8 @@ import {
   Folder,
 } from 'lucide-react'
 
-import { GlowCard } from '@/components/shared/glow-card-grid'
-import type { NODES } from '@/constants/moc-data'
+import { GlowCard } from '@/shared/ui/system/glow-card-grid'
+import type { NODES } from '@/shared/constants/moc-data'
 
 type NodeWithThumbnail = (typeof NODES)[number] & { thumbnail?: string }
 

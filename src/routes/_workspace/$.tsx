@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Compass, ArrowRight } from 'lucide-react'
-import { Button } from '@/components/ui/core/button'
+import { Button } from '@/shared/ui/core/button'
 
 export const Route = createFileRoute('/_workspace/$')({
   component: NotFoundPage,

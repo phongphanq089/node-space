@@ -1,4 +1,4 @@
-import { NODES, NOTES } from '@/constants/moc-data'
+import { NODES, NOTES } from '@/shared/constants/moc-data'
 import { createFileRoute } from '@tanstack/react-router'
 import { Star, FileText, ArrowUpRight, Heart } from 'lucide-react'
 

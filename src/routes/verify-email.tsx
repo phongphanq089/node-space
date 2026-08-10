@@ -6,32 +6,28 @@ import {
 } from '@tanstack/react-router'
 import { getSessionFn } from '@/features/auth/auth.fns'
 import AuthCard from '@/features/auth/components/AuthCard'
-import { Button } from '@/components/ui/core/button'
-import { DotmCircular } from '@/components/ui/core/dotm-circular'
+import { Button } from '@/shared/ui/core/button'
+import { DotmCircular } from '@/shared/ui/core/dotm-circular'
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from '@/components/ui/core/input-otp'
-import { signOut, authClient } from '@/lib/auth-client'
+} from '@/shared/ui/core/input-otp'
+import { signOut, authClient } from '@/shared/lib/auth-client'
 import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
 
 export const Route = createFileRoute('/verify-email')({
-  beforeLoad: async () => {
+  beforeLoad: async ({ location }) => {
     const session = await getSessionFn()
     if (!session) {
       throw redirect({
         to: '/login',
+        search: { redirect: location.href },
       })
     }
-    // If already verified, send them straight to the dashboard
-
-    console.log(session.user.emailVerified, 'session.user.emailVerified')
     if (session.user.emailVerified) {
-      throw redirect({
-        to: '/workspace',
-      })
+      throw redirect({ to: '/' })
     }
     return {
       session,
@@ -41,17 +37,18 @@ export const Route = createFileRoute('/verify-email')({
 })
 
 function VerifyEmailPage() {
-  const { session } = Route.useRouteContext()
-  const navigate = useNavigate()
   const router = useRouter()
+  const navigate = useNavigate()
+  const { session } = Route.useRouteContext()
   const [otp, setOtp] = useState('')
-  const [loading, setLoading] = useState(false)
   const [verifying, setVerifying] = useState(false)
+  const [resending, setResending] = useState(false)
   const [cooldown, setCooldown] = useState(0)
 
+  // Resend cooldown timer
   useEffect(() => {
     if (cooldown <= 0) return
-    const timer = setTimeout(() => setCooldown(cooldown - 1), 1000)
+    const timer = setTimeout(() => setCooldown((c) => c - 1), 1000)
     return () => clearTimeout(timer)
   }, [cooldown])
 
@@ -62,40 +59,39 @@ function VerifyEmailPage() {
     }
   }, [otp])
 
-  const handleVerify = async (codeToVerify?: string) => {
-    const code = codeToVerify || otp
-    if (code.length !== 6) {
-      toast.error('Please enter a 6-digit verification code')
-      return
-    }
-
+  const handleVerify = async (code: string) => {
+    if (code.length !== 6 || verifying) return
     setVerifying(true)
     try {
-      const { error } = await authClient.emailOtp.verifyEmail({
-        email: session.user.email,
-        otp: code,
-      })
-
-      if (error) {
-        toast.error('Verification failed', {
-          description:
-            error.message || 'The verification code is incorrect or expired.',
-        })
-      } else {
-        toast.success('Email verified successfully!')
-        // Force the router to reload session data before navigating
-        await router.invalidate()
-        navigate({ to: '/workspace' })
-      }
-    } catch (err: any) {
-      toast.error('An error occurred during verification')
-    } finally {
+      await authClient.emailOtp.verifyEmail(
+        {
+          email: session.user.email,
+          otp: code,
+        },
+        {
+          onSuccess: async () => {
+            toast.success('Email verified successfully!')
+            await router.invalidate()
+            navigate({ to: '/workspace' })
+          },
+          onError: (ctx: { error: { message?: string } }) => {
+            toast.error('Verification failed', {
+              description: ctx.error.message || 'Invalid or expired code.',
+            })
+            setOtp('')
+            setVerifying(false)
+          },
+        }
+      )
+    } catch {
+      toast.error('An unexpected error occurred.')
       setVerifying(false)
     }
   }
 
   const handleResend = async () => {
-    setLoading(true)
+    if (cooldown > 0 || resending) return
+    setResending(true)
     try {
       await authClient.emailOtp.sendVerificationOtp(
         {
@@ -109,17 +105,17 @@ function VerifyEmailPage() {
             })
             setCooldown(60)
           },
-          onError: (ctx) => {
+          onError: (ctx: { error: { message?: string } }) => {
             toast.error('Failed to send code', {
               description: ctx.error.message,
             })
           },
         }
       )
-    } catch (err: any) {
+    } catch {
       toast.error('An unexpected error occurred.')
     } finally {
-      setLoading(false)
+      setResending(false)
     }
   }
 
@@ -192,7 +188,7 @@ function VerifyEmailPage() {
         </div>
 
         <Button
-          onClick={() => handleVerify()}
+          onClick={() => handleVerify(otp)}
           disabled={verifying || otp.length !== 6}
           className="relative w-full cursor-pointer"
         >
@@ -210,7 +206,7 @@ function VerifyEmailPage() {
           Didn't receive the code?{' '}
           <button
             onClick={handleResend}
-            disabled={loading || cooldown > 0}
+            disabled={resending || cooldown > 0}
             className="font-semibold text-ns-primary-lt hover:text-ns-primary disabled:pointer-events-none disabled:opacity-50"
           >
             {cooldown > 0 ? `Resend code in ${cooldown}s` : 'Resend Code'}

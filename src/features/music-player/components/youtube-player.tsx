@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { useMusicStore } from '@/stores/useMusicStore'
+ 
+import { useMusicStore } from '@/features/music-player/useMusicStore'
 import {
   X,
   Minimize2,

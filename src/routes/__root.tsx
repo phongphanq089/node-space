@@ -4,8 +4,8 @@ import '@/styles.css'
 import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
 // import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
-import { DefaultCatchBoundary } from '@/components/shared/default-catch-boundary'
-import { Toaster } from '@/components/ui/core/sonner'
+import { DefaultCatchBoundary } from '@/shared/ui/system/default-catch-boundary'
+import { Toaster } from '@/shared/ui/core/sonner'
 
 // Inline theme init — runs before React hydration to prevent flash
 const THEME_INIT_SCRIPT = `(function(){try{var root=document.documentElement;root.classList.remove('light');root.classList.add('dark');root.setAttribute('data-theme','dark');root.style.colorScheme='dark';}catch(e){}})();`

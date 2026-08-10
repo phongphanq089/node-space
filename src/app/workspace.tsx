@@ -1,5 +1,3 @@
-import Content from '@/components/dashboard-sidebar/content'
-import DashboardSidebar from '@/components/dashboard-sidebar/dashboard-sidebar'
 import {
   Drawer,
   DrawerClose,
@@ -8,13 +6,16 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from '@/components/ui/core/drawer'
-import { SidebarProvider } from '@/components/ui/core/sidebar'
+} from '@/shared/ui/core/drawer'
+import { SidebarProvider } from '@/shared/ui/core/sidebar'
 import MusicPlayer from '@/features/music-player/components/music-player'
 import YoutubePlayer from '@/features/music-player/components/youtube-player'
-import { useMusicStore } from '@/stores/useMusicStore'
-import type { TrackItem } from '@/stores/useMusicStore'
+import { useMusicStore } from '@/features/music-player/useMusicStore'
+import type { TrackItem } from '@/features/music-player/useMusicStore'
+import WorkSpaceSidebar from '@/widgets/workspace-sidebar'
+
 import { useEffect, useRef } from 'react'
+import MainContentWorkspace from './layouts/main-content-workspace'
 
 function isYoutubeUrl(url: string) {
   return url.includes('youtube.com') || url.includes('youtu.be')
@@ -97,8 +98,9 @@ const Workspace = () => {
   return (
     <SidebarProvider>
       <div className="flex w-full bg-ns-bg text-ns-text-2">
-        <DashboardSidebar />
-        <Content />
+        <WorkSpaceSidebar />
+
+        <MainContentWorkspace />
 
         {/* YouTube Stream Modal & PIP Player */}
         <YoutubePlayer />

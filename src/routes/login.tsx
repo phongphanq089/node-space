@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/core/button'
-import { DotmCircular } from '@/components/ui/core/dotm-circular'
-import { Input } from '@/components/ui/core/input'
+import { Button } from '@/shared/ui/core/button'
+import { DotmCircular } from '@/shared/ui/core/dotm-circular'
+import { Input } from '@/shared/ui/core/input'
 import { loginSchema } from '@/features/auth/auth.validate'
 import type { LoginSchemaValues } from '@/features/auth/auth.validate'
 import AuthCard from '@/features/auth/components/AuthCard'
@@ -13,7 +13,7 @@ import {
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
-import { signIn } from '@/lib/auth-client'
+import { signIn } from '@/shared/lib/auth-client'
 import { getSessionFn } from '@/features/auth/auth.fns'
 
 import {
@@ -21,7 +21,7 @@ import {
   FieldError,
   FieldGroup,
   FieldLabel,
-} from '@/components/ui/core/field'
+} from '@/shared/ui/core/field'
 import PasswordStrengthIndicator from '@/features/auth/components/PasswordStrengthIndicator'
 import { toast } from 'sonner'
 
@@ -61,7 +61,7 @@ function LoginPage() {
         password: data.password,
         callbackURL: '/workspace',
         fetchOptions: {
-          onError: (ctx) => {
+          onError: (ctx: { error: { message?: string } }) => {
             toast.error('failed', {
               position: 'top-center',
               description: ctx.error.message,

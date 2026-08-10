@@ -1,4 +1,3 @@
-import BannerMusic from '@/features/dashboard-home/components/banner-music'
 import FoldersList from '@/features/dashboard-home/components/folder-list'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -8,16 +7,10 @@ export const Route = createFileRoute('/_workspace/workspace/folder')({
 
 function RouteComponent() {
   return (
-    <div className="relative flex flex-1 flex-col gap-5 bg-ns-bg">
-      {/* Full-width Music Banner at top */}
-      <BannerMusic />
-
-      {/* Compact nodes section below */}
+    <div className="relative flex flex-1 flex-col gap-5">
+      {/* <BannerMusic /> */}
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-2">
-          <span className="text-[0.6rem] font-bold tracking-[0.12em] text-ns-primary-lt uppercase">
-            Workspace
-          </span>
           <div className="h-px flex-1 bg-ns-border-soft" />
         </div>
         <FoldersList />

@@ -1,6 +1,6 @@
 import { Search, Plus } from 'lucide-react'
-import { Button } from '@/components/ui/core/button'
-import Input from '@/components/ui/core/input'
+import { Button } from '@/shared/ui/core/button'
+import Input from '@/shared/ui/core/input'
 
 interface NodeSearchBarProps {
   search: string
@@ -19,7 +19,9 @@ export function NodeSearchBar({
         <Input
           placeholder="Search nodes..."
           value={search}
-          onChange={(e) => onSearchChange(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            onSearchChange(e.target.value)
+          }
           suffix={<Search size={13} className="flex-shrink-0 text-ns-ghost" />}
         />
       </div>

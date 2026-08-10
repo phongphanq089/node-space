@@ -1,5 +1,5 @@
 import { Folder, FolderOpen, Filter, Layers, X } from 'lucide-react'
-import { FOLDERS } from '@/constants/moc-data'
+import { FOLDERS } from '@/shared/constants/moc-data'
 
 interface FolderFilterPillsProps {
   nodes: { folderId?: string }[]

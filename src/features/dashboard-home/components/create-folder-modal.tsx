@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FolderPlus, Palette, Layers, Sparkles, Upload } from 'lucide-react'
-import { WORKSPACES } from '@/constants/moc-data'
+import { WORKSPACES } from '@/shared/constants/moc-data'
 import {
   Dialog,
   DialogContent,
@@ -12,26 +12,26 @@ import {
   DialogDescription,
   DialogFooter,
   DialogClose,
-} from '@/components/ui/core/dialog'
-import { Input } from '@/components/ui/core/input'
-import { Field, FieldError, FieldLabel } from '@/components/ui/core/field'
+} from '@/shared/ui/core/dialog'
+import { Input } from '@/shared/ui/core/input'
+import { Field, FieldError, FieldLabel } from '@/shared/ui/core/field'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/core/select'
+} from '@/shared/ui/core/select'
 import {
   ColorPicker,
   DEFAULT_PRESET_COLORS,
-} from '@/components/ui/core/color-picker'
+} from '@/shared/ui/core/color-picker'
 import { FilePond, registerPlugin } from 'react-filepond'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 import type { FilePondInitialFile } from 'filepond'
 import 'filepond/dist/filepond.min.css'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
-import { Button } from '@/components/ui/core/button'
+import { Button } from '@/shared/ui/core/button'
 
 registerPlugin(FilePondPluginImagePreview)
 

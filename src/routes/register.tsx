@@ -1,17 +1,17 @@
-import { Button } from '@/components/ui/core/button'
-import { DotmCircular } from '@/components/ui/core/dotm-circular'
+import { Button } from '@/shared/ui/core/button'
+import { DotmCircular } from '@/shared/ui/core/dotm-circular'
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from '@/components/ui/core/field'
-import { Input } from '@/components/ui/core/input'
+} from '@/shared/ui/core/field'
+import { Input } from '@/shared/ui/core/input'
 import { registerSchema } from '@/features/auth/auth.validate'
 import type { RegisterSchemaValues } from '@/features/auth/auth.validate'
 import AuthCard from '@/features/auth/components/AuthCard'
 import PasswordStrengthIndicator from '@/features/auth/components/PasswordStrengthIndicator'
-import { signUp } from '@/lib/auth-client'
+import { signUp } from '@/shared/lib/auth-client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   createFileRoute,
@@ -63,7 +63,7 @@ function RegisterPage() {
         name: data.fullName,
         callbackURL: '/workspace',
         fetchOptions: {
-          onError: (ctx) => {
+          onError: (ctx: { error: { message?: string } }) => {
             setErrorMsg(ctx.error.message || 'Registration failed')
             setLoading(false)
           },

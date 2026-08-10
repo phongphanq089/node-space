@@ -1,16 +1,16 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import AuthCard from '@/features/auth/components/AuthCard'
-import { Button } from '@/components/ui/core/button'
-import { DotmCircular } from '@/components/ui/core/dotm-circular'
-import { Input } from '@/components/ui/core/input'
-import { Field, FieldGroup, FieldLabel } from '@/components/ui/core/field'
+import { Button } from '@/shared/ui/core/button'
+import { DotmCircular } from '@/shared/ui/core/dotm-circular'
+import { Input } from '@/shared/ui/core/input'
+import { Field, FieldGroup, FieldLabel } from '@/shared/ui/core/field'
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-} from '@/components/ui/core/input-otp'
+} from '@/shared/ui/core/input-otp'
 import PasswordStrengthIndicator from '@/features/auth/components/PasswordStrengthIndicator'
-import { authClient } from '@/lib/auth-client'
+import { authClient } from '@/shared/lib/auth-client'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -47,7 +47,7 @@ function ForgotPasswordPage() {
             })
             setStep('reset')
           },
-          onError: (ctx) => {
+          onError: (ctx: { error: { message?: string } }) => {
             toast.error('Failed to send code', {
               description:
                 ctx.error.message || 'Make sure the email is registered.',
@@ -92,7 +92,7 @@ function ForgotPasswordPage() {
             setPassword('')
             navigate({ to: '/login' })
           },
-          onError: (ctx) => {
+          onError: (ctx: { error: { message?: string } }) => {
             toast.error('Reset failed', {
               description:
                 ctx.error.message ||
@@ -134,7 +134,9 @@ function ForgotPasswordPage() {
                 id="forgot-email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setEmail(e.target.value)
+                }
                 placeholder="you@example.com"
                 required
                 autoComplete="email"
@@ -175,7 +177,7 @@ function ForgotPasswordPage() {
                 <InputOTP
                   maxLength={6}
                   value={otp}
-                  onChange={(val) => setOtp(val.replace(/\D/g, ''))}
+                  onChange={(val: string) => setOtp(val.replace(/\D/g, ''))}
                   disabled={loading}
                 >
                   <InputOTPGroup className="gap-2">
@@ -214,7 +216,9 @@ function ForgotPasswordPage() {
                 id="new-password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setPassword(e.target.value)
+                }
                 placeholder="••••••••"
                 required
                 showPasswordToggle

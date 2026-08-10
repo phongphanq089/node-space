@@ -1,5 +1,5 @@
-import { useMusicStore } from '@/stores/useMusicStore'
-import type { TrackItem } from '@/stores/useMusicStore'
+import { useMusicStore } from '@/features/music-player/useMusicStore'
+import type { TrackItem } from '@/features/music-player/useMusicStore'
 import { Link } from '@tanstack/react-router'
 import {
   Maximize2,

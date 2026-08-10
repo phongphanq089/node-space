@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+ 
 import { createServerFn } from '@tanstack/react-start'
 
 export const getSessionFn = createServerFn({ method: 'GET' }).handler(
   async () => {
-    const { getAuth } = await import('@/lib/auth')
+    const { getAuth } = await import('@/shared/lib/auth')
     const { getRequest } = await import('@tanstack/react-start/server')
     const request = getRequest()
     if (!request) return null
@@ -24,7 +24,7 @@ export const getSessionFn = createServerFn({ method: 'GET' }).handler(
 export const resendVerificationEmailFn = createServerFn({
   method: 'POST',
 }).handler(async () => {
-  const { getAuth } = await import('@/lib/auth')
+  const { getAuth } = await import('@/shared/lib/auth')
   const { getRequest } = await import('@tanstack/react-start/server')
   const request = getRequest()
   if (!request) throw new Error('No request context')
