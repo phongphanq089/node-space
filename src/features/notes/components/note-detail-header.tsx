@@ -1,4 +1,4 @@
-import {
+﻿import {
   Columns,
   Edit3,
   Eye,
@@ -10,7 +10,7 @@ import {
   Star,
   X,
 } from 'lucide-react'
-import type { NODES, NoteItem } from '@/shared/constants/moc-data'
+import type { NODES, NoteItem } from '@/shared/mocks/mock-data'
 
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/core/button'
@@ -108,7 +108,7 @@ export function NoteDetailHeader({
                 {node.tag}
               </span>
             )}
-            <span>• {selectedNote.updated}</span>
+            <span>â€¢ {selectedNote.updated}</span>
             {selectedNote.starred && (
               <Star
                 size={10}

@@ -1,5 +1,5 @@
-import { Tag } from 'lucide-react'
-import { POPULAR_TAGS } from '@/shared/constants/moc-data'
+﻿import { Tag } from 'lucide-react'
+import { POPULAR_TAGS } from '@/shared/mocks/mock-data'
 import { Link } from '@tanstack/react-router'
 
 export function PopularTagsWidget() {

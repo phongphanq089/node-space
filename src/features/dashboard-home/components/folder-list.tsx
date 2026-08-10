@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NODES } from '@/shared/constants/moc-data'
+import { NODES } from '@/shared/mocks/mock-data'
 import { X } from 'lucide-react'
 import { GlowCardGrid } from '@/shared/ui/system/glow-card-grid'
 import { EmptyState } from '@/shared/ui/system/empty-state'
@@ -11,7 +11,7 @@ import { NodeCard } from './node-card'
 
 type NodeWithThumbnail = (typeof NODES)[number] & { thumbnail?: string }
 
-export default function FoldersList() {
+export function FoldersList() {
   const [nodes, setNodes] = useState<NodeWithThumbnail[]>(() =>
     NODES.map((n) => ({ ...n }))
   )

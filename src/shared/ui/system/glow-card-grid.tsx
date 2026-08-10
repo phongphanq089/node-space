@@ -133,7 +133,7 @@ export function GlowCard({
       </div>
 
       {/* Content wrapper (relative flow determines height of parent) */}
-      <div className="relative z-[2] w-full">
+      <div className="relative z-ns-raised w-full">
         {children ? (
           children
         ) : (
@@ -156,7 +156,7 @@ export function GlowCard({
       {/* Glowing border overlay */}
       <div
         className={cn(
-          'pointer-events-none absolute inset-0 z-[1] translate-z-0 rounded-(--card-radius)',
+          'pointer-events-none absolute inset-0 z-ns-base translate-z-0 rounded-(--card-radius)',
           'border-(length:--card-border-width) border-solid border-transparent',
           'backdrop-blur-(--card-border-blur) backdrop-brightness-(--card-border-brightness) backdrop-contrast-(--card-border-contrast) backdrop-saturate-(--card-border-saturate)',
           '[clip-path:inset(0_round_var(--card-radius))]'

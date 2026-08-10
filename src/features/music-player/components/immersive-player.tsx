@@ -1,5 +1,5 @@
-import { useMusicStore } from '@/features/music-player/useMusicStore'
-import type { TrackItem } from '@/features/music-player/useMusicStore'
+import { useMusicStore } from '@/features/music-player/store/useMusicStore'
+import type { TrackItem } from '@/features/music-player/store/useMusicStore'
 import { useEffect } from 'react'
 import {
   Minimize2,
@@ -29,7 +29,7 @@ function isVideoUrl(url: string) {
   )
 }
 
-export default function ImmersivePlayer({ onClose }: ImmersivePlayerProps) {
+export function ImmersivePlayer({ onClose }: ImmersivePlayerProps) {
   const {
     playlist,
     currentTrackIndex,
@@ -60,7 +60,7 @@ export default function ImmersivePlayer({ onClose }: ImmersivePlayerProps) {
   }, [currentTrack, onClose, setYoutubePlayerMode])
 
   return (
-    <div className="fixed inset-0 z-[999] flex animate-in flex-col justify-between bg-neutral-950/96 p-8 text-white backdrop-blur-xl duration-200 zoom-in-95 fade-in md:p-12">
+    <div className="fixed inset-0 z-ns-immersive flex animate-in flex-col justify-between bg-neutral-950/96 p-8 text-white backdrop-blur-xl duration-200 zoom-in-95 fade-in md:p-12">
       {/* Top row */}
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-2">

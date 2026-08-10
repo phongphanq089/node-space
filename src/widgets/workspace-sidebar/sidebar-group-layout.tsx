@@ -6,7 +6,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-} from '@/shared/ui/core/sidebar'
+} from '@/shared/ui'
 import {
   Home,
   Hexagon,
@@ -215,5 +215,3 @@ export function SidebarGroupLayout<T = SidebarGroupItemData>({
     </SidebarGroup>
   )
 }
-
-export default SidebarGroupLayout

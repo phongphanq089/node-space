@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 @import 'tw-animate-css';
@@ -7,44 +6,84 @@
 @import './styles/dotmatrix-loader.css';
 
 @custom-variant dark (&:is(.dark *));
+
 /* ─────────────────────────────────────────────────────────────
-  Design Tokens
-  primary  : #7c3aed  (violet-700)
-  secondary: #6366f1  (indigo-500)
-  accent-lt: #a78bfa  (violet-400) — lighter tint / highlight
+   @theme — Single Source of Truth
+   All design tokens live here. One block, no duplicates.
+
+   Palette intent:
+     primary  : #7c3aed  (violet-700)
+     secondary: #6366f1  (indigo-500)
+     accent-lt: #a78bfa  (violet-400) — lighter tint / highlight
    ───────────────────────────────────────────────────────────── */
 @theme {
-  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  /* ── Typography ────────────────────────────────────────────── */
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono:
+    ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
 
-  /* Backgrounds */
-  --color-ns-bg: #09070f;
-  --color-ns-surface: #0e0c1b;
-  --color-ns-surface-alt: #0a0813;
-  --color-ns-panel: #0d0b18;
-  --color-ns-topbar: #09070f;
+  /* ── Breakpoints ───────────────────────────────────────────── */
+  --breakpoint-old: 350px;
+  --breakpoint-small: 400px;
+  --breakpoint-xs: 450px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-3xl: 1800px;
+
+  /* ── Z-index scale ─────────────────────────────────────────── */
+  /* Named layers — never use z-[N] directly in components       */
+  --z-base: 1; /* in-flow stacking, e.g. card glow layer    */
+  --z-raised: 2; /* element above its sibling, e.g. card body */
+  --z-float: 40; /* floating elements: PiP video, FAB buttons */
+  --z-sticky: 50; /* sticky headers, topbar                    */
+  --z-dropdown: 150; /* dropdowns, tooltips, popovers             */
+  --z-overlay: 100; /* fullscreen overlays, modal backdrops       */
+  --z-modal: 101; /* modal / dialog panels above overlay        */
+  --z-immersive: 999; /* immersive fullscreen (music player, etc.)  */
+  --z-supreme: 1000; /* topmost — expanded media, critical alerts  */
+
+  /* Tailwind bridge (z-ns-* utility classes) */
+  --z-index-ns-base: var(--z-base);
+  --z-index-ns-raised: var(--z-raised);
+  --z-index-ns-float: var(--z-float);
+  --z-index-ns-sticky: var(--z-sticky);
+  --z-index-ns-dropdown: var(--z-dropdown);
+  --z-index-ns-overlay: var(--z-overlay);
+  --z-index-ns-modal: var(--z-modal);
+  --z-index-ns-immersive: var(--z-immersive);
+  --z-index-ns-supreme: var(--z-supreme);
+
+  /* ── Backgrounds ───────────────────────────────────────────── */
+  --color-ns-bg: #09070f; /* deepest background */
+  --color-ns-surface: #0e0c1b; /* card / panel surface */
+  --color-ns-surface-alt: #0a0813; /* alternate surface (slightly darker) */
+  --color-ns-panel: #0d0b18; /* popover / dropdown panel */
+  --color-ns-topbar: #09070f; /* topbar matches bg */
   --color-ns-input: rgba(255, 255, 255, 0.03);
+
+  /* ── Interactive states ────────────────────────────────────── */
   --color-ns-hover: rgba(124, 58, 237, 0.08);
   --color-ns-hover-md: rgba(124, 58, 237, 0.15);
   --color-ns-active: rgba(124, 58, 237, 0.22);
 
-  /* Borders */
-  --color-ns-border: rgba(124, 58, 237, 0.4);
-  --color-ns-border-soft: rgba(124, 58, 237, 0.08);
-  --color-ns-border-md: rgba(124, 58, 237, 0.2);
-  --color-ns-border-em: rgba(124, 58, 237, 0.35);
+  /* ── Borders ───────────────────────────────────────────────── */
+  --color-ns-border: rgba(124, 58, 237, 0.4); /* standard */
+  --color-ns-border-soft: rgba(124, 58, 237, 0.08); /* subtle dividers */
+  --color-ns-border-md: rgba(124, 58, 237, 0.2); /* medium emphasis */
+  --color-ns-border-em: rgba(124, 58, 237, 0.35); /* high emphasis */
   --color-ns-input-focus: rgba(124, 58, 237, 0.5);
 
-  /* Colors — primary / secondary / accent */
-  --color-ns-primary: #7c3aed;
-  --color-ns-secondary: #6366f1;
-  --color-ns-primary-lt: #a78bfa;
-  --color-ns-purple: #6366f1;
+  /* ── Brand colors ──────────────────────────────────────────── */
+  --color-ns-primary: #7c3aed; /* violet-700 */
+  --color-ns-primary-lt: #a78bfa; /* violet-400, lighter tint */
+  --color-ns-secondary: #6366f1; /* indigo-500 */
+  --color-ns-purple: #6366f1; /* alias → secondary */
   --color-ns-pink: #e05c9a;
   --color-ns-amber: #f59e0b;
 
-  /* Text */
-  --color-ns-text: #f5f3ff;
-  --color-ns-text-2: #ddd6fe;
+  /* ── Text scale ────────────────────────────────────────────── */
+  --color-ns-text: #f5f3ff; /* primary text */
+  --color-ns-text-2: #ddd6fe; /* secondary text */
   --color-ns-muted: rgb(221 214 254 / 0.65);
   --color-ns-muted-md: rgb(221 214 254 / 0.55);
   --color-ns-muted-sm: rgb(221 214 254 / 0.45);
@@ -52,15 +91,107 @@
   --color-ns-ghost: rgb(221 214 254 / 0.4);
   --color-ns-placeholder: rgb(221 214 254 / 0.3);
 
-  /* On-color */
+  /* ── On-color ──────────────────────────────────────────────── */
   --color-ns-on-accent: #ffffff;
 
-  /* Breakpoint */
-  --breakpoint-old: 350px;
-  --breakpoint-small: 400px;
-  --breakpoint-xs: 450px;
-  --breakpoint-3xl: 1800px;
-  --breakpoint-xl: 1280px;
+  /* ── Radius scale (relative to shadcn --radius) ───────────── */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* ── Tailwind sidebar token bridge ────────────────────────── */
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+
+  /* ── Tailwind shadcn token bridge ──────────────────────────── */
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+
+  /* ── Chart tokens (shadcn bridge) ──────────────────────────── */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Semantic Token Layer (shadcn aliases → ns-* source of truth)
+   App is dark-only. .dark is always active on <html>.
+   These vars are read by Tailwind via the @theme bridge above.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  /* ── Base ──────────────────────────────────────────────────── */
+  --radius: 0.625rem;
+
+  /* ── Backgrounds → ns-* ────────────────────────────────────── */
+  --background: var(--color-ns-bg);
+  --card: var(--color-ns-surface);
+  --card-foreground: var(--color-ns-text);
+  --popover: var(--color-ns-panel);
+  --popover-foreground: var(--color-ns-text);
+  --muted: var(--color-ns-surface-alt);
+  --input: var(--color-ns-input);
+
+  /* ── Brand → ns-* ──────────────────────────────────────────── */
+  --primary: var(--color-ns-primary);
+  --primary-foreground: var(--color-ns-on-accent);
+  --secondary: var(--color-ns-surface-alt);
+  --secondary-foreground: var(--color-ns-text);
+  --accent: var(--color-ns-hover-md);
+  --accent-foreground: var(--color-ns-text);
+  --destructive: oklch(0.704 0.191 22.216);
+
+  /* ── Text → ns-* ───────────────────────────────────────────── */
+  --foreground: var(--color-ns-text);
+  --muted-foreground: var(--color-ns-muted);
+
+  /* ── Borders → ns-* ────────────────────────────────────────── */
+  --border: var(--color-ns-border-soft);
+  --ring: var(--color-ns-primary);
+
+  /* ── Charts ────────────────────────────────────────────────── */
+  --chart-1: var(--color-ns-primary);
+  --chart-2: var(--color-ns-secondary);
+  --chart-3: var(--color-ns-pink);
+  --chart-4: var(--color-ns-amber);
+  --chart-5: var(--color-ns-primary-lt);
+
+  /* ── Sidebar → ns-* ────────────────────────────────────────── */
+  --sidebar: var(--color-ns-bg);
+  --sidebar-foreground: var(--color-ns-text-2);
+  --sidebar-primary: var(--color-ns-primary);
+  --sidebar-primary-foreground: var(--color-ns-on-accent);
+  --sidebar-accent: var(--color-ns-surface);
+  --sidebar-accent-foreground: var(--color-ns-text);
+  --sidebar-border: var(--color-ns-border-soft);
+  --sidebar-ring: var(--color-ns-primary);
 }
 
 /* ── Global Reset ─────────────────────────────────────────── */
@@ -87,7 +218,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Chrome, Edge, Safari (WebKit/Blink) custom scrollbar styling */
+button {
+  cursor: pointer;
+}
+
+/* ── Scrollbar — WebKit/Blink ─────────────────────────────── */
 ::-webkit-scrollbar {
   width: 4px !important;
   height: 4px !important;
@@ -98,17 +233,16 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(25, 27, 36, 0.1) !important;
+  background: rgba(124, 58, 237, 0.15) !important;
   border-radius: 9999px !important;
   border: none !important;
   transition: background-color 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(25, 27, 36, 0.25) !important;
+  background: rgba(124, 58, 237, 0.3) !important;
 }
 
-/* Completely hide up/down scroll arrows in WebKit/Blink browsers */
 ::-webkit-scrollbar-button {
   display: none !important;
   width: 0 !important;
@@ -119,9 +253,24 @@ body {
   background: transparent !important;
 }
 
-/* ── Reusable Utilities ───────────────────────────────────── */
+/* ── Base layer ───────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
 
-/* Float animation — used on 3D hero icon (index.tsx)         */
+/* ─────────────────────────────────────────────────────────────
+   Animations
+   ───────────────────────────────────────────────────────────── */
+
+/* Float — 3D hero icon */
 @keyframes float {
   0%,
   100% {
@@ -136,7 +285,7 @@ body {
   animation: float 5s ease-in-out infinite;
 }
 
-/* Audio soundbars visualizer keyframes */
+/* Soundbar visualizer */
 @keyframes soundbar {
   0%,
   100% {
@@ -152,18 +301,7 @@ body {
   transform-origin: bottom;
 }
 
-/* Countdown card — glassmorphism panel used in LandingCountdown  */
-.ns-countdown-card {
-  background: rgb(10 6 22 / 0.65);
-  border: 1px solid rgb(124 58 237 / 0.25);
-  box-shadow:
-    0 8px 32px 0 rgb(0 0 0 / 0.37),
-    inset 0 0 12px rgb(124 58 237 / 0.1);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-/* Rise-in — slide-up + fade entrance for auth cards             */
+/* Rise-in — slide-up + fade entrance for auth cards */
 @keyframes rise-in {
   from {
     opacity: 0;
@@ -175,130 +313,22 @@ body {
   }
 }
 
-@theme inline {
-  --font-heading: var(--font-sans);
-  --font-sans: 'Geist Variable', sans-serif;
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
-  --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+/* ─────────────────────────────────────────────────────────────
+   Utility Classes
+   ───────────────────────────────────────────────────────────── */
+
+/* Countdown card — glassmorphism panel (LandingCountdown) */
+.ns-countdown-card {
+  background: rgb(10 6 22 / 0.65);
+  border: 1px solid var(--color-ns-border-md);
+  box-shadow:
+    0 8px 32px 0 rgb(0 0 0 / 0.37),
+    inset 0 0 12px rgb(124 58 237 / 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-:root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
-
-.dark {
-  --background: oklch(0.11 0.015 280); /* Deep midnight blue-violet */
-  --foreground: oklch(0.96 0.01 280);
-  --card: oklch(0.13 0.02 280); /* Midnight panel */
-  --card-foreground: oklch(0.96 0.01 280);
-  --popover: oklch(0.13 0.02 280);
-  --popover-foreground: oklch(0.96 0.01 280);
-  --primary: oklch(0.65 0.22 280); /* Glowing neon purple */
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.15 0.02 280);
-  --secondary-foreground: oklch(0.96 0.01 280);
-  --muted: oklch(0.15 0.02 280);
-  --muted-foreground: oklch(0.7 0.01 280);
-  --accent: oklch(0.15 0.02 280);
-  --accent-foreground: oklch(0.96 0.01 280);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: rgba(124, 58, 237, 0.12);
-  --input: rgba(255, 255, 255, 0.03);
-  --ring: oklch(0.65 0.22 280);
-  --sidebar: oklch(0.1 0.015 280); /* Sidebar match deep bg */
-  --sidebar-foreground: oklch(0.85 0.01 280);
-  --sidebar-primary: oklch(0.65 0.22 280);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.14 0.02 280);
-  --sidebar-accent-foreground: oklch(0.96 0.01 280);
-  --sidebar-border: rgba(124, 58, 237, 0.1);
-  --sidebar-ring: oklch(0.65 0.22 280);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
-  }
-}
-
-button {
-  cursor: pointer;
-}
-
-/* Ambient orb glows — used on auth pages as background accents  */
+/* Ambient orb glows — auth page background accents */
 .ns-orb-accent-20-blur {
   background: radial-gradient(
     circle,
@@ -317,7 +347,7 @@ button {
   filter: blur(80px);
 }
 
-/* Dashboard hero blur orbs                                       */
+/* Dashboard hero blur orbs */
 .ns-hero-blur-accent-30 {
   background: radial-gradient(
     circle,
@@ -336,15 +366,17 @@ button {
   filter: blur(60px);
 }
 
-/* ── FilePond Custom Dark Theme ───────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   Third-party overrides — FilePond
+   ───────────────────────────────────────────────────────────── */
 .filepond--root {
   font-family: var(--font-sans);
   margin-bottom: 0;
 }
 
 .filepond--panel-root {
-  background-color: rgba(255, 255, 255, 0.02) !important;
-  border: 1px dashed rgba(124, 58, 237, 0.3) !important;
+  background-color: var(--color-ns-input) !important;
+  border: 1px dashed var(--color-ns-border-md) !important;
   border-radius: 0.75rem !important;
   transition: all 0.2s ease;
 }
@@ -352,7 +384,7 @@ button {
 .filepond--root:hover .filepond--panel-root,
 .filepond--root[data-filepond-drag-over] .filepond--panel-root {
   border-color: var(--color-ns-primary-lt) !important;
-  background-color: rgba(124, 58, 237, 0.06) !important;
+  background-color: var(--color-ns-hover) !important;
 }
 
 .filepond--drop-label {
@@ -385,7 +417,7 @@ button {
 }
 
 .filepond--file {
-  color: #ffffff !important;
+  color: var(--color-ns-on-accent) !important;
 }
 
 .filepond--credits {

@@ -5,9 +5,9 @@ import { CheckCheck, X } from 'lucide-react'
 interface PasswordStrengthIndicatorProps {
   passwordValue: string
 }
-const PasswordStrengthIndicator = ({
+export function PasswordStrengthIndicator({
   passwordValue,
-}: PasswordStrengthIndicatorProps) => {
+}: PasswordStrengthIndicatorProps) {
   const { score, requirements } = usePasswordStrength(passwordValue)
   return (
     <div className="w-full space-y-2 pt-1">
@@ -47,5 +47,3 @@ const PasswordStrengthIndicator = ({
     </div>
   )
 }
-
-export default PasswordStrengthIndicator

@@ -1,9 +1,9 @@
 import { Link } from '@tanstack/react-router'
 import { Settings } from 'lucide-react'
-import { useMusicStore } from '@/features/music-player/useMusicStore'
-import type { TrackItem } from '@/features/music-player/useMusicStore'
+import { useMusicStore } from '@/features/music-player/store/useMusicStore'
+import type { TrackItem } from '@/features/music-player/store/useMusicStore'
 
-export default function MusicPlayer() {
+export function MusicPlayer() {
   const {
     playlist,
     currentTrackIndex,
@@ -104,7 +104,7 @@ export default function MusicPlayer() {
                 )}
                 <div className="absolute inset-0 flex items-center justify-center bg-black/20">
                   <span className="text-[0.55rem] font-bold text-white">
-                    {track.type === 'youtube' ? '▶' : '♫'}
+                    {track.type === 'youtube' ? 'â–¶' : 'â™«'}
                   </span>
                 </div>
               </div>
@@ -156,7 +156,7 @@ export default function MusicPlayer() {
       {currentTrack && (
         <div className="border-t border-ns-border-soft bg-ns-active/20 px-3 py-2">
           <p className="truncate text-[0.6rem] font-bold text-ns-primary-lt">
-            ♪ {currentTrack.title}
+            â™ª {currentTrack.title}
           </p>
           <p className="text-[0.55rem] text-ns-faint">{currentTrack.artist}</p>
         </div>

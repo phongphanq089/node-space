@@ -1,5 +1,5 @@
 import { SidebarInset } from '@/shared/ui/core/sidebar'
-import WorkSpaceTopbar from '@/widgets/workspace-topbar'
+import { WorkSpaceTopbar } from '@/widgets/workspace-topbar'
 import { Outlet, useLocation } from '@tanstack/react-router'
 
 const MainContentWorkspace = () => {

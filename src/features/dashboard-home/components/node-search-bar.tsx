@@ -1,6 +1,5 @@
 import { Search, Plus } from 'lucide-react'
-import { Button } from '@/shared/ui/core/button'
-import Input from '@/shared/ui/core/input'
+import { Button, Input } from '@/shared/ui'
 
 interface NodeSearchBarProps {
   search: string

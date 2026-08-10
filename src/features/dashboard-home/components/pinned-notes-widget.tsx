@@ -1,7 +1,7 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { Pin, ArrowRight } from 'lucide-react'
-import { PINNED_NOTES } from '@/shared/constants/moc-data'
-import type { PinnedNoteItem } from '@/shared/constants/moc-data'
+import { PINNED_NOTES } from '@/shared/mocks/mock-data'
+import type { PinnedNoteItem } from '@/shared/mocks/mock-data'
 import { Link } from '@tanstack/react-router'
 
 export function PinnedNotesWidget() {
@@ -49,7 +49,7 @@ export function PinnedNotesWidget() {
                   <span className="truncate font-semibold text-violet-300">
                     {item.folderName}
                   </span>
-                  <span>•</span>
+                  <span>â€¢</span>
                   <span>{item.updatedAt}</span>
                 </div>
               </div>

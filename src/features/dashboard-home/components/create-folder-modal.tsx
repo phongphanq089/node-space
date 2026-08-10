@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { z } from 'zod'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FolderPlus, Palette, Layers, Sparkles, Upload } from 'lucide-react'
-import { WORKSPACES } from '@/shared/constants/moc-data'
+import { WORKSPACES } from '@/shared/mocks/mock-data'
 import {
   Dialog,
   DialogContent,

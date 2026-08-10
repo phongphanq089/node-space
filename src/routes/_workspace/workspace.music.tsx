@@ -1,6 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useMusicStore } from '@/features/music-player/useMusicStore'
-import type { TrackItem } from '@/features/music-player/useMusicStore'
+﻿import { createFileRoute } from '@tanstack/react-router'
+import { useMusicStore } from '@/features/music-player/store/useMusicStore'
+import type { TrackItem } from '@/features/music-player/store/useMusicStore'
 import { useState } from 'react'
 import {
   Plus,

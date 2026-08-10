@@ -1,9 +1,9 @@
 import { LogOut } from 'lucide-react'
 import { signOut } from '@/shared/lib/auth-client'
 import { useNavigate } from '@tanstack/react-router'
-import { Button } from '@/shared/ui/core/button'
+import { Button } from '@/shared/ui'
 
-const Logout = () => {
+export function Logout() {
   const navigate = useNavigate()
 
   const handleLogout = async () => {
@@ -30,5 +30,3 @@ const Logout = () => {
     </Button>
   )
 }
-
-export default Logout

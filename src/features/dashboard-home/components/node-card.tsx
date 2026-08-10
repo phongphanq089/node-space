@@ -1,4 +1,4 @@
-import {
+﻿import {
   Star,
   Edit2,
   Trash2,
@@ -9,7 +9,7 @@ import {
 } from 'lucide-react'
 
 import { GlowCard } from '@/shared/ui/system/glow-card-grid'
-import type { NODES } from '@/shared/constants/moc-data'
+import type { NODES } from '@/shared/mocks/mock-data'
 
 type NodeWithThumbnail = (typeof NODES)[number] & { thumbnail?: string }
 

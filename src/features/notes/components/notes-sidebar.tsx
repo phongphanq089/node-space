@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { FileText, Plus, Search, Star, X } from 'lucide-react'
-import type { NoteItem } from '@/shared/constants/moc-data'
+import type { NoteItem } from '@/shared/mocks/mock-data'
 
 import { cn } from '@/shared/lib/utils'
-import { Button } from '@/shared/ui/core/button'
-import Input from '@/shared/ui/core/input'
+import { Button, Input } from '@/shared/ui'
 
 interface NotesSidebarProps {
   open: boolean
@@ -23,45 +22,37 @@ export function NotesSidebar({
 }: NotesSidebarProps) {
   const [searchQuery, setSearchQuery] = useState('')
 
-  const filteredNotes = notes.filter((note) =>
-    note.title.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredNotes = notes.filter(
+    (n) =>
+      n.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      n.tags.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()))
   )
 
   return (
     <aside
       className={cn(
-        'flex shrink-0 flex-col border-r border-ns-border-soft bg-ns-panel/95 backdrop-blur-md transition-all duration-300 ease-in-out',
-        // Desktop responsive
-        'md:relative md:top-0 md:h-full',
-        open
-          ? 'md:w-64 md:min-w-[256px]'
-          : 'md:pointer-events-none md:w-0 md:min-w-0 md:overflow-hidden md:opacity-0',
-        // Mobile responsive drawer
-        'max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-40 max-md:h-full max-md:w-72 max-md:max-w-[85vw] max-md:shadow-2xl',
-        open ? 'max-md:translate-x-0' : 'max-md:-translate-x-full'
+        'relative flex flex-col border-r border-ns-border-soft bg-ns-panel/80 backdrop-blur-md transition-all duration-300',
+        open ? 'w-72 shrink-0' : 'w-0 overflow-hidden border-none opacity-0'
       )}
     >
-      {/* Sidebar Header */}
-      <div className="flex items-center justify-between border-b border-ns-border-soft px-3.5 py-3">
+      {/* Sidebar header */}
+      <div className="flex items-center justify-between p-3">
         <div className="flex items-center gap-2">
-          <span className="text-[0.65rem] font-bold tracking-wider text-ns-muted uppercase">
-            Notes
-          </span>
-          <span className="rounded-full bg-ns-active px-2 py-0.5 text-[0.6rem] font-bold text-ns-primary-lt">
-            {notes.length}
+          <FileText size={16} className="text-ns-primary-lt" />
+          <span className="text-xs font-bold tracking-wider text-ns-text uppercase">
+            All Notes ({notes.length})
           </span>
         </div>
 
-        {/* Close Button for Mobile Drawer */}
+        {/* Mobile close */}
         {onCloseMobile && (
           <Button
             variant="ghost"
             size="icon-xs"
             onClick={onCloseMobile}
-            className="text-ns-ghost hover:text-white md:hidden"
-            title="Close panel"
+            className="md:hidden"
           >
-            <X size={15} />
+            <X size={14} />
           </Button>
         )}
       </div>
@@ -71,7 +62,9 @@ export function NotesSidebar({
         <Input
           type="text"
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSearchQuery(e.target.value)
+          }
           placeholder="Search notes..."
           suffix={<Search size={13} />}
         />

@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 
-const BrandLogo = () => {
+export function BrandLogo() {
   return (
     <Link
       to="/"
@@ -14,5 +14,3 @@ const BrandLogo = () => {
     </Link>
   )
 }
-
-export default BrandLogo

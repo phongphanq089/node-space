@@ -5,16 +5,15 @@ import {
   SidebarHeader,
   SidebarMenuAction,
   useSidebar,
-} from '@/shared/ui/core/sidebar'
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/shared/ui/core/dropdown-menu'
+  Button,
+  BrandLogo,
+} from '@/shared/ui'
 
-import BrandLogo from '@/shared/ui/system/brand-logo'
 import {
   Plus,
   MoreHorizontal,
@@ -23,10 +22,9 @@ import {
   ArrowUpRight,
   Trash2,
 } from 'lucide-react'
-import Logout from './logout'
-import { data_workspaces, WORKSPACES } from '@/shared/constants/moc-data'
-import SidebarGroupLayout from './sidebar-group-layout'
-import { Button } from '@/shared/ui/core/button'
+import { Logout } from './logout'
+import { data_workspaces, WORKSPACES } from '@/shared/mocks/mock-data'
+import { SidebarGroupLayout } from './sidebar-group-layout'
 import { NAVIGATION_LIST } from './navigation-list'
 
 const WorkSpaceSidebar = () => {
@@ -121,4 +119,4 @@ const WorkSpaceSidebar = () => {
   )
 }
 
-export default WorkSpaceSidebar
+export { WorkSpaceSidebar }

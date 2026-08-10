@@ -1,4 +1,4 @@
-import { NODES, NOTES } from '@/shared/constants/moc-data'
+﻿import { NODES, NOTES } from '@/shared/mocks/mock-data'
 import { createFileRoute } from '@tanstack/react-router'
 import { Star, FileText, ArrowUpRight, Heart } from 'lucide-react'
 
@@ -58,7 +58,7 @@ function FavoritesPage() {
                     {node.title}
                   </h3>
                   <span className="mt-0.5 block text-[0.62rem] text-ns-faint">
-                    {node.count} notes · {node.updated}
+                    {node.count} notes Â· {node.updated}
                   </span>
                 </div>
 

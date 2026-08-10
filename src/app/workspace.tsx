@@ -8,11 +8,13 @@ import {
   DrawerTrigger,
 } from '@/shared/ui/core/drawer'
 import { SidebarProvider } from '@/shared/ui/core/sidebar'
-import MusicPlayer from '@/features/music-player/components/music-player'
-import YoutubePlayer from '@/features/music-player/components/youtube-player'
-import { useMusicStore } from '@/features/music-player/useMusicStore'
-import type { TrackItem } from '@/features/music-player/useMusicStore'
-import WorkSpaceSidebar from '@/widgets/workspace-sidebar'
+import {
+  MusicPlayer,
+  YoutubePlayer,
+  useMusicStore,
+} from '@/features/music-player'
+import type { TrackItem } from '@/features/music-player'
+import { WorkSpaceSidebar } from '@/widgets/workspace-sidebar'
 
 import { useEffect, useRef } from 'react'
 import MainContentWorkspace from './layouts/main-content-workspace'
@@ -116,8 +118,8 @@ const Workspace = () => {
             onEnded={handleTrackEnded}
             className={`pointer-events-auto fixed object-cover transition-all duration-300 ${
               isExpanded
-                ? 'top-[40%] left-1/2 z-[1000] aspect-video w-[85vw] max-w-[640px] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-white/10 bg-black shadow-2xl'
-                : 'right-6 bottom-24 z-[45] aspect-video w-[240px] rounded-xl border border-ns-border bg-black shadow-2xl hover:scale-105'
+                ? 'top-[40%] left-1/2 z-ns-supreme aspect-video w-[85vw] max-w-[640px] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-white/10 bg-black shadow-2xl'
+                : 'right-6 bottom-24 z-ns-float aspect-video w-[240px] rounded-xl border border-ns-border bg-black shadow-2xl hover:scale-105'
             }`}
           />
         )}

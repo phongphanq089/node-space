@@ -1,4 +1,4 @@
-import BrandLogo from '@/shared/ui/system/brand-logo'
+import { BrandLogo } from '@/shared/ui'
 
 type AuthCardProps = {
   title: string
@@ -7,12 +7,7 @@ type AuthCardProps = {
   footer: React.ReactNode
 }
 
-export default function AuthCard({
-  title,
-  subtitle,
-  children,
-  footer,
-}: AuthCardProps) {
+export function AuthCard({ title, subtitle, children, footer }: AuthCardProps) {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-ns-bg px-4 font-sans">
       <div

@@ -1,4 +1,4 @@
-export interface WorkspaceItem {
+﻿export interface WorkspaceItem {
   color: string
   name: string
 }
@@ -41,7 +41,7 @@ export interface PlaylistItem {
   active?: boolean
 }
 
-// ── Workspaces ──────────────────────────────────────────────────
+// â”€â”€ Workspaces â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const WORKSPACES: readonly WorkspaceItem[] = [
   { color: '#f97316', name: 'Personal' },
   { color: '#ec4899', name: 'Dev Projects' },
@@ -50,7 +50,7 @@ export const WORKSPACES: readonly WorkspaceItem[] = [
   { color: '#3b82f6', name: 'Archive' },
 ]
 
-// ── Folders (matching `folder` schema) ──────────────────────────
+// â”€â”€ Folders (matching `folder` schema) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const FOLDERS: readonly FolderItem[] = [
   { id: 'f-1', name: 'Documentation', color: '#a78bfa', count: 2 },
   { id: 'f-2', name: 'Algorithms', color: '#34d399', count: 1 },
@@ -59,7 +59,7 @@ export const FOLDERS: readonly FolderItem[] = [
   { id: 'f-5', name: 'Database & Architecture', color: '#f97316', count: 2 },
 ]
 
-// ── Nodes ───────────────────────────────────────────────────────
+// â”€â”€ Nodes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const NODES: readonly (NodeItem & { thumbnail?: string })[] = [
   {
     title: 'Node-based Note System',
@@ -143,7 +143,7 @@ export const NODES: readonly (NodeItem & { thumbnail?: string })[] = [
   },
 ]
 
-// ── Notes ───────────────────────────────────────────────────────
+// â”€â”€ Notes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const NOTES: readonly NoteItem[] = [
   {
     title: 'Key Features',
@@ -173,7 +173,7 @@ export const NOTES: readonly NoteItem[] = [
   },
 ]
 
-// ── Feature highlights ──────────────────────────────────────────
+// â”€â”€ Feature highlights â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const FEATURES: readonly FeatureItem[] = [
   {
     title: 'Node Link',
@@ -197,7 +197,7 @@ export const FEATURES: readonly FeatureItem[] = [
   },
 ]
 
-// ── Playlist ────────────────────────────────────────────────────
+// â”€â”€ Playlist â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const PLAYLIST: readonly PlaylistItem[] = [
   { title: 'Midnight Coding', artist: 'Lofi Beats', active: true },
   { title: 'Coding Vibes', artist: 'Lofi Beats' },
@@ -207,33 +207,33 @@ export const PLAYLIST: readonly PlaylistItem[] = [
 
 export const data_workspaces = [
   {
-    name: '🏠 Personal Life Management',
-    emoji: '🏠',
+    name: 'ðŸ  Personal Life Management',
+    emoji: 'ðŸ ',
     url: '#',
   },
   {
-    name: '💼 Professional Development',
-    emoji: '💼',
+    name: 'ðŸ’¼ Professional Development',
+    emoji: 'ðŸ’¼',
     url: '#',
   },
   {
-    name: '🎨 Creative Projects',
-    emoji: '🎨',
+    name: 'ðŸŽ¨ Creative Projects',
+    emoji: 'ðŸŽ¨',
     url: '#',
   },
   {
-    name: '🏡 Home Management',
-    emoji: '🏡',
+    name: 'ðŸ¡ Home Management',
+    emoji: 'ðŸ¡',
     url: '#',
   },
   {
-    name: '🧳 Travel & Adventure',
-    emoji: '🧳',
+    name: 'ðŸ§³ Travel & Adventure',
+    emoji: 'ðŸ§³',
     url: '#',
   },
 ]
 
-// ── Extended Notebooks (matching DB `folder` schema) ──────────────
+// â”€â”€ Extended Notebooks (matching DB `folder` schema) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export interface NotebookItem {
   id: string
   workspace_id?: string
@@ -304,7 +304,7 @@ export const NOTEBOOKS: readonly NotebookItem[] = [
   },
 ]
 
-// ── Popular Tags (matching DB `tag` schema) ─────────────────────
+// â”€â”€ Popular Tags (matching DB `tag` schema) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export interface TagItem {
   id: string
   name: string
@@ -325,7 +325,7 @@ export const POPULAR_TAGS: readonly TagItem[] = [
   { id: 'tag-10', name: 'backend', count: 5 },
 ]
 
-// ── Pinned Notes (matching DB `note` schema) ────────────────────
+// â”€â”€ Pinned Notes (matching DB `note` schema) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export interface PinnedNoteItem {
   id: string
   name: string

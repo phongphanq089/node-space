@@ -1,5 +1,5 @@
-import { Folder, FolderOpen, Filter, Layers, X } from 'lucide-react'
-import { FOLDERS } from '@/shared/constants/moc-data'
+﻿import { Folder, FolderOpen, Filter, Layers, X } from 'lucide-react'
+import { FOLDERS } from '@/shared/mocks/mock-data'
 
 interface FolderFilterPillsProps {
   nodes: { folderId?: string }[]

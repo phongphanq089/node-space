@@ -1,6 +1,6 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { FileText, Star, Clock, Layers, ChevronRight } from 'lucide-react'
-import { NODES } from '@/shared/constants/moc-data'
+import { NODES } from '@/shared/mocks/mock-data'
 import { NoteDetailModal } from '@/features/notes/components/note-detail-modal'
 
 type NodeWithThumbnail = (typeof NODES)[number] & { thumbnail?: string }

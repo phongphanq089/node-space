@@ -1,4 +1,4 @@
-import { SidebarTrigger } from '@/shared/ui/core/sidebar'
+import { SidebarTrigger } from '@/shared/ui'
 import { Search, Plus, Bell, Settings } from 'lucide-react'
 
 type IconBtnProps = {
@@ -21,7 +21,7 @@ function IconBtn({ id, title, onClick, children }: IconBtnProps) {
   )
 }
 
-export default function WorkSpaceTopbar() {
+export function WorkSpaceTopbar() {
   return (
     <header className="flex h-[60px] flex-shrink-0 items-center justify-between gap-4 border-b border-ns-border/80 bg-ns-topbar px-6 backdrop-blur-xl">
       <div className="flex max-w-[420px] flex-1 items-center gap-3">

@@ -1,6 +1,6 @@
-import { Folder, ChevronRight } from 'lucide-react'
-import { NOTEBOOKS } from '@/shared/constants/moc-data'
-import type { NotebookItem } from '@/shared/constants/moc-data'
+﻿import { Folder, ChevronRight } from 'lucide-react'
+import { NOTEBOOKS } from '@/shared/mocks/mock-data'
+import type { NotebookItem } from '@/shared/mocks/mock-data'
 import { Link } from '@tanstack/react-router'
 
 interface NotebooksGridBlockProps {
