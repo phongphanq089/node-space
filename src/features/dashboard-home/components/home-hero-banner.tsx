@@ -3,20 +3,21 @@ import {
   AvatarBadge,
   AvatarFallback,
   AvatarImage,
-} from '@/shared/ui/core/avatar'
-import { SidebarTrigger } from '@/shared/ui/core/sidebar'
+  SidebarTrigger,
+} from '@/shared/ui'
 import { useSession } from '@/shared/lib/auth-client'
-import { Search, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
+import { SearchGlobal } from '@/widgets/search-global'
 
 interface HomeHeroBannerProps {
-  searchQuery: string
-  onSearchChange: (query: string) => void
+  searchQuery?: string
+  onSearchChange?: (query: string) => void
   onNewNote?: () => void
 }
 
 export function HomeHeroBanner({
-  searchQuery,
-  onSearchChange,
+  searchQuery: _searchQuery,
+  onSearchChange: _onSearchChange,
   onNewNote,
 }: HomeHeroBannerProps) {
   const { data: session } = useSession()
@@ -77,22 +78,7 @@ export function HomeHeroBanner({
         </div>
 
         {/* Banner Embedded Search Bar */}
-        <div className="group relative flex max-w-md items-center rounded-2xl border border-white/20 bg-black/50 px-4 py-3 shadow-2xl backdrop-blur-xl transition-all focus-within:border-emerald-400 focus-within:ring-2 focus-within:ring-emerald-500/30 hover:border-white/30">
-          <Search
-            size={18}
-            className="text-white/60 transition-colors group-focus-within:text-emerald-400"
-          />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search notes, notebooks, tags..."
-            className="ml-3 flex-1 border-none bg-transparent text-xs text-white placeholder-white/50 outline-none sm:text-sm"
-          />
-          <kbd className="hidden items-center gap-1 rounded-md border border-white/20 bg-white/10 px-2 py-0.5 font-mono text-[0.65rem] font-bold text-white/80 sm:inline-flex">
-            ⌘K
-          </kbd>
-        </div>
+        <SearchGlobal />
       </div>
     </div>
   )

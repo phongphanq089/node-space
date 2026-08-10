@@ -112,7 +112,7 @@ const WorkSpaceSidebar = () => {
           )}
         />
       </SidebarContent>
-      <SidebarFooter className="gap-3 border-t border-white/5 bg-ns-bg/30 p-4">
+      <SidebarFooter className="gap-3 border-t border-white/5 bg-ns-bg/30 px-0 py-2">
         <Logout />
       </SidebarFooter>
     </Sidebar>

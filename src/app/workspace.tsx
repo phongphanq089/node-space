@@ -1,20 +1,8 @@
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from '@/shared/ui/core/drawer'
-import { SidebarProvider } from '@/shared/ui/core/sidebar'
-import {
-  MusicPlayer,
-  YoutubePlayer,
-  useMusicStore,
-} from '@/features/music-player'
+import { SidebarProvider } from '@/shared/ui'
+import { YoutubePlayer, useMusicStore } from '@/features/music-player'
 import type { TrackItem } from '@/features/music-player'
 import { WorkSpaceSidebar } from '@/widgets/workspace-sidebar'
+import { GlobalMusicDrawer } from '@/widgets/global-music-drawer'
 
 import { useEffect, useRef } from 'react'
 import MainContentWorkspace from './layouts/main-content-workspace'
@@ -107,7 +95,7 @@ const Workspace = () => {
         {/* YouTube Stream Modal & PIP Player */}
         <YoutubePlayer />
 
-        {/* Native Video player (Visible in center if expanded, floating bottom-left if in dashboard view) */}
+        {/* Native Video player */}
         {currentTrack && !isYoutube && isVideo && (
           <video
             ref={videoRef}
@@ -136,52 +124,8 @@ const Workspace = () => {
           />
         )}
 
-        <Drawer direction="right">
-          <DrawerTrigger asChild>
-            <button
-              className="group fixed right-6 bottom-6 z-40 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-gradient-to-r from-ns-primary to-ns-secondary text-white shadow-[0_0_20px_rgba(124,58,237,0.6)] transition-all hover:scale-110 active:scale-95"
-              title="Open Lofi Player"
-            >
-              <span className="absolute inset-0 animate-ping rounded-full bg-ns-primary opacity-20 transition-transform duration-1000 group-hover:scale-110" />
-              <div className="relative flex items-center justify-center">
-                <svg
-                  className="h-6 w-6 animate-pulse"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
-                  />
-                </svg>
-              </div>
-            </button>
-          </DrawerTrigger>
-          <DrawerContent className="flex h-full flex-col border-l border-ns-border bg-ns-bg text-ns-text">
-            <DrawerHeader className="flex flex-row items-center justify-between border-b border-ns-border-soft px-6 py-4">
-              <div className="text-left">
-                <DrawerTitle className="text-sm font-bold tracking-wider text-ns-text uppercase">
-                  Music &amp; Focus
-                </DrawerTitle>
-                <DrawerDescription className="text-[0.68rem] font-medium text-ns-faint">
-                  Configure your soundscape and custom playlist
-                </DrawerDescription>
-              </div>
-              <DrawerClose asChild>
-                <button className="cursor-pointer text-xs font-bold text-ns-ghost hover:text-ns-primary-lt">
-                  Close
-                </button>
-              </DrawerClose>
-            </DrawerHeader>
-
-            <div className="no-scrollbar flex-1 overflow-y-auto p-6">
-              <MusicPlayer />
-            </div>
-          </DrawerContent>
-        </Drawer>
+        {/* Global Standalone Music & Focus Drawer Widget */}
+        <GlobalMusicDrawer />
       </div>
     </SidebarProvider>
   )

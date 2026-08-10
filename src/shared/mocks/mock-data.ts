@@ -207,28 +207,28 @@ export const PLAYLIST: readonly PlaylistItem[] = [
 
 export const data_workspaces = [
   {
-    name: 'ðŸ  Personal Life Management',
-    emoji: 'ðŸ ',
+    name: 'Personal Life Management',
+
     url: '#',
   },
   {
-    name: 'ðŸ’¼ Professional Development',
-    emoji: 'ðŸ’¼',
+    name: 'Professional Development',
+
     url: '#',
   },
   {
-    name: 'ðŸŽ¨ Creative Projects',
-    emoji: 'ðŸŽ¨',
+    name: 'Creative Projects',
+
     url: '#',
   },
   {
-    name: 'ðŸ¡ Home Management',
-    emoji: 'ðŸ¡',
+    name: 'Home Management',
+
     url: '#',
   },
   {
-    name: 'ðŸ§³ Travel & Adventure',
-    emoji: 'ðŸ§³',
+    name: 'Travel & Adventure',
+
     url: '#',
   },
 ]

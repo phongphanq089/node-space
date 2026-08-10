@@ -1,5 +1,6 @@
 import { SidebarTrigger } from '@/shared/ui'
-import { Search, Plus, Bell, Settings } from 'lucide-react'
+import { SearchGlobal } from '@/widgets/search-global'
+import { Plus, Bell, Settings } from 'lucide-react'
 
 type IconBtnProps = {
   id?: string
@@ -26,24 +27,10 @@ export function WorkSpaceTopbar() {
     <header className="flex h-[60px] flex-shrink-0 items-center justify-between gap-4 border-b border-ns-border/80 bg-ns-topbar px-6 backdrop-blur-xl">
       <div className="flex max-w-[420px] flex-1 items-center gap-3">
         {/* Sidebar toggle */}
-        <SidebarTrigger className="h-8 w-8 rounded-xl border border-ns-border text-ns-ghost hover:bg-ns-hover" />
+        <SidebarTrigger className="h-9.5 w-9.5 rounded-md border border-ns-border bg-ns-primary/10 text-white hover:bg-ns-hover" />
 
         {/* Search */}
-        <div
-          id="search-bar"
-          className="flex flex-1 items-center gap-2 rounded-xl border border-ns-border bg-ns-input px-3 py-1.5 transition-all focus-within:border-ns-primary hover:border-ns-border-md"
-        >
-          <Search size={14} className="text-ns-ghost" />
-          <input
-            id="input-search"
-            type="search"
-            placeholder="Search nodes, notes, tags..."
-            className="flex-1 border-none bg-transparent text-xs text-ns-text-2 placeholder-ns-placeholder outline-none"
-          />
-          <kbd className="rounded border border-ns-border bg-ns-bg/50 px-1 font-mono text-[0.6rem] text-ns-faint">
-            ⌘K
-          </kbd>
-        </div>
+        <SearchGlobal triggerPlaceholder="Search nodes, notes, tags..." />
       </div>
 
       {/* Right actions */}
