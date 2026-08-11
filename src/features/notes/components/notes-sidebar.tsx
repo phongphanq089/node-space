@@ -4,6 +4,7 @@ import type { NoteItem } from '@/shared/mocks/mock-data'
 
 import { cn } from '@/shared/lib/utils'
 import { Button, Input } from '@/shared/ui'
+import { NewNoteDialog } from './new-note-dialog'
 
 interface NotesSidebarProps {
   open: boolean
@@ -88,7 +89,7 @@ export function NotesSidebar({
                   'group flex h-auto w-full cursor-pointer items-start gap-2.5 rounded-lg border p-2.5 text-left transition-all',
                   isActive
                     ? 'border-ns-primary/60 bg-gradient-to-br from-ns-active/60 to-ns-hover/30 shadow-sm'
-                    : 'border-ns-border-soft/60 bg-ns-bg/30 hover:border-ns-border-soft hover:bg-ns-hover/40'
+                    : 'border-ns-primary/30! bg-ns-bg/30 hover:border-ns-border-soft hover:bg-ns-hover/40'
                 )}
               >
                 {/* Icon */}
@@ -144,10 +145,14 @@ export function NotesSidebar({
 
       {/* Action Footer */}
       <div className="border-t border-ns-border-soft bg-ns-panel/80 p-2">
-        <Button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-ns-primary py-2 text-xs font-bold text-white shadow-md transition-all hover:bg-ns-primary/80">
-          <Plus size={14} />
-          <span>New Note</span>
-        </Button>
+        <NewNoteDialog
+          trigger={
+            <Button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-ns-primary py-2 text-xs font-bold text-white shadow-md transition-all hover:bg-ns-primary/80">
+              <Plus size={14} />
+              <span>New Note</span>
+            </Button>
+          }
+        />
       </div>
     </aside>
   )

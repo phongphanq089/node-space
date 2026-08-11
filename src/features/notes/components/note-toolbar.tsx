@@ -21,7 +21,6 @@ import {
   Quote,
   RotateCcw,
   RotateCw,
-  Sparkles,
   Strikethrough,
   TableIcon,
   Type,
@@ -67,9 +66,9 @@ export function NoteToolbar({
   const SelectedBlockIcon = selectedBlockObj.icon
 
   return (
-    <div className="relative flex shrink-0 items-center justify-between border-b border-ns-border-soft bg-ns-panel/90 px-2 py-1.5 backdrop-blur-md sm:px-4">
+    <div className="relative flex shrink-0 items-center gap-1 border-b border-ns-border-soft/50 bg-ns-panel/60 px-2 py-1 backdrop-blur-md sm:px-3">
       {/* Scrollable tool items */}
-      <div className="no-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto py-0.5 whitespace-nowrap sm:gap-1.5">
+      <div className="no-scrollbar flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto py-0.5 whitespace-nowrap">
         {/* Mobile sidebar toggle */}
         <button
           type="button"
@@ -80,37 +79,41 @@ export function NoteToolbar({
           <PanelLeft size={14} />
         </button>
 
+        <div className="mx-1 hidden h-4 w-px bg-ns-border-soft/50 md:block" />
+
         {/* Undo / Redo */}
-        <div className="flex shrink-0 items-center gap-0.5 border-r border-ns-border-soft/60 pr-1.5">
+        <div className="flex shrink-0 items-center gap-0.5">
           <button
             type="button"
-            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-ns-ghost transition-all hover:bg-ns-hover hover:text-white"
+            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-ns-ghost transition-colors hover:bg-ns-hover hover:text-white"
             title="Undo (Ctrl+Z)"
           >
             <RotateCcw size={13} />
           </button>
           <button
             type="button"
-            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-ns-ghost transition-all hover:bg-ns-hover hover:text-white"
+            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-ns-ghost transition-colors hover:bg-ns-hover hover:text-white"
             title="Redo (Ctrl+Y)"
           >
             <RotateCw size={13} />
           </button>
         </div>
 
+        <div className="mx-1.5 h-4 w-px shrink-0 bg-ns-border-soft/50" />
+
         {/* Block type selector */}
-        <div className="shrink-0 border-r border-ns-border-soft/60 pr-1.5">
+        <div className="shrink-0">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className="flex h-7 cursor-pointer items-center gap-1.5 rounded-md border border-ns-border-soft bg-ns-bg/40 px-2 text-xs font-medium text-ns-text transition-all hover:bg-ns-hover focus:outline-none"
+                className="flex h-7 cursor-pointer items-center gap-1.5 rounded-md border border-ns-border-soft/60 bg-ns-bg/30 px-2 text-xs font-medium text-ns-text transition-all hover:bg-ns-hover focus:outline-none"
               >
                 <SelectedBlockIcon size={13} className="text-ns-primary-lt" />
                 <span className="hidden sm:inline">
                   {selectedBlockObj.label}
                 </span>
-                <ChevronDown size={12} className="text-ns-ghost" />
+                <ChevronDown size={11} className="text-ns-ghost" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -146,8 +149,10 @@ export function NoteToolbar({
           </DropdownMenu>
         </div>
 
+        <div className="mx-1.5 h-4 w-px shrink-0 bg-ns-border-soft/50" />
+
         {/* Inline formatting */}
-        <div className="flex items-center gap-0.5 border-r border-ns-border-soft/60 pr-1.5">
+        <div className="flex items-center gap-0.5">
           {(
             [
               { fmt: 'bold', icon: Bold, title: 'Bold (Ctrl+B)' },
@@ -170,9 +175,9 @@ export function NoteToolbar({
               type="button"
               onClick={() => onToggleFormat(fmt)}
               className={cn(
-                'flex h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-all',
+                'flex h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-colors',
                 activeFormats[fmt]
-                  ? 'bg-ns-primary/30 font-bold text-ns-primary-lt'
+                  ? 'bg-ns-primary/25 text-ns-primary-lt'
                   : 'text-ns-ghost hover:bg-ns-hover hover:text-white'
               )}
               title={title}
@@ -180,14 +185,15 @@ export function NoteToolbar({
               <Icon size={13} />
             </button>
           ))}
-          {/* Highlight — distinct active color */}
+
+          {/* Highlight */}
           <button
             type="button"
             onClick={() => onToggleFormat('highlight')}
             className={cn(
-              'flex h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-all',
+              'flex h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-colors',
               activeFormats.highlight
-                ? 'bg-amber-500/30 font-bold text-amber-300'
+                ? 'bg-amber-500/25 text-amber-300'
                 : 'text-ns-ghost hover:bg-ns-hover hover:text-white'
             )}
             title="Highlight text"
@@ -196,8 +202,10 @@ export function NoteToolbar({
           </button>
         </div>
 
-        {/* Alignment & lists (hidden on mobile) */}
-        <div className="hidden items-center gap-0.5 border-r border-ns-border-soft/60 pr-1.5 sm:flex">
+        <div className="mx-1.5 h-4 w-px shrink-0 bg-ns-border-soft/50" />
+
+        {/* Alignment & lists */}
+        <div className="hidden items-center gap-0.5 sm:flex">
           {(
             [
               { icon: AlignLeft, title: 'Align Left' },
@@ -211,13 +219,15 @@ export function NoteToolbar({
             <button
               key={title}
               type="button"
-              className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-ns-ghost transition-all hover:bg-ns-hover hover:text-white"
+              className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-ns-ghost transition-colors hover:bg-ns-hover hover:text-white"
               title={title}
             >
               <Icon size={13} />
             </button>
           ))}
         </div>
+
+        <div className="mx-1.5 hidden h-4 w-px shrink-0 bg-ns-border-soft/50 sm:block" />
 
         {/* Insert tools */}
         <div className="flex items-center gap-0.5">
@@ -233,19 +243,13 @@ export function NoteToolbar({
             <button
               key={title}
               type="button"
-              className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-ns-ghost transition-all hover:bg-ns-hover hover:text-white"
+              className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-ns-ghost transition-colors hover:bg-ns-hover hover:text-white"
               title={title}
             >
               <Icon size={13} />
             </button>
           ))}
         </div>
-      </div>
-
-      {/* Engine status badge */}
-      <div className="hidden items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-[0.65rem] font-medium text-emerald-400 lg:flex">
-        <Sparkles size={11} className="animate-pulse" />
-        <span>Lexical Host Ready</span>
       </div>
     </div>
   )
