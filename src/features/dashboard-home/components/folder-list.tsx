@@ -1,44 +1,31 @@
 import { useState } from 'react'
-import { NODES } from '@/shared/mocks/mock-data'
-import { X } from 'lucide-react'
+import { X, FolderPlus } from 'lucide-react'
 import { GlowCardGrid } from '@/shared/ui/system/glow-card-grid'
 import { EmptyState } from '@/shared/ui/system/empty-state'
 import { CreateFolderModal } from './create-folder-modal'
-import { NoteDetailModal } from '@/features/notes/components/note-detail-modal'
 import { NodeSearchBar } from './node-search-bar'
 import { FolderFilterPills } from './folder-filter-pills'
-import { NodeCard } from './node-card'
-
-type NodeWithThumbnail = (typeof NODES)[number] & { thumbnail?: string }
+import { FolderCard } from './node-card'
+import { useFoldersQuery } from '../hooks/use-folders'
 
 export function FoldersList() {
-  const [nodes, setNodes] = useState<NodeWithThumbnail[]>(() =>
-    NODES.map((n) => ({ ...n }))
-  )
-  const [selectedNode, setSelectedNode] = useState<NodeWithThumbnail | null>(
+  const { data: dbFolders = [] } = useFoldersQuery()
+  const [search, setSearch] = useState('')
+  const [selectedWorkspaceId, setSelectedWorkspaceId] = useState<string | null>(
     null
   )
-  const [search, setSearch] = useState('')
-  const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null)
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false)
 
-  const toggleStar = (e: React.MouseEvent, title: string) => {
-    e.stopPropagation()
-    setNodes((prev) =>
-      prev.map((n) => (n.title === title ? { ...n, starred: !n.starred } : n))
-    )
-  }
-
-  const filteredNodes = nodes.filter((n) => {
-    const matchesSearch = n.title.toLowerCase().includes(search.toLowerCase())
-    const matchesFolder = selectedFolderId
-      ? n.folderId === selectedFolderId
+  const filteredFolders = dbFolders.filter((f) => {
+    const matchesSearch = f.name.toLowerCase().includes(search.toLowerCase())
+    const matchesWorkspace = selectedWorkspaceId
+      ? f.workspace_id === selectedWorkspaceId
       : true
-    return matchesSearch && matchesFolder
+    return matchesSearch && matchesWorkspace
   })
 
   const resetFilters = () => {
-    setSelectedFolderId(null)
+    setSelectedWorkspaceId(null)
     setSearch('')
   }
 
@@ -52,25 +39,30 @@ export function FoldersList() {
         />
 
         <FolderFilterPills
-          nodes={nodes}
-          selectedFolderId={selectedFolderId}
-          onSelectFolder={setSelectedFolderId}
+          selectedWorkspaceId={selectedWorkspaceId}
+          onSelectWorkspace={setSelectedWorkspaceId}
         />
       </div>
 
-      {filteredNodes.length === 0 ? (
+      {filteredFolders.length === 0 ? (
         <EmptyState
-          variant={selectedFolderId ? 'folder' : search ? 'search' : 'default'}
-          title={
-            selectedFolderId
-              ? 'No nodes found in this folder'
-              : search
-                ? `No nodes found for "${search}"`
-                : 'No nodes available'
+          variant={
+            selectedWorkspaceId ? 'folder' : search ? 'search' : 'default'
           }
-          description="Try clearing your search query or selecting another folder filter."
+          title={
+            selectedWorkspaceId
+              ? 'No folders match the selected workspace'
+              : search
+                ? `No folders found for "${search}"`
+                : 'No folders available'
+          }
+          description={
+            search || selectedWorkspaceId
+              ? 'Try clearing your search query or resetting filters.'
+              : 'Create your first folder to organize your notes.'
+          }
           action={
-            (selectedFolderId || search) && (
+            selectedWorkspaceId || search ? (
               <button
                 onClick={resetFilters}
                 className="flex cursor-pointer items-center gap-1.5 rounded-sm border border-ns-border bg-ns-panel px-3 py-1.5 text-xs font-bold text-ns-primary-lt transition-all hover:bg-ns-hover"
@@ -78,28 +70,23 @@ export function FoldersList() {
                 <X size={12} />
                 <span>Reset Filters</span>
               </button>
+            ) : (
+              <button
+                onClick={() => setIsCreateFolderOpen(true)}
+                className="flex cursor-pointer items-center gap-1.5 rounded-sm border border-ns-border bg-ns-panel px-3.5 py-2 text-xs font-bold text-ns-primary-lt transition-all hover:bg-ns-hover"
+              >
+                <FolderPlus size={14} />
+                <span>Create New Folder</span>
+              </button>
             )
           }
         />
       ) : (
         <GlowCardGrid className="grid grid-cols-1 gap-4 xl:grid-cols-2 3xl:grid-cols-3">
-          {filteredNodes.map((node) => (
-            <NodeCard
-              key={node.title}
-              node={node}
-              onSelect={setSelectedNode}
-              onToggleStar={toggleStar}
-            />
+          {filteredFolders.map((folder) => (
+            <FolderCard key={folder.id} folder={folder} />
           ))}
         </GlowCardGrid>
-      )}
-
-      {/* Node Detail Modal */}
-      {selectedNode && (
-        <NoteDetailModal
-          node={selectedNode}
-          onClose={() => setSelectedNode(null)}
-        />
       )}
 
       {/* Create Folder Modal */}

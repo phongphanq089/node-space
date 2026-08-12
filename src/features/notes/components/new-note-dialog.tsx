@@ -3,7 +3,8 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FilePlus, Hash, Pin, X } from 'lucide-react'
 
-import { FOLDERS, POPULAR_TAGS, NOTEBOOKS } from '@/shared/mocks/mock-data'
+import { useFoldersQuery } from '@/features/dashboard-home'
+import { POPULAR_TAGS, NOTEBOOKS } from '@/shared/mocks/mock-data'
 import { newNoteSchema } from '../note.validate'
 import type { NewNoteValues } from '../note.validate'
 
@@ -39,6 +40,8 @@ interface NewNoteDialogProps {
 export function NewNoteDialog({ trigger, onSubmit }: NewNoteDialogProps) {
   const [open, setOpen] = useState(false)
   const [tagInput, setTagInput] = useState('')
+
+  const { data: dbFolders = [] } = useFoldersQuery()
 
   const form = useForm<NewNoteValues>({
     resolver: zodResolver(newNoteSchema as any),
@@ -173,19 +176,29 @@ export function NewNoteDialog({ trigger, onSubmit }: NewNoteDialogProps) {
                           <SelectValue placeholder="Select folder" />
                         </SelectTrigger>
                         <SelectContent className="z-[200] border-ns-border-soft bg-ns-panel text-ns-text">
-                          {FOLDERS.map((folder) => (
+                          {dbFolders.length === 0 ? (
                             <SelectItem
-                              key={folder.id}
-                              value={folder.id}
-                              className="text-xs focus:bg-ns-hover focus:text-white"
+                              value="none"
+                              disabled
+                              className="text-xs text-ns-faint"
                             >
-                              <span
-                                className="mr-1.5 inline-block h-2 w-2 rounded-full"
-                                style={{ background: folder.color ?? '#888' }}
-                              />
-                              {folder.name}
+                              No folders available
                             </SelectItem>
-                          ))}
+                          ) : (
+                            dbFolders.map((folder) => (
+                              <SelectItem
+                                key={folder.id}
+                                value={folder.id}
+                                className="text-xs focus:bg-ns-hover focus:text-white"
+                              >
+                                <span
+                                  className="mr-1.5 inline-block h-2 w-2 rounded-full"
+                                  style={{ background: folder.color ?? '#888' }}
+                                />
+                                {folder.name}
+                              </SelectItem>
+                            ))
+                          )}
                         </SelectContent>
                       </Select>
                     </Field>

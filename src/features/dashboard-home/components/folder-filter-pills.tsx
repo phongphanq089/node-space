@@ -1,73 +1,72 @@
-﻿import { Folder, FolderOpen, Filter, Layers, X } from 'lucide-react'
-import { FOLDERS } from '@/shared/mocks/mock-data'
+import { Layers, Filter, X } from 'lucide-react'
+import { useWorkspacesQuery } from '../hooks/use-workspaces'
 
 interface FolderFilterPillsProps {
-  nodes: { folderId?: string }[]
-  selectedFolderId: string | null
-  onSelectFolder: (id: string | null) => void
+  workspaces?: readonly { id: string; name: string; color?: string | null }[]
+  selectedWorkspaceId: string | null
+  onSelectWorkspace: (id: string | null) => void
 }
 
 export function FolderFilterPills({
-  nodes,
-  selectedFolderId,
-  onSelectFolder,
+  workspaces,
+  selectedWorkspaceId,
+  onSelectWorkspace,
 }: FolderFilterPillsProps) {
+  const { data: dbWorkspaces = [] } = useWorkspacesQuery()
+  const displayWorkspaces = workspaces ?? dbWorkspaces
+
   return (
     <div className="no-scrollbar flex items-center gap-2 overflow-x-auto pb-1">
       {/* Label */}
       <div className="flex flex-shrink-0 items-center gap-1.5 border-r border-ns-border-soft pr-2">
         <Filter size={11} className="text-ns-ghost" />
-        <span className="text-sm font-bold tracking-wider text-ns-muted uppercase">
-          TAGS:
+        <span className="text-xs font-bold tracking-wider text-ns-muted uppercase">
+          WORKSPACES:
         </span>
       </div>
 
-      {/* "All Folders" Pill */}
+      {/* "All Workspaces" Pill */}
       <button
-        onClick={() => onSelectFolder(null)}
+        onClick={() => onSelectWorkspace(null)}
         className={`flex flex-shrink-0 cursor-pointer items-center gap-1.5 rounded-sm border px-2.5 py-1 text-sm font-medium transition-all ${
-          selectedFolderId === null
+          selectedWorkspaceId === null
             ? 'border-ns-primary/50 bg-ns-primary/15 text-ns-primary-lt shadow-sm'
             : 'border-ns-border-soft bg-ns-panel/60 text-ns-ghost hover:border-ns-border hover:text-ns-text-2'
         }`}
       >
         <Layers size={11} />
-        <span>All ( {nodes.length} )</span>
+        <span>All ({displayWorkspaces.length})</span>
       </button>
 
-      {/* Folder Chips */}
-      {FOLDERS.map((f) => {
-        const isSelected = selectedFolderId === f.id
-        const count = nodes.filter((n) => n.folderId === f.id).length
+      {/* Workspace Chips */}
+      {displayWorkspaces.map((ws) => {
+        const isSelected =
+          selectedWorkspaceId === ws.id || selectedWorkspaceId === ws.name
         return (
           <button
-            key={f.id}
-            onClick={() => onSelectFolder(isSelected ? null : f.id)}
+            key={ws.id}
+            onClick={() => onSelectWorkspace(isSelected ? null : ws.id)}
             className={`flex flex-shrink-0 cursor-pointer items-center gap-1.5 rounded-sm border px-2.5 py-1 text-sm font-medium transition-all ${
               isSelected
                 ? 'border-ns-border-em bg-ns-active/80 text-ns-primary-lt shadow-sm'
                 : 'border-white/10 bg-ns-panel/40 text-ns-muted hover:border-ns-border hover:bg-ns-hover/40 hover:text-ns-text'
             }`}
           >
-            {isSelected ? (
-              <FolderOpen size={11} style={{ color: f.color ?? '#a78bfa' }} />
-            ) : (
-              <Folder size={11} style={{ color: f.color ?? '#94a3b8' }} />
-            )}
-            <span>{f.name}</span>
-            <span className="py-0.2 rounded-full bg-ns-border-soft/60 px-1.5 text-[0.55rem] font-bold text-ns-faint">
-              {count}
-            </span>
+            <span
+              className="h-2 w-2 rounded-full"
+              style={{ backgroundColor: ws.color ?? '#3b82f6' }}
+            />
+            <span>{ws.name}</span>
           </button>
         )
       })}
 
       {/* Clear Filter */}
-      {selectedFolderId && (
+      {selectedWorkspaceId && (
         <button
-          onClick={() => onSelectFolder(null)}
+          onClick={() => onSelectWorkspace(null)}
           className="flex flex-shrink-0 cursor-pointer items-center gap-1 rounded-lg border border-red-500/20 bg-red-500/10 px-2 py-1 text-[0.62rem] font-bold text-red-400 hover:bg-red-500/20"
-          title="Clear folder filter"
+          title="Clear workspace filter"
         >
           <X size={10} />
           <span>Clear Filter</span>

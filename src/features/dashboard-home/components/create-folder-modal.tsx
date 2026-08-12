@@ -1,9 +1,17 @@
-﻿import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { z } from 'zod'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FolderPlus, Palette, Layers, Sparkles, Upload } from 'lucide-react'
+import {
+  FolderPlus,
+  Palette,
+  Layers,
+  Sparkles,
+  Upload,
+  Loader2,
+} from 'lucide-react'
 import { WORKSPACES } from '@/shared/mocks/mock-data'
+import { useCreateFolderMutation } from '../hooks/use-folders'
 import {
   Dialog,
   DialogContent,
@@ -33,6 +41,8 @@ import 'filepond/dist/filepond.min.css'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 import { Button } from '@/shared/ui/core/button'
 
+import { useWorkspacesQuery } from '../hooks/use-workspaces'
+
 registerPlugin(FilePondPluginImagePreview)
 
 export const createFolderSchema = z.object({
@@ -41,7 +51,7 @@ export const createFolderSchema = z.object({
     .trim()
     .min(1, 'Folder name is required.')
     .max(50, 'Folder name must be at most 50 characters.'),
-  workspaceId: z.string().min(1, 'Workspace is required.'),
+  workspaceId: z.string().optional(),
   color: z.string().optional(),
   image: z
     .string()
@@ -71,6 +81,10 @@ export function CreateFolderModal({
   onSubmit,
 }: CreateFolderModalProps) {
   const [files, setFiles] = useState<FilePondInitialFile[] | any[]>([])
+  const createFolderMutation = useCreateFolderMutation()
+
+  const { data: dbWorkspaces = [] } = useWorkspacesQuery()
+  const displayWorkspaces = dbWorkspaces.length > 0 ? dbWorkspaces : WORKSPACES
 
   const form = useForm<CreateFolderSchemaValues>({
     resolver: zodResolver(createFolderSchema as any),
@@ -95,19 +109,29 @@ export function CreateFolderModal({
     }
   }, [isOpen, form])
 
-  const handleSubmit = (data: CreateFolderSchemaValues) => {
-    if (onSubmit) {
-      onSubmit({
+  const handleSubmit = async (data: CreateFolderSchemaValues) => {
+    try {
+      await createFolderMutation.mutateAsync({
         name: data.name,
         workspaceId: data.workspaceId,
         color: data.color,
         image: data.image,
-        files: files
-          .map((f) => (f instanceof File ? f : f?.file))
-          .filter((f): f is File => f instanceof File),
       })
+      if (onSubmit) {
+        onSubmit({
+          name: data.name,
+          workspaceId: data.workspaceId,
+          color: data.color,
+          image: data.image,
+          files: files
+            .map((f) => (f instanceof File ? f : f?.file))
+            .filter((f): f is File => f instanceof File),
+        })
+      }
+      onClose()
+    } catch {
+      // Toast notification is handled by mutation onError
     }
-    onClose()
   }
 
   return (
@@ -167,8 +191,11 @@ export function CreateFolderModal({
                       <SelectValue placeholder="Select workspace" />
                     </SelectTrigger>
                     <SelectContent>
-                      {WORKSPACES.map((ws) => (
-                        <SelectItem key={ws.name} value={ws.name}>
+                      {displayWorkspaces.map((ws: any) => (
+                        <SelectItem
+                          key={ws.id || ws.name}
+                          value={ws.id || ws.name}
+                        >
                           {ws.name}
                         </SelectItem>
                       ))}
@@ -227,9 +254,17 @@ export function CreateFolderModal({
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit">
-              <Sparkles size={13} />
-              <span>Create Folder</span>
+            <Button type="submit" disabled={createFolderMutation.isPending}>
+              {createFolderMutation.isPending ? (
+                <Loader2 size={13} className="animate-spin" />
+              ) : (
+                <Sparkles size={13} />
+              )}
+              <span>
+                {createFolderMutation.isPending
+                  ? 'Creating...'
+                  : 'Create Folder'}
+              </span>
             </Button>
           </DialogFooter>
         </form>

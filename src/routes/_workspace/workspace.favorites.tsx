@@ -9,28 +9,35 @@ import {
   Search,
   Bookmark,
 } from 'lucide-react'
-import { NODES, NOTES } from '@/shared/mocks/mock-data'
+import { NOTES } from '@/shared/mocks/mock-data'
 import { Button, Input, EmptyState } from '@/shared/ui'
+import {
+  useFoldersQuery,
+  useToggleFavoriteFolderMutation,
+} from '@/features/dashboard-home'
 
 export const Route = createFileRoute('/_workspace/workspace/favorites')({
   component: FavoritesPage,
 })
 
 function FavoritesPage() {
-  const [filter, setFilter] = useState<'all' | 'nodes' | 'notes'>('all')
+  const [filter, setFilter] = useState<'all' | 'folders' | 'notes'>('all')
   const [search, setSearch] = useState('')
 
-  const starredNodes = NODES.filter((n) => n.starred)
+  const { data: dbFolders = [] } = useFoldersQuery()
+  const toggleFavoriteMutation = useToggleFavoriteFolderMutation()
+
+  const starredFolders = dbFolders.filter((f) => f.isFavorite)
   const starredNotes = NOTES.filter((n) => n.starred)
 
-  const filteredNodes = starredNodes.filter((n) =>
-    n.title.toLowerCase().includes(search.toLowerCase())
+  const filteredFolders = starredFolders.filter((f) =>
+    f.name.toLowerCase().includes(search.toLowerCase())
   )
   const filteredNotes = starredNotes.filter((n) =>
     n.title.toLowerCase().includes(search.toLowerCase())
   )
 
-  const totalCount = starredNodes.length + starredNotes.length
+  const totalCount = starredFolders.length + starredNotes.length
 
   return (
     <div className="flex flex-1 flex-col gap-6 bg-ns-bg p-4 font-sans sm:p-6 lg:p-8">
@@ -49,8 +56,8 @@ function FavoritesPage() {
               Favorites & Bookmarks
             </h1>
             <p className="max-w-xl text-xs text-ns-muted sm:text-sm">
-              Quick access to your most vital knowledge nodes, core
-              documentation, and starred research notes.
+              Quick access to your favorited folders, core documentation, and
+              starred research notes.
             </p>
           </div>
 
@@ -58,17 +65,17 @@ function FavoritesPage() {
           <div className="flex items-center gap-3">
             <div className="flex flex-col items-center justify-center rounded-xl border border-ns-border-soft bg-ns-bg/50 px-4 py-2.5 backdrop-blur-md">
               <span className="text-lg font-bold text-white">
-                {starredNodes.length}
+                {starredFolders.length}
               </span>
-              <span className="text-[0.65rem] font-semibold text-ns-ghost uppercase">
-                Nodes
+              <span className="text-[0.65rem] font-semibold tracking-wider text-ns-ghost uppercase">
+                Folders
               </span>
             </div>
             <div className="flex flex-col items-center justify-center rounded-xl border border-ns-border-soft bg-ns-bg/50 px-4 py-2.5 backdrop-blur-md">
               <span className="text-lg font-bold text-white">
                 {starredNotes.length}
               </span>
-              <span className="text-[0.65rem] font-semibold text-ns-ghost uppercase">
+              <span className="text-[0.65rem] font-semibold tracking-wider text-ns-ghost uppercase">
                 Notes
               </span>
             </div>
@@ -95,7 +102,7 @@ function FavoritesPage() {
           {(
             [
               { id: 'all', label: 'All Items', count: totalCount },
-              { id: 'nodes', label: 'Nodes', count: starredNodes.length },
+              { id: 'folders', label: 'Folders', count: starredFolders.length },
               { id: 'notes', label: 'Notes', count: starredNotes.length },
             ] as const
           ).map((tab) => (
@@ -123,70 +130,97 @@ function FavoritesPage() {
         <EmptyState
           variant="search"
           title="No Favorites Saved"
-          description="Click the star icon on any node or note to add it to your favorites list."
+          description="Click the star icon on any folder or note to add it to your favorites list."
         />
       ) : (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          {/* Starred Nodes Section */}
-          {(filter === 'all' || filter === 'nodes') && (
+          {/* Starred Folders Section */}
+          {(filter === 'all' || filter === 'folders') && (
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-between border-b border-ns-border-soft pb-2">
                 <h2 className="flex items-center gap-2 text-xs font-bold tracking-wider text-ns-muted uppercase">
                   <Star className="size-4 fill-amber-400 text-amber-400" />
-                  <span>Starred Nodes ({filteredNodes.length})</span>
+                  <span>Starred Folders ({filteredFolders.length})</span>
                 </h2>
               </div>
 
               <div className="flex flex-col gap-3">
-                {filteredNodes.map((node) => (
+                {filteredFolders.map((folderItem) => (
                   <div
-                    key={node.title}
+                    key={folderItem.id}
                     className="group relative flex items-center justify-between gap-4 rounded-xl border border-ns-border-soft bg-ns-panel/70 p-4 transition-all hover:border-amber-500/50 hover:bg-ns-panel hover:shadow-xl"
                   >
                     <div className="flex min-w-0 items-center gap-3.5">
-                      {node.thumbnail ? (
+                      {folderItem.image ? (
                         <img
-                          src={node.thumbnail}
-                          alt={node.title}
+                          src={folderItem.image}
+                          alt={folderItem.name}
                           className="size-12 shrink-0 rounded-xl border border-ns-border-soft object-cover shadow-sm transition-transform group-hover:scale-105"
                         />
                       ) : (
-                        <div className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-ns-border-soft bg-ns-active/40 text-amber-400">
-                          <Folder size={20} />
+                        <div
+                          className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-ns-border-soft shadow-inner"
+                          style={{
+                            background: `linear-gradient(135deg, ${
+                              folderItem.color ?? '#3b82f6'
+                            }22, ${folderItem.color ?? '#3b82f6'}44)`,
+                          }}
+                        >
+                          <Folder
+                            size={22}
+                            style={{ color: folderItem.color ?? '#60a5fa' }}
+                          />
                         </div>
                       )}
 
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
                           <h3 className="truncate text-sm font-bold text-white transition-colors group-hover:text-amber-300">
-                            {node.title}
+                            {folderItem.name}
                           </h3>
-                          <Star className="size-3.5 shrink-0 fill-amber-400 text-amber-400" />
                         </div>
                         <div className="mt-1 flex items-center gap-2 text-xs text-ns-muted">
-                          <span>{node.folderName || 'Unorganized'}</span>
+                          <span>Folder</span>
                           <span>•</span>
-                          <span>{node.count} notes</span>
-                          <span>•</span>
-                          <span className="text-ns-ghost">{node.updated}</span>
+                          <span className="text-ns-ghost">
+                            Created{' '}
+                            {folderItem.createdAt
+                              ? new Date(
+                                  folderItem.createdAt
+                                ).toLocaleDateString()
+                              : 'Recently'}
+                          </span>
                         </div>
                       </div>
                     </div>
 
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      className="text-ns-ghost hover:bg-ns-hover hover:text-white"
-                      title="Open node"
-                    >
-                      <ArrowUpRight className="size-4" />
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={() =>
+                          toggleFavoriteMutation.mutate(folderItem.id)
+                        }
+                        className="text-amber-400 hover:bg-ns-hover hover:text-amber-300"
+                        title="Remove from favorites"
+                      >
+                        <Star className="size-4 fill-amber-400" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        className="text-ns-ghost hover:bg-ns-hover hover:text-white"
+                        title="Open folder"
+                      >
+                        <ArrowUpRight className="size-4" />
+                      </Button>
+                    </div>
                   </div>
                 ))}
 
-                {filteredNodes.length === 0 && filter === 'nodes' && (
+                {filteredFolders.length === 0 && filter === 'folders' && (
                   <div className="py-8 text-center text-xs text-ns-ghost">
-                    No matching starred nodes found
+                    No matching starred folders found
                   </div>
                 )}
               </div>

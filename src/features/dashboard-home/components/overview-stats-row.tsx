@@ -1,4 +1,5 @@
 import { Folder, FileText, Image, LayoutGrid, Tag } from 'lucide-react'
+import { useFoldersQuery } from '../hooks/use-folders'
 
 export interface OverviewStatItem {
   label: string
@@ -11,11 +12,13 @@ export interface OverviewStatItem {
 }
 
 export function OverviewStatsRow() {
+  const { data: dbFolders = [] } = useFoldersQuery()
+
   const stats: OverviewStatItem[] = [
     {
       label: 'Folders',
-      count: 8,
-      subtitle: 'Active Notebooks',
+      count: dbFolders.length,
+      subtitle: 'Active Folders',
       icon: Folder,
       color: 'text-emerald-400',
       borderColor: 'border-emerald-500/30 hover:border-emerald-500/60',

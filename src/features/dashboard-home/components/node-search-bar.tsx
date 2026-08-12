@@ -16,7 +16,7 @@ export function NodeSearchBar({
     <div className="flex items-center gap-3">
       <div className="flex flex-1 items-center">
         <Input
-          placeholder="Search nodes..."
+          placeholder="Search folders..."
           value={search}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             onSearchChange(e.target.value)
