@@ -59,18 +59,25 @@ export const verification = sqliteTable('verification', {
 
 // ========= DESIGN SYSTEM NOTE DB ============= //
 
-export const workspace = sqliteTable('workspace ', {
+export const workspace = sqliteTable('workspace', {
   id: text('id')
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   name: text('name').notNull().unique(),
   description: text('description'),
   color: text('color'),
+  isFavorite: integer('is_favorite', { mode: 'boolean' })
+    .default(false)
+    .notNull(),
   ownerId: text('owner_id')
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
-  createdAt: integer('createdAt', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull(),
+  createdAt: integer('createdAt', { mode: 'timestamp' })
+    .$defaultFn(() => new Date())
+    .notNull(),
+  updatedAt: integer('updatedAt', { mode: 'timestamp' })
+    .$defaultFn(() => new Date())
+    .notNull(),
 })
 
 export const folder = sqliteTable('folder', {
@@ -82,10 +89,18 @@ export const folder = sqliteTable('folder', {
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
   parentId: text('parent_id'),
-  name: text('string').notNull().unique(),
+  name: text('name').notNull(),
+  color: text('color'),
   image: text('image'),
-  createdAt: integer('createdAt', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull(),
+  isFavorite: integer('is_favorite', { mode: 'boolean' })
+    .default(false)
+    .notNull(),
+  createdAt: integer('createdAt', { mode: 'timestamp' })
+    .$defaultFn(() => new Date())
+    .notNull(),
+  updatedAt: integer('updatedAt', { mode: 'timestamp' })
+    .$defaultFn(() => new Date())
+    .notNull(),
 })
 
 export const note = sqliteTable('note', {
@@ -99,21 +114,28 @@ export const note = sqliteTable('note', {
   author_id: text('author_id')
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
-  name: text('name').notNull().unique(),
+  name: text('name').notNull(),
   isPinned: integer('is_pinned', { mode: 'boolean' }).default(false).notNull(),
+  isFavorite: integer('is_favorite', { mode: 'boolean' })
+    .default(false)
+    .notNull(),
   isArchived: integer('is_archived', { mode: 'boolean' })
     .default(false)
     .notNull(),
   isTrash: integer('is_trash', { mode: 'boolean' }).default(false).notNull(),
-  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
-  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp' })
+    .$defaultFn(() => new Date())
+    .notNull(),
+  updatedAt: integer('updated_at', { mode: 'timestamp' })
+    .$defaultFn(() => new Date())
+    .notNull(),
 })
 
 export const tag = sqliteTable('tag', {
   id: text('id')
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  name: text('string').notNull().unique(),
+  name: text('name').notNull().unique(),
   workspace_id: text('workspace_id').references(() => workspace.id, {
     onDelete: 'cascade',
   }),
