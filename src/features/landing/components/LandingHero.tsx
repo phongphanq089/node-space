@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { Button } from '@/components/ui/core/button'
+import { Button } from '@/shared/ui/core/button'
 
 export default function LandingHero() {
   return (
@@ -24,7 +24,7 @@ export default function LandingHero() {
           {/* Subheading */}
           <p className="m-0 mb-4 text-xl leading-snug font-bold text-white sm:text-2xl">
             A{' '}
-            <span className="from-ns-primary-lt bg-gradient-to-r to-ns-purple bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-ns-primary-lt to-ns-purple bg-clip-text text-transparent">
               completely new experience
             </span>{' '}
             is being crafted.
@@ -52,7 +52,7 @@ export default function LandingHero() {
 
         {/* ── Right: Floating graphic ── */}
         <div className="relative flex items-center justify-center">
-          <div className="bg-ns-primary/10 absolute h-72 w-72 rounded-full blur-[90px]" />
+          <div className="absolute h-72 w-72 rounded-full bg-ns-primary/10 blur-[90px]" />
           <img
             src="/icon-banner.png"
             alt="NodeSpace graphic"

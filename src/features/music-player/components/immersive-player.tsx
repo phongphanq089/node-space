@@ -1,5 +1,5 @@
-import { useMusicStore } from '@/stores/useMusicStore'
-import type { TrackItem } from '@/stores/useMusicStore'
+import { useMusicStore } from '@/features/music-player/store/useMusicStore'
+import type { TrackItem } from '@/features/music-player/store/useMusicStore'
 import { useEffect } from 'react'
 import {
   Minimize2,
@@ -22,10 +22,14 @@ function formatTime(seconds: number) {
 }
 
 function isVideoUrl(url: string) {
-  return url.toLowerCase().endsWith('.mp4') || url.toLowerCase().includes('/video/') || url.toLowerCase().includes('.webm')
+  return (
+    url.toLowerCase().endsWith('.mp4') ||
+    url.toLowerCase().includes('/video/') ||
+    url.toLowerCase().includes('.webm')
+  )
 }
 
-export default function ImmersivePlayer({ onClose }: ImmersivePlayerProps) {
+export function ImmersivePlayer({ onClose }: ImmersivePlayerProps) {
   const {
     playlist,
     currentTrackIndex,
@@ -56,7 +60,7 @@ export default function ImmersivePlayer({ onClose }: ImmersivePlayerProps) {
   }, [currentTrack, onClose, setYoutubePlayerMode])
 
   return (
-    <div className="fixed inset-0 z-[999] flex flex-col justify-between bg-neutral-950/96 p-8 text-white backdrop-blur-xl md:p-12 animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-ns-immersive flex animate-in flex-col justify-between bg-neutral-950/96 p-8 text-white backdrop-blur-xl duration-200 zoom-in-95 fade-in md:p-12">
       {/* Top row */}
       <div className="flex w-full items-center justify-between">
         <div className="flex items-center gap-2">
@@ -81,7 +85,7 @@ export default function ImmersivePlayer({ onClose }: ImmersivePlayerProps) {
       <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center gap-12 md:flex-row md:gap-20">
         {isVideo ? (
           /* Spacer for absolute positioned Video player in layout shell */
-          <div className="w-full max-w-[640px] aspect-video flex-shrink-0" />
+          <div className="aspect-video w-full max-w-[640px] flex-shrink-0" />
         ) : (
           /* Spinning Vinyl Vinyl disc */
           <div className="relative flex flex-shrink-0 items-center justify-center">
@@ -240,7 +244,9 @@ export default function ImmersivePlayer({ onClose }: ImmersivePlayerProps) {
       {/* Footer hint */}
       <div className="flex w-full items-center justify-between border-t border-white/5 pt-4 text-xs text-white/30">
         <span>
-          {onClose ? 'Press ESC or click Minimize to exit focus space' : 'Immersive Focus Environment'}
+          {onClose
+            ? 'Press ESC or click Minimize to exit focus space'
+            : 'Immersive Focus Environment'}
         </span>
         <span>NodeSpace Player</span>
       </div>

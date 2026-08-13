@@ -4,6 +4,9 @@ import '@/styles.css'
 import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
 // import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
+import { DefaultCatchBoundary } from '@/shared/ui/system/default-catch-boundary'
+import { Toaster } from '@/shared/ui/core/sonner'
+
 // Inline theme init — runs before React hydration to prevent flash
 const THEME_INIT_SCRIPT = `(function(){try{var root=document.documentElement;root.classList.remove('light');root.classList.add('dark');root.setAttribute('data-theme','dark');root.style.colorScheme='dark';}catch(e){}})();`
 
@@ -21,6 +24,13 @@ export const Route = createRootRoute({
     ],
   }),
   shellComponent: RootDocument,
+  errorComponent: (props) => {
+    return (
+      <RootDocument>
+        <DefaultCatchBoundary {...props} />
+      </RootDocument>
+    )
+  },
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
@@ -32,11 +42,19 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       style={{ colorScheme: 'dark' }}
       suppressHydrationWarning
     >
-      <head>
+      <head suppressHydrationWarning>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
+        {/* <script
+          crossOrigin="anonymous"
+          src="//unpkg.com/react-scan/dist/auto.global.js"
+        ></script> */}
       </head>
-      <body className="font-sans wrap-anywhere antialiased">
+      <body
+        className="font-sans wrap-anywhere antialiased"
+        suppressHydrationWarning
+      >
+        <Toaster richColors />
         {children}
         {/* <TanStackDevtools
           config={{ position: 'bottom-left' }}

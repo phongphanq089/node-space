@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { useMusicStore } from '@/stores/useMusicStore'
+import { useMusicStore } from '@/features/music-player/store/useMusicStore'
 import {
   X,
   Minimize2,
@@ -27,7 +26,7 @@ function getYoutubeId(url: string) {
   }
 }
 
-export default function YoutubePlayer() {
+export function YoutubePlayer() {
   const {
     playlist,
     currentTrackIndex,
@@ -143,13 +142,13 @@ export default function YoutubePlayer() {
     <>
       {!isPip && (
         <div
-          className="fixed inset-0 z-[100] animate-in bg-black/85 backdrop-blur-md transition-opacity duration-300 fade-in"
+          className="fixed inset-0 z-ns-overlay animate-in bg-black/85 backdrop-blur-md transition-opacity duration-300 fade-in"
           onClick={() => setYoutubePlayerMode('pip')}
         />
       )}
 
       <div
-        className={`fixed z-[101] flex flex-col overflow-hidden border border-ns-border bg-ns-panel shadow-2xl transition-all duration-300 ${
+        className={`fixed z-ns-modal flex flex-col overflow-hidden border border-ns-border bg-ns-panel shadow-2xl transition-all duration-300 ${
           isPip
             ? 'right-6 bottom-6 h-[180px] w-[320px] animate-in rounded-2xl slide-in-from-bottom-5'
             : 'top-1/2 left-1/2 w-[90vw] max-w-3xl -translate-x-1/2 -translate-y-1/2 animate-in rounded-2xl duration-200 zoom-in-95'

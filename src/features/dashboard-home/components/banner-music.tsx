@@ -1,5 +1,5 @@
-import { useMusicStore } from '@/stores/useMusicStore'
-import type { TrackItem } from '@/stores/useMusicStore'
+import { useMusicStore } from '@/features/music-player/store/useMusicStore'
+import type { TrackItem } from '@/features/music-player/store/useMusicStore'
 import { Link } from '@tanstack/react-router'
 import {
   Maximize2,
@@ -15,7 +15,7 @@ import {
   Music2,
 } from 'lucide-react'
 import { useEffect } from 'react'
-import ImmersivePlayer from '@/features/music-player/components/immersive-player'
+import { ImmersivePlayer } from '@/features/music-player'
 
 function isYoutubeUrl(url: string) {
   return url.includes('youtube.com') || url.includes('youtu.be')
@@ -64,7 +64,7 @@ const BannerMusic = () => {
 
   return (
     <>
-      {/* ── FULL-WIDTH BEAUTIFUL MUSIC BANNER ─────────────────── */}
+      {/* â”€â”€ FULL-WIDTH BEAUTIFUL MUSIC BANNER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div className="relative h-[280px] w-full overflow-hidden rounded-2xl border border-white/10 bg-ns-panel shadow-2xl">
         {/* Dynamic background cover image - CLEAR, NO BLUR */}
         <div
@@ -79,7 +79,7 @@ const BannerMusic = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/35" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-transparent" />
 
-        {/* ── Floating Top strip: badges ── */}
+        {/* â”€â”€ Floating Top strip: badges â”€â”€ */}
         <div className="absolute top-4 right-4 left-4 z-10 flex items-center justify-between">
           <span className="flex items-center gap-1.5 rounded-full border border-violet-400/20 bg-black/45 px-2.5 py-1 text-[0.55rem] font-bold tracking-widest text-violet-300 uppercase backdrop-blur-md">
             <span className="relative flex h-1.5 w-1.5">
@@ -91,7 +91,7 @@ const BannerMusic = () => {
             {isPlaying ? 'Now Playing' : 'Paused'}
           </span>
           <Link
-            to="/dashboard/music"
+            to="/workspace/music"
             className="flex items-center gap-1.5 rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-[0.55rem] font-bold text-white/50 uppercase no-underline backdrop-blur-md transition-all hover:border-violet-400/30 hover:text-white/80"
             title="Manage playlist"
           >
@@ -100,7 +100,7 @@ const BannerMusic = () => {
           </Link>
         </div>
 
-        {/* ── Bottom music control panel ── */}
+        {/* â”€â”€ Bottom music control panel â”€â”€ */}
         <div className="absolute inset-x-0 bottom-0 flex flex-col gap-3 border-t border-white/10 bg-black/50 p-4 backdrop-blur-md">
           {/* Row 1: Cover thumbnail, track details & controls */}
           <div className="flex items-center justify-between gap-4">
@@ -230,7 +230,11 @@ const BannerMusic = () => {
 
               {/* Expand/Maximize */}
               <button
-                onClick={() => isYoutube ? setYoutubePlayerMode('modal') : setIsExpanded(true)}
+                onClick={() =>
+                  isYoutube
+                    ? setYoutubePlayerMode('modal')
+                    : setIsExpanded(true)
+                }
                 type="button"
                 className="cursor-pointer text-white/40 transition-all hover:text-white/80"
                 title="Immersive player"
@@ -274,10 +278,10 @@ const BannerMusic = () => {
         </div>
       </div>
 
-      {/* ── Immersive Fullscreen Player Overlay ── */}
+      {/* â”€â”€ Immersive Fullscreen Player Overlay â”€â”€ */}
       {isExpanded && <ImmersivePlayer onClose={() => setIsExpanded(false)} />}
     </>
   )
 }
 
-export default BannerMusic
+export { BannerMusic }
