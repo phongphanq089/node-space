@@ -1,10 +1,19 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import {
+  useQuery,
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query'
 import {
   getWorkspacesFn,
   createWorkspaceFn,
   deleteWorkspaceFn,
+  updateWorkspaceFn,
 } from '../workspace.fns'
-import type { CreateWorkspaceInput } from '../workspace.fns'
+import type {
+  CreateWorkspaceInput,
+  UpdateWorkspaceInput,
+} from '../workspace.fns'
 import { toast } from 'sonner'
 
 export const WORKSPACES_QUERY_KEY = ['workspaces'] as const
@@ -13,8 +22,25 @@ export function useWorkspacesQuery() {
   return useQuery({
     queryKey: WORKSPACES_QUERY_KEY,
     queryFn: async () => {
-      const workspaces = await getWorkspacesFn()
-      return workspaces
+      const res = await getWorkspacesFn({ data: { limit: 100 } })
+      return res.items
+    },
+  })
+}
+
+export function useInfiniteWorkspacesQuery(pageSize = 10, search = '') {
+  return useInfiniteQuery({
+    queryKey: [...WORKSPACES_QUERY_KEY, 'infinite', pageSize, search],
+    queryFn: async ({ pageParam = 0 }) => {
+      const res = await getWorkspacesFn({
+        data: { limit: pageSize, offset: pageParam, search },
+      })
+      return res
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage.hasMore) return undefined
+      return allPages.length * pageSize
     },
   })
 }
@@ -36,6 +62,25 @@ export function useCreateWorkspaceMutation() {
       toast.error(
         error.message || 'Failed to create workspace. Please try again.'
       )
+    },
+  })
+}
+
+export function useUpdateWorkspaceMutation() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (data: UpdateWorkspaceInput) => {
+      const response = await updateWorkspaceFn({ data })
+      return response
+    },
+    onSuccess: () => {
+      toast.success('Workspace updated successfully!')
+      void queryClient.invalidateQueries({ queryKey: WORKSPACES_QUERY_KEY })
+    },
+    onError: (error: Error) => {
+      console.error('Failed to update workspace:', error)
+      toast.error(error.message || 'Failed to update workspace.')
     },
   })
 }

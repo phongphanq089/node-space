@@ -2,7 +2,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import { getDb } from '@/db'
 import { workspace, user } from '@/db/schema'
-import { eq, desc } from 'drizzle-orm'
+import { eq, desc, and, like } from 'drizzle-orm'
 
 export const createWorkspaceSchema = z.object({
   name: z
@@ -82,17 +82,87 @@ export const createWorkspaceFn = createServerFn({ method: 'POST' })
     }
   })
 
-export const getWorkspacesFn = createServerFn({ method: 'GET' }).handler(
-  async () => {
+export const getWorkspacesFn = createServerFn({ method: 'GET' })
+  .validator(
+    (
+      data:
+        | {
+            limit?: number
+            offset?: number
+            search?: string
+          }
+        | undefined
+    ) =>
+      z
+        .object({
+          limit: z.number().optional(),
+          offset: z.number().optional(),
+          search: z.string().optional(),
+        })
+        .parse(data ?? {})
+  )
+  .handler(async ({ data }) => {
+    const limit = data?.limit ?? 10
+    const offset = data?.offset ?? 0
     const db = getDb()
-    const result = await db
+
+    const conditions = []
+    if (data?.search && data.search.trim() !== '') {
+      conditions.push(like(workspace.name, `%${data.search.trim()}%`))
+    }
+
+    const rows = await db
       .select()
       .from(workspace)
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
       .orderBy(desc(workspace.createdAt))
+      .limit(limit + 1)
+      .offset(offset)
 
-    return result
-  }
-)
+    const hasMore = rows.length > limit
+    const items = hasMore ? rows.slice(0, limit) : rows
+
+    return {
+      items,
+      hasMore,
+    }
+  })
+
+export const updateWorkspaceSchema = z.object({
+  workspaceId: z.string().min(1, 'Workspace ID is required.'),
+  name: z
+    .string()
+    .trim()
+    .min(1, 'Workspace name is required.')
+    .max(50, 'Workspace name must be at most 50 characters.')
+    .optional(),
+  color: z.string().optional(),
+  description: z.string().optional(),
+})
+
+export type UpdateWorkspaceInput = z.infer<typeof updateWorkspaceSchema>
+
+export const updateWorkspaceFn = createServerFn({ method: 'POST' })
+  .validator((data: UpdateWorkspaceInput) => updateWorkspaceSchema.parse(data))
+  .handler(async ({ data }) => {
+    const db = getDb()
+
+    const updatePayload: Record<string, any> = {
+      updatedAt: new Date(),
+    }
+
+    if (data.name !== undefined) updatePayload.name = data.name
+    if (data.color !== undefined) updatePayload.color = data.color
+    if (data.description !== undefined)
+      updatePayload.description = data.description
+
+    await db
+      .update(workspace)
+      .set(updatePayload)
+      .where(eq(workspace.id, data.workspaceId))
+
+    return { success: true, workspaceId: data.workspaceId }
+  })
 
 export const deleteWorkspaceFn = createServerFn({ method: 'POST' })
   .validator((data: { workspaceId: string }) =>

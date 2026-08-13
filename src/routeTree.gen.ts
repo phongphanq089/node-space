@@ -22,6 +22,7 @@ import { Route as WorkspaceWorkspaceFolderRouteImport } from './routes/_workspac
 import { Route as WorkspaceWorkspaceMusicRouteImport } from './routes/_workspace/workspace.music'
 import { Route as WorkspaceWorkspaceTagsRouteImport } from './routes/_workspace/workspace.tags'
 import { Route as WorkspaceWorkspaceTrashRouteImport } from './routes/_workspace/workspace.trash'
+import { Route as WorkspaceWorkspaceWorkspacesRouteImport } from './routes/_workspace/workspace.workspaces'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const IndexRoute = IndexRouteImport.update({
@@ -90,6 +91,12 @@ const WorkspaceWorkspaceTrashRoute = WorkspaceWorkspaceTrashRouteImport.update({
   path: '/workspace/trash',
   getParentRoute: () => WorkspaceRoute,
 } as any)
+const WorkspaceWorkspaceWorkspacesRoute =
+  WorkspaceWorkspaceWorkspacesRouteImport.update({
+    id: '/workspace/workspaces',
+    path: '/workspace/workspaces',
+    getParentRoute: () => WorkspaceRoute,
+  } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -108,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/workspace/music': typeof WorkspaceWorkspaceMusicRoute
   '/workspace/tags': typeof WorkspaceWorkspaceTagsRoute
   '/workspace/trash': typeof WorkspaceWorkspaceTrashRoute
+  '/workspace/workspaces': typeof WorkspaceWorkspaceWorkspacesRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspace/': typeof WorkspaceWorkspaceIndexRoute
 }
@@ -123,6 +131,7 @@ export interface FileRoutesByTo {
   '/workspace/music': typeof WorkspaceWorkspaceMusicRoute
   '/workspace/tags': typeof WorkspaceWorkspaceTagsRoute
   '/workspace/trash': typeof WorkspaceWorkspaceTrashRoute
+  '/workspace/workspaces': typeof WorkspaceWorkspaceWorkspacesRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/workspace': typeof WorkspaceWorkspaceIndexRoute
 }
@@ -140,6 +149,7 @@ export interface FileRoutesById {
   '/_workspace/workspace/music': typeof WorkspaceWorkspaceMusicRoute
   '/_workspace/workspace/tags': typeof WorkspaceWorkspaceTagsRoute
   '/_workspace/workspace/trash': typeof WorkspaceWorkspaceTrashRoute
+  '/_workspace/workspace/workspaces': typeof WorkspaceWorkspaceWorkspacesRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_workspace/workspace/': typeof WorkspaceWorkspaceIndexRoute
 }
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
     | '/workspace/music'
     | '/workspace/tags'
     | '/workspace/trash'
+    | '/workspace/workspaces'
     | '/api/auth/$'
     | '/workspace/'
   fileRoutesByTo: FileRoutesByTo
@@ -172,6 +183,7 @@ export interface FileRouteTypes {
     | '/workspace/music'
     | '/workspace/tags'
     | '/workspace/trash'
+    | '/workspace/workspaces'
     | '/api/auth/$'
     | '/workspace'
   id:
@@ -188,6 +200,7 @@ export interface FileRouteTypes {
     | '/_workspace/workspace/music'
     | '/_workspace/workspace/tags'
     | '/_workspace/workspace/trash'
+    | '/_workspace/workspace/workspaces'
     | '/api/auth/$'
     | '/_workspace/workspace/'
   fileRoutesById: FileRoutesById
@@ -295,6 +308,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceWorkspaceTrashRouteImport
       parentRoute: typeof WorkspaceRoute
     }
+    '/_workspace/workspace/workspaces': {
+      id: '/_workspace/workspace/workspaces'
+      path: '/workspace/workspaces'
+      fullPath: '/workspace/workspaces'
+      preLoaderRoute: typeof WorkspaceWorkspaceWorkspacesRouteImport
+      parentRoute: typeof WorkspaceRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -312,6 +332,7 @@ interface WorkspaceRouteChildren {
   WorkspaceWorkspaceMusicRoute: typeof WorkspaceWorkspaceMusicRoute
   WorkspaceWorkspaceTagsRoute: typeof WorkspaceWorkspaceTagsRoute
   WorkspaceWorkspaceTrashRoute: typeof WorkspaceWorkspaceTrashRoute
+  WorkspaceWorkspaceWorkspacesRoute: typeof WorkspaceWorkspaceWorkspacesRoute
   WorkspaceWorkspaceIndexRoute: typeof WorkspaceWorkspaceIndexRoute
 }
 
@@ -322,6 +343,7 @@ const WorkspaceRouteChildren: WorkspaceRouteChildren = {
   WorkspaceWorkspaceMusicRoute: WorkspaceWorkspaceMusicRoute,
   WorkspaceWorkspaceTagsRoute: WorkspaceWorkspaceTagsRoute,
   WorkspaceWorkspaceTrashRoute: WorkspaceWorkspaceTrashRoute,
+  WorkspaceWorkspaceWorkspacesRoute: WorkspaceWorkspaceWorkspacesRoute,
   WorkspaceWorkspaceIndexRoute: WorkspaceWorkspaceIndexRoute,
 }
 

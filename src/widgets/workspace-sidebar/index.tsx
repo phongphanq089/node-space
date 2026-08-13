@@ -91,7 +91,7 @@ const WorkSpaceSidebar = () => {
             mapItem={(workspace: any) => ({
               label: workspace.name,
               color: workspace.color ?? '#3b82f6',
-              href: '#',
+              to: `/workspace/folder?workspaceId=${workspace.id}`,
             })}
             showMoreButton
           />

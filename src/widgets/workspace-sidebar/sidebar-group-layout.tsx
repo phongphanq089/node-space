@@ -17,6 +17,7 @@ import {
   Music,
   FolderClosed,
   MoreHorizontal,
+  Layers,
 } from 'lucide-react'
 import { cn } from '@/shared/lib/utils'
 
@@ -65,6 +66,7 @@ export interface SidebarGroupLayoutProps<T = SidebarGroupItemData> {
 
 const defaultIconMap: Record<string, ReactNode> = {
   home: <Home size={15} />,
+  layers: <Layers size={15} />,
   folder: <FolderClosed size={15} />,
   hexagon: <Hexagon size={15} />,
   star: <Star size={15} />,
