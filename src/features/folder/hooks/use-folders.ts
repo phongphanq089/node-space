@@ -1,11 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  getFoldersFn,
-  createFolderFn,
-  deleteFolderFn
-  
-} from '../folder.fns'
-import type {CreateFolderInput} from '../folder.fns';
+import { getFoldersFn, createFolderFn, deleteFolderFn } from '../folder.fns'
+import type { CreateFolderInput } from '../folder.fns'
 import { toast } from 'sonner'
 
 export const FOLDERS_QUERY_KEY = ['folders'] as const

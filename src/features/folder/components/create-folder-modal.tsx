@@ -40,8 +40,7 @@ import type { FilePondInitialFile } from 'filepond'
 import 'filepond/dist/filepond.min.css'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 import { Button } from '@/shared/ui/core/button'
-
-import { useWorkspacesQuery } from '../hooks/use-workspaces'
+import { useWorkspacesQuery } from '@/features/workspace/hooks/use-workspaces'
 
 registerPlugin(FilePondPluginImagePreview)
 

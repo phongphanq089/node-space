@@ -27,11 +27,8 @@ import { Logout } from './logout'
 import { WORKSPACES } from '@/shared/mocks/mock-data'
 import { SidebarGroupLayout } from './sidebar-group-layout'
 import { NAVIGATION_LIST } from './navigation-list'
-import {
-  useWorkspacesQuery,
-  useFoldersQuery,
-  CreateWorkspaceModal,
-} from '@/features/dashboard-home'
+import { useWorkspacesQuery, CreateWorkspaceModal } from '@/features/workspace'
+import { useFoldersQuery } from '@/features/folder'
 
 const WorkSpaceSidebar = () => {
   const { isMobile } = useSidebar()

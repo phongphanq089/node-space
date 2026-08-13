@@ -30,7 +30,7 @@ import {
 import { NODES, NOTES, WORKSPACES } from '@/shared/mocks/mock-data'
 import type { NoteItem, WorkspaceItem } from '@/shared/mocks/mock-data'
 import { useMusicStore } from '@/features/music-player'
-import { useFoldersQuery } from '@/features/dashboard-home'
+import { useFoldersQuery } from '@/features/folder'
 
 type FilterCategory =
   'all' | 'nodes' | 'folders' | 'notes' | 'workspaces' | 'actions'

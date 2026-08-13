@@ -2,10 +2,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   getWorkspacesFn,
   createWorkspaceFn,
-  deleteWorkspaceFn
-  
+  deleteWorkspaceFn,
 } from '../workspace.fns'
-import type {CreateWorkspaceInput} from '../workspace.fns';
+import type { CreateWorkspaceInput } from '../workspace.fns'
 import { toast } from 'sonner'
 
 export const WORKSPACES_QUERY_KEY = ['workspaces'] as const

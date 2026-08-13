@@ -14,7 +14,7 @@ import { Button, Input, EmptyState } from '@/shared/ui'
 import {
   useFoldersQuery,
   useToggleFavoriteFolderMutation,
-} from '@/features/dashboard-home'
+} from '@/features/folder'
 
 export const Route = createFileRoute('/_workspace/workspace/favorites')({
   component: FavoritesPage,

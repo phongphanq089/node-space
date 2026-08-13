@@ -1,7 +1,7 @@
 import { Folder, ChevronRight, FolderPlus } from 'lucide-react'
 import type { NotebookItem } from '@/shared/mocks/mock-data'
 import { Link } from '@tanstack/react-router'
-import { useFoldersQuery } from '../hooks/use-folders'
+import { useFoldersQuery } from '@/features/folder'
 
 interface NotebooksGridBlockProps {
   onSelectNotebook?: (notebook: NotebookItem) => void

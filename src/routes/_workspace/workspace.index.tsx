@@ -1,14 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { HomeHeroBanner } from '@/features/dashboard-home/components/home-hero-banner'
-import { OverviewStatsRow } from '@/features/dashboard-home/components/overview-stats-row'
-import { QuickActionsRow } from '@/features/dashboard-home/components/quick-actions-row'
-import { NotebooksGridBlock } from '@/features/dashboard-home/components/notebooks-grid-block'
-import { RecentNotesBlock } from '@/features/dashboard-home/components/recent-notes-block'
-import { LofiStreamCard } from '@/features/dashboard-home/components/lofi-stream-card'
-import { PinnedNotesWidget } from '@/features/dashboard-home/components/pinned-notes-widget'
-import { PopularTagsWidget } from '@/features/dashboard-home/components/popular-tags-widget'
-import { CreateFolderModal } from '@/features/dashboard-home/components/create-folder-modal'
+import {
+  HomeHeroBanner,
+  OverviewStatsRow,
+  QuickActionsRow,
+  NotebooksGridBlock,
+  RecentNotesBlock,
+  LofiStreamCard,
+  PinnedNotesWidget,
+  PopularTagsWidget,
+} from '@/features/home'
+import { CreateFolderModal } from '@/features/folder'
 
 export const Route = createFileRoute('/_workspace/workspace/')({
   component: DashboardHome,

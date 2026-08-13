@@ -1,4 +1,4 @@
-﻿import { Tag } from 'lucide-react'
+import { Tag } from 'lucide-react'
 import { POPULAR_TAGS } from '@/shared/mocks/mock-data'
 import { Link } from '@tanstack/react-router'
 

@@ -1,4 +1,4 @@
-﻿import { useMusicStore } from '@/features/music-player/store/useMusicStore'
+import { useMusicStore } from '@/features/music-player/store/useMusicStore'
 import type { TrackItem } from '@/features/music-player/store/useMusicStore'
 import {
   Play,

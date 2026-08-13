@@ -1,4 +1,4 @@
-import { FoldersList } from '@/features/dashboard-home'
+import { FoldersList } from '@/features/folder'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_workspace/workspace/folder')({

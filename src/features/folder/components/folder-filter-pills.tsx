@@ -1,5 +1,5 @@
 import { Layers, Filter, X } from 'lucide-react'
-import { useWorkspacesQuery } from '../hooks/use-workspaces'
+import { useWorkspacesQuery } from '@/features/workspace/hooks/use-workspaces'
 
 interface FolderFilterPillsProps {
   workspaces?: readonly { id: string; name: string; color?: string | null }[]

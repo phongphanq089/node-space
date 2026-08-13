@@ -64,7 +64,7 @@ const BannerMusic = () => {
 
   return (
     <>
-      {/* â”€â”€ FULL-WIDTH BEAUTIFUL MUSIC BANNER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── FULL-WIDTH BEAUTIFUL MUSIC BANNER ────────────────────────── */}
       <div className="relative h-[280px] w-full overflow-hidden rounded-2xl border border-white/10 bg-ns-panel shadow-2xl">
         {/* Dynamic background cover image - CLEAR, NO BLUR */}
         <div
@@ -79,7 +79,7 @@ const BannerMusic = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/35" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-transparent" />
 
-        {/* â”€â”€ Floating Top strip: badges â”€â”€ */}
+        {/* ── Floating Top strip: badges ── */}
         <div className="absolute top-4 right-4 left-4 z-10 flex items-center justify-between">
           <span className="flex items-center gap-1.5 rounded-full border border-violet-400/20 bg-black/45 px-2.5 py-1 text-[0.55rem] font-bold tracking-widest text-violet-300 uppercase backdrop-blur-md">
             <span className="relative flex h-1.5 w-1.5">
@@ -100,7 +100,7 @@ const BannerMusic = () => {
           </Link>
         </div>
 
-        {/* â”€â”€ Bottom music control panel â”€â”€ */}
+        {/* ── Bottom music control panel ── */}
         <div className="absolute inset-x-0 bottom-0 flex flex-col gap-3 border-t border-white/10 bg-black/50 p-4 backdrop-blur-md">
           {/* Row 1: Cover thumbnail, track details & controls */}
           <div className="flex items-center justify-between gap-4">
@@ -278,7 +278,7 @@ const BannerMusic = () => {
         </div>
       </div>
 
-      {/* â”€â”€ Immersive Fullscreen Player Overlay â”€â”€ */}
+      {/* ── Immersive Fullscreen Player Overlay ── */}
       {isExpanded && <ImmersivePlayer onClose={() => setIsExpanded(false)} />}
     </>
   )

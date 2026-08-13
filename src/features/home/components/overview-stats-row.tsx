@@ -1,5 +1,5 @@
 import { Folder, FileText, Image, LayoutGrid, Tag } from 'lucide-react'
-import { useFoldersQuery } from '../hooks/use-folders'
+import { useFoldersQuery } from '@/features/folder'
 
 export interface OverviewStatItem {
   label: string

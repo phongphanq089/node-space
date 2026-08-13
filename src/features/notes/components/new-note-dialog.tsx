@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FilePlus, Hash, Pin, X } from 'lucide-react'
 
-import { useFoldersQuery } from '@/features/dashboard-home'
+import { useFoldersQuery } from '@/features/folder'
 import { POPULAR_TAGS, NOTEBOOKS } from '@/shared/mocks/mock-data'
 import { newNoteSchema } from '../note.validate'
 import type { NewNoteValues } from '../note.validate'
