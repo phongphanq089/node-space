@@ -8,6 +8,14 @@ export * from './hooks/use-folders'
 export { FolderCard, NodeCard } from './components/node-card'
 export type { FolderItemRecord } from './components/node-card'
 export { FoldersList } from './components/folder-list'
-export { CreateFolderModal } from './components/create-folder-modal'
+export {
+  FolderModal,
+  CreateFolderModal,
+  EditFolderModal,
+} from './components/folder-modal'
 export { FolderFilterPills } from './components/folder-filter-pills'
 export { NodeSearchBar } from './components/node-search-bar'
+export {
+  FolderCardSkeleton,
+  FolderGridSkeleton,
+} from './components/folder-skeleton'

@@ -1,31 +1,52 @@
-import { useState } from 'react'
-import { X, FolderPlus } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from '@tanstack/react-router'
+import { X, FolderPlus, ChevronDown, Loader2 } from 'lucide-react'
+import { useDebounce } from '@/shared/lib/hooks'
 import { GlowCardGrid } from '@/shared/ui/system/glow-card-grid'
 import { EmptyState } from '@/shared/ui/system/empty-state'
-import { CreateFolderModal } from './create-folder-modal'
+import { FolderModal } from './folder-modal'
 import { NodeSearchBar } from './node-search-bar'
 import { FolderFilterPills } from './folder-filter-pills'
 import { FolderCard } from './node-card'
-import { useFoldersQuery } from '../hooks/use-folders'
+import { FolderGridSkeleton } from './folder-skeleton'
+import { useInfiniteFoldersQuery } from '../hooks/use-folders'
 
-export function FoldersList() {
-  const { data: dbFolders = [] } = useFoldersQuery()
+interface FoldersListProps {
+  initialWorkspaceId?: string
+}
+
+export function FoldersList({ initialWorkspaceId }: FoldersListProps) {
+  const navigate = useNavigate()
   const [search, setSearch] = useState('')
+  const debouncedSearch = useDebounce(search, 500)
   const [selectedWorkspaceId, setSelectedWorkspaceId] = useState<string | null>(
-    null
+    initialWorkspaceId ?? null
   )
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false)
 
-  const filteredFolders = dbFolders.filter((f) => {
-    const matchesSearch = f.name.toLowerCase().includes(search.toLowerCase())
-    const matchesWorkspace = selectedWorkspaceId
-      ? f.workspace_id === selectedWorkspaceId
-      : true
-    return matchesSearch && matchesWorkspace
-  })
+  useEffect(() => {
+    if (initialWorkspaceId !== undefined) {
+      setSelectedWorkspaceId(initialWorkspaceId || null)
+    }
+  }, [initialWorkspaceId])
+
+  const handleSelectWorkspace = (id: string | null) => {
+    setSelectedWorkspaceId(id)
+    void navigate({
+      to: '/workspace/folder',
+      search: id ? { workspaceId: id } : {},
+      replace: true,
+    })
+  }
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteFoldersQuery(12, debouncedSearch, selectedWorkspaceId)
+
+  // Flatten all fetched pages of folders into a single list (already filtered by SQL on server)
+  const dbFolders = data?.pages.flatMap((page) => page.items) ?? []
 
   const resetFilters = () => {
-    setSelectedWorkspaceId(null)
+    handleSelectWorkspace(null)
     setSearch('')
   }
 
@@ -40,11 +61,13 @@ export function FoldersList() {
 
         <FolderFilterPills
           selectedWorkspaceId={selectedWorkspaceId}
-          onSelectWorkspace={setSelectedWorkspaceId}
+          onSelectWorkspace={handleSelectWorkspace}
         />
       </div>
 
-      {filteredFolders.length === 0 ? (
+      {isLoading ? (
+        <FolderGridSkeleton count={6} />
+      ) : dbFolders.length === 0 ? (
         <EmptyState
           variant={
             selectedWorkspaceId ? 'folder' : search ? 'search' : 'default'
@@ -82,17 +105,48 @@ export function FoldersList() {
           }
         />
       ) : (
-        <GlowCardGrid className="grid grid-cols-1 gap-4 xl:grid-cols-2 3xl:grid-cols-3">
-          {filteredFolders.map((folder) => (
-            <FolderCard key={folder.id} folder={folder} />
-          ))}
-        </GlowCardGrid>
+        <div className="flex flex-col gap-6">
+          <GlowCardGrid className="grid grid-cols-1 gap-4 xl:grid-cols-2 3xl:grid-cols-3">
+            {dbFolders.map((folder) => (
+              <FolderCard key={folder.id} folder={folder} />
+            ))}
+          </GlowCardGrid>
+
+          {/* Read More / Load More Button */}
+          {hasNextPage && (
+            <div className="flex justify-center pt-2">
+              <button
+                type="button"
+                onClick={() => fetchNextPage()}
+                disabled={isFetchingNextPage}
+                className="flex cursor-pointer items-center gap-2 rounded-xl border border-ns-border/50 bg-ns-panel px-6 py-2.5 text-xs font-bold text-ns-primary-lt shadow-lg transition-all hover:border-ns-border-em hover:bg-ns-hover active:scale-95 disabled:opacity-50"
+              >
+                {isFetchingNextPage ? (
+                  <>
+                    <Loader2
+                      size={14}
+                      className="animate-spin text-ns-primary-lt"
+                    />
+                    <span>Loading more...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Read More</span>
+                    <ChevronDown size={14} />
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+        </div>
       )}
 
       {/* Create Folder Modal */}
-      <CreateFolderModal
+      <FolderModal
+        mode="create"
         isOpen={isCreateFolderOpen}
         onClose={() => setIsCreateFolderOpen(false)}
+        defaultWorkspaceId={selectedWorkspaceId}
       />
     </>
   )

@@ -1,6 +1,11 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import {
+  useQuery,
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query'
 import { getFoldersFn, createFolderFn, deleteFolderFn } from '../folder.fns'
-import type { CreateFolderInput } from '../folder.fns'
+import type { CreateFolderInput, UpdateFolderInput } from '../folder.fns'
 import { toast } from 'sonner'
 
 export const FOLDERS_QUERY_KEY = ['folders'] as const
@@ -9,8 +14,34 @@ export function useFoldersQuery() {
   return useQuery({
     queryKey: FOLDERS_QUERY_KEY,
     queryFn: async () => {
-      const folders = await getFoldersFn()
-      return folders
+      const res = await getFoldersFn({ data: { limit: 100 } })
+      return res.items
+    },
+  })
+}
+
+export function useInfiniteFoldersQuery(
+  pageSize = 10,
+  search = '',
+  workspaceId: string | null = null
+) {
+  return useInfiniteQuery({
+    queryKey: [...FOLDERS_QUERY_KEY, 'infinite', pageSize, search, workspaceId],
+    queryFn: async ({ pageParam = 0 }) => {
+      const res = await getFoldersFn({
+        data: {
+          limit: pageSize,
+          offset: pageParam,
+          search,
+          workspaceId,
+        },
+      })
+      return res
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      if (!lastPage.hasMore) return undefined
+      return allPages.length * pageSize
     },
   })
 }
@@ -71,6 +102,26 @@ export function useToggleFavoriteFolderMutation() {
     onError: (error: Error) => {
       console.error('Failed to update favorite status:', error)
       toast.error(error.message || 'Failed to update favorite status.')
+    },
+  })
+}
+
+export function useUpdateFolderMutation() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (data: UpdateFolderInput) => {
+      const { updateFolderFn } = await import('../folder.fns')
+      const response = await updateFolderFn({ data })
+      return response
+    },
+    onSuccess: () => {
+      toast.success('Folder updated successfully!')
+      void queryClient.invalidateQueries({ queryKey: FOLDERS_QUERY_KEY })
+    },
+    onError: (error: Error) => {
+      console.error('Failed to update folder:', error)
+      toast.error(error.message || 'Failed to update folder.')
     },
   })
 }

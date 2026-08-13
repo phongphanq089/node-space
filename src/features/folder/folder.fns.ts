@@ -2,7 +2,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import { getDb } from '@/db'
 import { folder, user, workspace } from '@/db/schema'
-import { eq, or, desc } from 'drizzle-orm'
+import { eq, or, desc, and, like } from 'drizzle-orm'
 
 export const createFolderSchema = z.object({
   name: z
@@ -118,17 +118,57 @@ export const createFolderFn = createServerFn({ method: 'POST' })
     }
   })
 
-export const getFoldersFn = createServerFn({ method: 'GET' }).handler(
-  async () => {
+export const getFoldersFn = createServerFn({ method: 'GET' })
+  .validator(
+    (
+      data:
+        | {
+            limit?: number
+            offset?: number
+            search?: string
+            workspaceId?: string | null
+          }
+        | undefined
+    ) =>
+      z
+        .object({
+          limit: z.number().optional(),
+          offset: z.number().optional(),
+          search: z.string().optional(),
+          workspaceId: z.string().nullable().optional(),
+        })
+        .parse(data ?? {})
+  )
+  .handler(async ({ data }) => {
+    const limit = data?.limit ?? 10
+    const offset = data?.offset ?? 0
     const db = getDb()
-    const result = await db
+
+    const conditions = []
+    if (data?.workspaceId && data.workspaceId.trim() !== '') {
+      conditions.push(eq(folder.workspace_id, data.workspaceId))
+    }
+    if (data?.search && data.search.trim() !== '') {
+      conditions.push(like(folder.name, `%${data.search.trim()}%`))
+    }
+
+    // Query 1 extra item to check if there is a next page
+    const rows = await db
       .select()
       .from(folder)
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
       .orderBy(desc(folder.createdAt))
+      .limit(limit + 1)
+      .offset(offset)
 
-    return result
-  }
-)
+    const hasMore = rows.length > limit
+    const items = hasMore ? rows.slice(0, limit) : rows
+
+    return {
+      items,
+      hasMore,
+    }
+  })
 
 export const deleteFolderFn = createServerFn({ method: 'POST' })
   .validator((data: { folderId: string }) =>
@@ -164,4 +204,95 @@ export const toggleFavoriteFolderFn = createServerFn({ method: 'POST' })
       .where(eq(folder.id, data.folderId))
 
     return { success: true, folderId: data.folderId, isFavorite: nextState }
+  })
+
+export const updateFolderSchema = z.object({
+  folderId: z.string().min(1, 'Folder ID is required.'),
+  name: z
+    .string()
+    .trim()
+    .min(1, 'Folder name is required.')
+    .max(50, 'Folder name must be at most 50 characters.')
+    .optional(),
+  workspaceId: z.string().optional(),
+  color: z.string().optional(),
+  image: z.string().optional(),
+  parentId: z.string().optional(),
+})
+
+export type UpdateFolderInput = z.infer<typeof updateFolderSchema>
+
+export const updateFolderFn = createServerFn({ method: 'POST' })
+  .validator((data: UpdateFolderInput) => updateFolderSchema.parse(data))
+  .handler(async ({ data }) => {
+    const db = getDb()
+
+    const updatePayload: Record<string, any> = {
+      updatedAt: new Date(),
+    }
+
+    if (data.name !== undefined) updatePayload.name = data.name
+    if (data.color !== undefined) updatePayload.color = data.color
+    if (data.image !== undefined) updatePayload.image = data.image
+    if (data.parentId !== undefined)
+      updatePayload.parentId = data.parentId || null
+
+    if (data.workspaceId !== undefined) {
+      if (data.workspaceId && data.workspaceId.trim() !== '') {
+        const existingWs = await db
+          .select({ id: workspace.id })
+          .from(workspace)
+          .where(
+            or(
+              eq(workspace.id, data.workspaceId),
+              eq(workspace.name, data.workspaceId)
+            )
+          )
+          .limit(1)
+
+        if (existingWs.length > 0) {
+          updatePayload.workspace_id = existingWs[0].id
+        } else {
+          let ownerId: string | null = null
+          const existingUser = await db
+            .select({ id: user.id })
+            .from(user)
+            .limit(1)
+          if (existingUser.length > 0) {
+            ownerId = existingUser[0].id
+          } else {
+            const guestId = crypto.randomUUID()
+            await db.insert(user).values({
+              id: guestId,
+              name: 'Guest User',
+              email: 'guest@nodespace.local',
+              emailVerified: false,
+              role: 'user',
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            })
+            ownerId = guestId
+          }
+
+          const newWsId = crypto.randomUUID()
+          await db.insert(workspace).values({
+            id: newWsId,
+            name: data.workspaceId,
+            ownerId: ownerId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          })
+          updatePayload.workspace_id = newWsId
+        }
+      } else {
+        updatePayload.workspace_id = null
+      }
+    }
+
+    await db
+      .update(folder)
+      .set(updatePayload)
+      .where(eq(folder.id, data.folderId))
+
+    return { success: true, folderId: data.folderId }
   })

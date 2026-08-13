@@ -13,6 +13,7 @@ export function FolderFilterPills({
   onSelectWorkspace,
 }: FolderFilterPillsProps) {
   const { data: dbWorkspaces = [] } = useWorkspacesQuery()
+
   const displayWorkspaces = workspaces ?? dbWorkspaces
 
   return (
