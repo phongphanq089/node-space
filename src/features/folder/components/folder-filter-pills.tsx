@@ -45,7 +45,7 @@ export function FolderFilterPills({
           selectedWorkspaceId === ws.id || selectedWorkspaceId === ws.name
         return (
           <button
-            key={ws.id}
+            key={ws.id || ws.name}
             onClick={() => onSelectWorkspace(isSelected ? null : ws.id)}
             className={`flex flex-shrink-0 cursor-pointer items-center gap-1.5 rounded-sm border px-2.5 py-1 text-sm font-medium transition-all ${
               isSelected

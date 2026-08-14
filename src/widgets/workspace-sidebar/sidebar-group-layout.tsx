@@ -142,7 +142,9 @@ export function SidebarGroupLayout<T = SidebarGroupItemData>({
             ? mapItem(rawItem)
             : (rawItem as unknown as SidebarGroupItemData)
           const key =
-            mapped.id || mapped.to || mapped.href || `${mapped.label}-${index}`
+            (rawItem as any)?.id ||
+            mapped.id ||
+            `${mapped.label}-${mapped.to || mapped.href || index}`
 
           const isActive =
             mapped.active ??

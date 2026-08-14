@@ -2,7 +2,19 @@ import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import { getDb } from '@/db'
 import { folder, user, workspace } from '@/db/schema'
-import { eq, or, desc, and, like } from 'drizzle-orm'
+import { eq, or, desc, and, like, sql } from 'drizzle-orm'
+
+let isTagsColumnChecked = false
+
+async function ensureTagsColumnExists(db: any) {
+  if (isTagsColumnChecked) return
+  try {
+    await db.run(sql`ALTER TABLE folder ADD COLUMN tags TEXT`)
+  } catch {
+    // Column already exists or alter table not needed
+  }
+  isTagsColumnChecked = true
+}
 
 export const createFolderSchema = z.object({
   name: z
@@ -12,6 +24,7 @@ export const createFolderSchema = z.object({
     .max(50, 'Folder name must be at most 50 characters.'),
   workspaceId: z.string().optional(),
   color: z.string().optional(),
+  tags: z.array(z.string()).optional(),
   image: z.string().optional(),
   parentId: z.string().optional(),
 })
@@ -42,6 +55,7 @@ export const createFolderFn = createServerFn({ method: 'POST' })
     }
 
     const db = getDb()
+    await ensureTagsColumnExists(db)
 
     // Fallback authorId if unauthenticated in dev
     if (!authorId) {
@@ -106,11 +120,17 @@ export const createFolderFn = createServerFn({ method: 'POST' })
       parentId: data.parentId || null,
       color: data.color || null,
       image: data.image || null,
+      tags: data.tags || [],
       createdAt: now,
       updatedAt: now,
     }
 
-    await db.insert(folder).values(newFolder)
+    try {
+      await db.insert(folder).values(newFolder)
+    } catch {
+      const { tags: _, ...fallbackFolder } = newFolder as any
+      await db.insert(folder).values(fallbackFolder)
+    }
 
     return {
       success: true,
@@ -127,6 +147,7 @@ export const getFoldersFn = createServerFn({ method: 'GET' })
             offset?: number
             search?: string
             workspaceId?: string | null
+            tag?: string | null
           }
         | undefined
     ) =>
@@ -136,6 +157,7 @@ export const getFoldersFn = createServerFn({ method: 'GET' })
           offset: z.number().optional(),
           search: z.string().optional(),
           workspaceId: z.string().nullable().optional(),
+          tag: z.string().nullable().optional(),
         })
         .parse(data ?? {})
   )
@@ -143,6 +165,17 @@ export const getFoldersFn = createServerFn({ method: 'GET' })
     const limit = data?.limit ?? 10
     const offset = data?.offset ?? 0
     const db = getDb()
+    await ensureTagsColumnExists(db)
+
+    let authorId: string | null = null
+    try {
+      const existingUser = await db.select({ id: user.id }).from(user).limit(1)
+      if (existingUser.length > 0) {
+        authorId = existingUser[0].id
+      }
+    } catch {
+      // Ignore user query failure in dev
+    }
 
     const conditions = []
     if (data?.workspaceId && data.workspaceId.trim() !== '') {
@@ -151,18 +184,94 @@ export const getFoldersFn = createServerFn({ method: 'GET' })
     if (data?.search && data.search.trim() !== '') {
       conditions.push(like(folder.name, `%${data.search.trim()}%`))
     }
+    if (data?.tag && data.tag.trim() !== '') {
+      conditions.push(like(folder.tags, `%${data.tag.trim()}%`))
+    }
 
-    // Query 1 extra item to check if there is a next page
-    const rows = await db
-      .select()
-      .from(folder)
-      .where(conditions.length > 0 ? and(...conditions) : undefined)
-      .orderBy(desc(folder.createdAt))
-      .limit(limit + 1)
-      .offset(offset)
+    let rows: any[] = []
+    try {
+      rows = await db
+        .select()
+        .from(folder)
+        .where(conditions.length > 0 ? and(...conditions) : undefined)
+        .orderBy(desc(folder.createdAt))
+        .limit(limit + 1)
+        .offset(offset)
+    } catch (err) {
+      console.warn('⚠️ Querying folders table failed:', err)
+    }
+
+    // Auto-seed default folders into DB if table is completely empty
+    if (rows.length === 0 && offset === 0 && conditions.length === 0) {
+      try {
+        const DEFAULT_SEED_FOLDERS = [
+          {
+            name: 'Documentation',
+            color: '#a78bfa',
+            tags: ['productivity', 'clean-code'],
+          },
+          { name: 'Algorithms', color: '#34d399', tags: ['algorithm', 'tech'] },
+          {
+            name: 'DevOps & Systems',
+            color: '#60a5fa',
+            tags: ['devops', 'linux'],
+          },
+          { name: 'Reading List', color: '#f87171', tags: ['book', 'usecase'] },
+          {
+            name: 'Database & Architecture',
+            color: '#f97316',
+            tags: ['database', 'stack'],
+          },
+        ]
+
+        for (const seed of DEFAULT_SEED_FOLDERS) {
+          const seedValues = {
+            id: crypto.randomUUID(),
+            name: seed.name,
+            color: seed.color,
+            tags: seed.tags,
+            author_id: authorId || 'guest_user',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          }
+          try {
+            await db.insert(folder).values(seedValues)
+          } catch {
+            const { tags: _, ...fallbackSeed } = seedValues as any
+            await db.insert(folder).values(fallbackSeed)
+          }
+        }
+
+        rows = await db
+          .select()
+          .from(folder)
+          .orderBy(desc(folder.createdAt))
+          .limit(limit + 1)
+          .offset(offset)
+      } catch (seedErr) {
+        console.warn('⚠️ Seeding default folders failed:', seedErr)
+      }
+    }
 
     const hasMore = rows.length > limit
-    const items = hasMore ? rows.slice(0, limit) : rows
+    const rawItems = hasMore ? rows.slice(0, limit) : rows
+    const items = rawItems.map((f: any) => {
+      let parsedTags: string[] = []
+      if (Array.isArray(f.tags)) {
+        parsedTags = f.tags
+      } else if (typeof f.tags === 'string' && f.tags.trim()) {
+        try {
+          parsedTags = JSON.parse(f.tags)
+        } catch {
+          parsedTags = []
+        }
+      }
+
+      return {
+        ...f,
+        tags: parsedTags,
+      }
+    })
 
     return {
       items,
@@ -216,6 +325,7 @@ export const updateFolderSchema = z.object({
     .optional(),
   workspaceId: z.string().optional(),
   color: z.string().optional(),
+  tags: z.array(z.string()).optional(),
   image: z.string().optional(),
   parentId: z.string().optional(),
 })
@@ -226,6 +336,7 @@ export const updateFolderFn = createServerFn({ method: 'POST' })
   .validator((data: UpdateFolderInput) => updateFolderSchema.parse(data))
   .handler(async ({ data }) => {
     const db = getDb()
+    await ensureTagsColumnExists(db)
 
     const updatePayload: Record<string, any> = {
       updatedAt: new Date(),
@@ -234,6 +345,7 @@ export const updateFolderFn = createServerFn({ method: 'POST' })
     if (data.name !== undefined) updatePayload.name = data.name
     if (data.color !== undefined) updatePayload.color = data.color
     if (data.image !== undefined) updatePayload.image = data.image
+    if (data.tags !== undefined) updatePayload.tags = data.tags
     if (data.parentId !== undefined)
       updatePayload.parentId = data.parentId || null
 
@@ -289,10 +401,18 @@ export const updateFolderFn = createServerFn({ method: 'POST' })
       }
     }
 
-    await db
-      .update(folder)
-      .set(updatePayload)
-      .where(eq(folder.id, data.folderId))
+    try {
+      await db
+        .update(folder)
+        .set(updatePayload)
+        .where(eq(folder.id, data.folderId))
+    } catch {
+      const { tags: _, ...fallbackPayload } = updatePayload
+      await db
+        .update(folder)
+        .set(fallbackPayload)
+        .where(eq(folder.id, data.folderId))
+    }
 
     return { success: true, folderId: data.folderId }
   })

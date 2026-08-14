@@ -100,6 +100,21 @@ export function WorkspaceCard({ workspaceItem, onSelect }: WorkspaceCardProps) {
               <span>Created {formattedDate}</span>
             </div>
 
+            {/* Topic Tags */}
+            {workspaceItem.tags && workspaceItem.tags.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1">
+                {workspaceItem.tags.map((t) => (
+                  <span
+                    key={t}
+                    className="flex items-center gap-0.5 rounded border border-purple-500/30 bg-purple-500/10 px-1.5 py-0.5 font-mono text-[0.6rem] font-bold text-purple-300"
+                  >
+                    <span>#</span>
+                    <span>{t}</span>
+                  </span>
+                ))}
+              </div>
+            )}
+
             {/* Row 4: Actions */}
             <div className="mt-3 flex items-center justify-between border-t border-ns-border-soft/60 pt-2.5">
               <span className="group/link flex items-center gap-1.5 text-[0.68rem] font-bold text-ns-primary-lt transition-colors hover:text-white">

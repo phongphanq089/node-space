@@ -55,7 +55,14 @@ export function useCreateWorkspaceMutation() {
     },
     onSuccess: () => {
       toast.success('Workspace created successfully!')
-      void queryClient.invalidateQueries({ queryKey: WORKSPACES_QUERY_KEY })
+      void queryClient.invalidateQueries({
+        queryKey: WORKSPACES_QUERY_KEY,
+        refetchType: 'all',
+      })
+      void queryClient.invalidateQueries({
+        queryKey: ['tags'],
+        refetchType: 'all',
+      })
     },
     onError: (error: Error) => {
       console.error('Failed to create workspace:', error)
@@ -76,7 +83,14 @@ export function useUpdateWorkspaceMutation() {
     },
     onSuccess: () => {
       toast.success('Workspace updated successfully!')
-      void queryClient.invalidateQueries({ queryKey: WORKSPACES_QUERY_KEY })
+      void queryClient.invalidateQueries({
+        queryKey: WORKSPACES_QUERY_KEY,
+        refetchType: 'all',
+      })
+      void queryClient.invalidateQueries({
+        queryKey: ['tags'],
+        refetchType: 'all',
+      })
     },
     onError: (error: Error) => {
       console.error('Failed to update workspace:', error)
@@ -95,7 +109,14 @@ export function useDeleteWorkspaceMutation() {
     },
     onSuccess: () => {
       toast.success('Workspace deleted successfully!')
-      void queryClient.invalidateQueries({ queryKey: WORKSPACES_QUERY_KEY })
+      void queryClient.invalidateQueries({
+        queryKey: WORKSPACES_QUERY_KEY,
+        refetchType: 'all',
+      })
+      void queryClient.invalidateQueries({
+        queryKey: ['tags'],
+        refetchType: 'all',
+      })
     },
     onError: (error: Error) => {
       console.error('Failed to delete workspace:', error)

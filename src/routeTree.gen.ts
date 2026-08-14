@@ -348,7 +348,7 @@ const WorkspaceRouteChildren: WorkspaceRouteChildren = {
 }
 
 const WorkspaceRouteWithChildren = WorkspaceRoute._addFileChildren(
-  WorkspaceRouteChildren
+  WorkspaceRouteChildren,
 )
 
 const rootRouteChildren: RootRouteChildren = {

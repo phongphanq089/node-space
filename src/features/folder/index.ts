@@ -5,8 +5,8 @@ export * from './folder.fns'
 export * from './hooks/use-folders'
 
 // Components
-export { FolderCard, NodeCard } from './components/node-card'
-export type { FolderItemRecord } from './components/node-card'
+export { FolderCard } from './components/folder-card'
+export type { FolderItemRecord } from './components/folder-card'
 export { FoldersList } from './components/folder-list'
 export {
   FolderModal,

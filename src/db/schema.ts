@@ -66,6 +66,7 @@ export const workspace = sqliteTable('workspace', {
   name: text('name').notNull().unique(),
   description: text('description'),
   color: text('color'),
+  tags: text('tags', { mode: 'json' }).$type<string[]>(),
   isFavorite: integer('is_favorite', { mode: 'boolean' })
     .default(false)
     .notNull(),
@@ -92,6 +93,7 @@ export const folder = sqliteTable('folder', {
   name: text('name').notNull(),
   color: text('color'),
   image: text('image'),
+  tags: text('tags', { mode: 'json' }).$type<string[]>(),
   isFavorite: integer('is_favorite', { mode: 'boolean' })
     .default(false)
     .notNull(),

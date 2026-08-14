@@ -23,10 +23,18 @@ export function useFoldersQuery() {
 export function useInfiniteFoldersQuery(
   pageSize = 10,
   search = '',
-  workspaceId: string | null = null
+  workspaceId: string | null = null,
+  tag: string | null = null
 ) {
   return useInfiniteQuery({
-    queryKey: [...FOLDERS_QUERY_KEY, 'infinite', pageSize, search, workspaceId],
+    queryKey: [
+      ...FOLDERS_QUERY_KEY,
+      'infinite',
+      pageSize,
+      search,
+      workspaceId,
+      tag,
+    ],
     queryFn: async ({ pageParam = 0 }) => {
       const res = await getFoldersFn({
         data: {
@@ -34,6 +42,7 @@ export function useInfiniteFoldersQuery(
           offset: pageParam,
           search,
           workspaceId,
+          tag,
         },
       })
       return res
@@ -56,7 +65,14 @@ export function useCreateFolderMutation() {
     },
     onSuccess: () => {
       toast.success('Folder created successfully!')
-      void queryClient.invalidateQueries({ queryKey: FOLDERS_QUERY_KEY })
+      void queryClient.invalidateQueries({
+        queryKey: FOLDERS_QUERY_KEY,
+        refetchType: 'all',
+      })
+      void queryClient.invalidateQueries({
+        queryKey: ['tags'],
+        refetchType: 'all',
+      })
     },
     onError: (error: Error) => {
       console.error('Failed to create folder:', error)
@@ -75,7 +91,14 @@ export function useDeleteFolderMutation() {
     },
     onSuccess: () => {
       toast.success('Folder deleted successfully!')
-      void queryClient.invalidateQueries({ queryKey: FOLDERS_QUERY_KEY })
+      void queryClient.invalidateQueries({
+        queryKey: FOLDERS_QUERY_KEY,
+        refetchType: 'all',
+      })
+      void queryClient.invalidateQueries({
+        queryKey: ['tags'],
+        refetchType: 'all',
+      })
     },
     onError: (error: Error) => {
       console.error('Failed to delete folder:', error)
@@ -97,7 +120,10 @@ export function useToggleFavoriteFolderMutation() {
       toast.success(
         res.isFavorite ? 'Added to Favorites!' : 'Removed from Favorites!'
       )
-      void queryClient.invalidateQueries({ queryKey: FOLDERS_QUERY_KEY })
+      void queryClient.invalidateQueries({
+        queryKey: FOLDERS_QUERY_KEY,
+        refetchType: 'all',
+      })
     },
     onError: (error: Error) => {
       console.error('Failed to update favorite status:', error)
@@ -117,7 +143,14 @@ export function useUpdateFolderMutation() {
     },
     onSuccess: () => {
       toast.success('Folder updated successfully!')
-      void queryClient.invalidateQueries({ queryKey: FOLDERS_QUERY_KEY })
+      void queryClient.invalidateQueries({
+        queryKey: FOLDERS_QUERY_KEY,
+        refetchType: 'all',
+      })
+      void queryClient.invalidateQueries({
+        queryKey: ['tags'],
+        refetchType: 'all',
+      })
     },
     onError: (error: Error) => {
       console.error('Failed to update folder:', error)

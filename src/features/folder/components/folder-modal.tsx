@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 import { useEffect, useRef } from 'react'
 import { z } from 'zod'
 import { useForm, Controller } from 'react-hook-form'
@@ -10,6 +11,7 @@ import {
   Sparkles,
   Loader2,
   Check,
+  Tag,
 } from 'lucide-react'
 import { cn } from '@/shared/lib/utils'
 import { WORKSPACES } from '@/shared/mocks/mock-data'
@@ -17,8 +19,9 @@ import {
   useCreateFolderMutation,
   useUpdateFolderMutation,
 } from '../hooks/use-folders'
-import type { FolderItemRecord } from './node-card'
+import type { FolderItemRecord } from './folder-card'
 import { useWorkspacesQuery } from '@/features/workspace/hooks/use-workspaces'
+import { useTagsQuery } from '@/features/tag'
 import {
   Dialog,
   DialogContent,
@@ -44,6 +47,7 @@ export const folderSchema = z.object({
     .max(50, 'Folder name must be at most 50 characters.'),
   workspaceId: z.string().optional(),
   color: z.string().optional(),
+  tags: z.array(z.string()).optional(),
   image: z
     .string()
     .optional()
@@ -64,6 +68,7 @@ export interface FolderModalProps {
     name: string
     workspaceId?: string
     color?: string
+    tags?: string[]
     image?: string
   }) => void
 }
@@ -81,6 +86,7 @@ export function FolderModal({
   const updateFolderMutation = useUpdateFolderMutation()
 
   const { data: dbWorkspaces = [] } = useWorkspacesQuery()
+  const { data: dbTags = [] } = useTagsQuery()
   const displayWorkspaces = dbWorkspaces.length > 0 ? dbWorkspaces : WORKSPACES
 
   const getInitialWorkspaceId = () => {
@@ -91,7 +97,7 @@ export function FolderModal({
         (w: any) => w.id === currentWsId || w.name === currentWsId
       )
       if (found) return (found as any).id || (found as any).name
-      if (currentWsId) return currentWsId
+      return ''
     }
 
     if (defaultWorkspaceId) {
@@ -100,11 +106,6 @@ export function FolderModal({
       )
       if (found) return (found as any).id || (found as any).name
       return defaultWorkspaceId
-    }
-
-    if (displayWorkspaces.length > 0) {
-      const first = displayWorkspaces[0] as any
-      return first.id || first.name
     }
 
     return ''
@@ -117,6 +118,7 @@ export function FolderModal({
       name: '',
       workspaceId: '',
       color: DEFAULT_PRESET_COLORS[0],
+      tags: [],
       image: '',
     },
   })
@@ -129,6 +131,7 @@ export function FolderModal({
         name: isEdit ? folder?.name || '' : '',
         workspaceId: getInitialWorkspaceId(),
         color: (isEdit ? folder?.color : null) || DEFAULT_PRESET_COLORS[0],
+        tags: (isEdit ? (folder as any)?.tags : null) || [],
         image: (isEdit ? folder?.image : null) || '',
       })
     }
@@ -147,6 +150,7 @@ export function FolderModal({
           name: data.name,
           workspaceId: data.workspaceId,
           color: data.color,
+          tags: data.tags,
           image: data.image,
         })
       } else {
@@ -154,6 +158,7 @@ export function FolderModal({
           name: data.name,
           workspaceId: data.workspaceId,
           color: data.color,
+          tags: data.tags,
           image: data.image,
         })
       }
@@ -163,6 +168,7 @@ export function FolderModal({
           name: data.name,
           workspaceId: data.workspaceId,
           color: data.color,
+          tags: data.tags,
           image: data.image,
         })
       }
@@ -197,7 +203,7 @@ export function FolderModal({
           onSubmit={form.handleSubmit(handleSubmit)}
           className="flex min-h-0 flex-1 flex-col pt-2"
         >
-          <div className="flex flex-1 flex-col gap-5 overflow-y-auto pt-1 pr-1.5">
+          <div className="no-scrollbar flex flex-1 flex-col gap-5 overflow-y-auto">
             <Controller
               name="name"
               control={form.control}
@@ -229,6 +235,45 @@ export function FolderModal({
                     Workspace
                   </FieldLabel>
                   <div className="grid grid-cols-2 gap-2 pt-1">
+                    {/* Option for General / All (No explicit workspace requirement) */}
+                    <button
+                      type="button"
+                      onClick={() => field.onChange('')}
+                      className={cn(
+                        'group relative flex cursor-pointer items-center justify-between rounded-xl border p-2.5 text-left transition-all outline-none',
+                        !field.value
+                          ? 'border-ns-primary bg-ns-primary/10 shadow-[0_0_15px_rgba(59,130,246,0.15)] ring-1 ring-ns-primary/50'
+                          : 'border-ns-border/70 bg-ns-panel/40 hover:border-ns-border-md hover:bg-ns-hover/50'
+                      )}
+                    >
+                      <div className="flex min-w-0 items-center gap-2">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-ns-active/80 text-ns-primary-lt shadow-inner">
+                          <Layers size={12} />
+                        </span>
+                        <span
+                          className={cn(
+                            'truncate text-xs transition-colors',
+                            !field.value
+                              ? 'font-bold text-white'
+                              : 'font-medium text-ns-text/80 group-hover:text-white'
+                          )}
+                        >
+                          General / All
+                        </span>
+                      </div>
+
+                      <div
+                        className={cn(
+                          'ml-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-all',
+                          !field.value
+                            ? 'border-ns-primary bg-ns-primary text-white'
+                            : 'border-ns-border opacity-0 group-hover:opacity-40'
+                        )}
+                      >
+                        {!field.value && <Check size={10} strokeWidth={3} />}
+                      </div>
+                    </button>
+
                     {displayWorkspaces.map((ws: any) => {
                       const wsId = ws.id || ws.name
                       const wsName = ws.name
@@ -306,9 +351,64 @@ export function FolderModal({
                   <ColorPicker
                     value={field.value || DEFAULT_PRESET_COLORS[0]}
                     onChange={field.onChange}
+                    isDefaultOpen
                   />
                 </Field>
               )}
+            />
+
+            {/* Folder Topic Tags */}
+            <Controller
+              name="tags"
+              control={form.control}
+              render={({ field }) => {
+                const selectedTags: string[] = field.value || []
+
+                const toggleTag = (tagName: string) => {
+                  if (selectedTags.includes(tagName)) {
+                    field.onChange(selectedTags.filter((t) => t !== tagName))
+                  } else {
+                    field.onChange([...selectedTags, tagName])
+                  }
+                }
+
+                return (
+                  <Field>
+                    <FieldLabel className="flex items-center gap-1.5">
+                      <Tag size={14} className="text-white" />
+                      Topic Tags / Keywords
+                    </FieldLabel>
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {dbTags.map((t) => {
+                        const isSelected = selectedTags.includes(t.name)
+                        return (
+                          <button
+                            key={t.id}
+                            type="button"
+                            onClick={() => toggleTag(t.name)}
+                            className={cn(
+                              'flex cursor-pointer items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-semibold transition-all outline-none',
+                              isSelected
+                                ? 'border-purple-500/60 bg-purple-500/20 text-white shadow-sm ring-1 ring-purple-500/40'
+                                : 'border-ns-border/60 bg-ns-panel/40 text-ns-muted hover:border-ns-border-md hover:bg-ns-hover/50 hover:text-white'
+                            )}
+                          >
+                            <span className="font-mono text-purple-400">#</span>
+                            <span>{t.name}</span>
+                            {isSelected && (
+                              <Check
+                                size={10}
+                                strokeWidth={3}
+                                className="ml-0.5 text-purple-300"
+                              />
+                            )}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </Field>
+                )
+              }}
             />
           </div>
 

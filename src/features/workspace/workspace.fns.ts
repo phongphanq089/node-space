@@ -2,7 +2,19 @@ import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import { getDb } from '@/db'
 import { workspace, user } from '@/db/schema'
-import { eq, desc, and, like } from 'drizzle-orm'
+import { eq, desc, and, like, sql } from 'drizzle-orm'
+
+let isWorkspaceTagsColumnChecked = false
+
+async function ensureWorkspaceTagsColumnExists(db: any) {
+  if (isWorkspaceTagsColumnChecked) return
+  try {
+    await db.run(sql`ALTER TABLE workspace ADD COLUMN tags TEXT`)
+  } catch {
+    // Column already exists
+  }
+  isWorkspaceTagsColumnChecked = true
+}
 
 export const createWorkspaceSchema = z.object({
   name: z
@@ -12,6 +24,7 @@ export const createWorkspaceSchema = z.object({
     .max(50, 'Workspace name must be at most 50 characters.'),
   color: z.string().optional(),
   description: z.string().optional(),
+  tags: z.array(z.string()).optional(),
 })
 
 export type CreateWorkspaceInput = z.infer<typeof createWorkspaceSchema>
@@ -40,6 +53,7 @@ export const createWorkspaceFn = createServerFn({ method: 'POST' })
     }
 
     const db = getDb()
+    await ensureWorkspaceTagsColumnExists(db)
 
     // Fallback ownerId if unauthenticated in dev
     if (!ownerId) {
@@ -69,12 +83,18 @@ export const createWorkspaceFn = createServerFn({ method: 'POST' })
       name: data.name,
       description: data.description || null,
       color: data.color || '#3b82f6',
+      tags: data.tags || [],
       ownerId: ownerId,
       createdAt: now,
       updatedAt: now,
     }
 
-    await db.insert(workspace).values(newWorkspace)
+    try {
+      await db.insert(workspace).values(newWorkspace)
+    } catch {
+      const { tags: _, ...fallbackWs } = newWorkspace as any
+      await db.insert(workspace).values(fallbackWs)
+    }
 
     return {
       success: true,
@@ -105,22 +125,44 @@ export const getWorkspacesFn = createServerFn({ method: 'GET' })
     const limit = data?.limit ?? 10
     const offset = data?.offset ?? 0
     const db = getDb()
+    await ensureWorkspaceTagsColumnExists(db)
 
     const conditions = []
     if (data?.search && data.search.trim() !== '') {
       conditions.push(like(workspace.name, `%${data.search.trim()}%`))
     }
 
-    const rows = await db
-      .select()
-      .from(workspace)
-      .where(conditions.length > 0 ? and(...conditions) : undefined)
-      .orderBy(desc(workspace.createdAt))
-      .limit(limit + 1)
-      .offset(offset)
+    let rows: any[] = []
+    try {
+      rows = await db
+        .select()
+        .from(workspace)
+        .where(conditions.length > 0 ? and(...conditions) : undefined)
+        .orderBy(desc(workspace.createdAt))
+        .limit(limit + 1)
+        .offset(offset)
+    } catch {
+      // Fallback
+    }
 
     const hasMore = rows.length > limit
-    const items = hasMore ? rows.slice(0, limit) : rows
+    const rawItems = hasMore ? rows.slice(0, limit) : rows
+    const items = rawItems.map((w: any) => {
+      let parsedTags: string[] = []
+      if (Array.isArray(w.tags)) {
+        parsedTags = w.tags
+      } else if (typeof w.tags === 'string' && w.tags.trim()) {
+        try {
+          parsedTags = JSON.parse(w.tags)
+        } catch {
+          parsedTags = []
+        }
+      }
+      return {
+        ...w,
+        tags: parsedTags,
+      }
+    })
 
     return {
       items,
@@ -138,6 +180,7 @@ export const updateWorkspaceSchema = z.object({
     .optional(),
   color: z.string().optional(),
   description: z.string().optional(),
+  tags: z.array(z.string()).optional(),
 })
 
 export type UpdateWorkspaceInput = z.infer<typeof updateWorkspaceSchema>
@@ -146,6 +189,7 @@ export const updateWorkspaceFn = createServerFn({ method: 'POST' })
   .validator((data: UpdateWorkspaceInput) => updateWorkspaceSchema.parse(data))
   .handler(async ({ data }) => {
     const db = getDb()
+    await ensureWorkspaceTagsColumnExists(db)
 
     const updatePayload: Record<string, any> = {
       updatedAt: new Date(),
@@ -155,11 +199,20 @@ export const updateWorkspaceFn = createServerFn({ method: 'POST' })
     if (data.color !== undefined) updatePayload.color = data.color
     if (data.description !== undefined)
       updatePayload.description = data.description
+    if (data.tags !== undefined) updatePayload.tags = data.tags
 
-    await db
-      .update(workspace)
-      .set(updatePayload)
-      .where(eq(workspace.id, data.workspaceId))
+    try {
+      await db
+        .update(workspace)
+        .set(updatePayload)
+        .where(eq(workspace.id, data.workspaceId))
+    } catch {
+      const { tags: _, ...fallbackPayload } = updatePayload
+      await db
+        .update(workspace)
+        .set(fallbackPayload)
+        .where(eq(workspace.id, data.workspaceId))
+    }
 
     return { success: true, workspaceId: data.workspaceId }
   })

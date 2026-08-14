@@ -2,8 +2,18 @@ import { useEffect } from 'react'
 import { z } from 'zod'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Layers, Palette, Sparkles, Loader2, AlignLeft } from 'lucide-react'
+import {
+  Layers,
+  Palette,
+  Sparkles,
+  Loader2,
+  AlignLeft,
+  Tag,
+  Check,
+} from 'lucide-react'
+import { cn } from '@/shared/lib/utils'
 import { useCreateWorkspaceMutation } from '../hooks/use-workspaces'
+import { useTagsQuery } from '@/features/tag'
 import {
   Dialog,
   DialogContent,
@@ -29,6 +39,7 @@ export const createWorkspaceSchema = z.object({
     .max(50, 'Workspace name must be at most 50 characters.'),
   color: z.string().optional(),
   description: z.string().optional(),
+  tags: z.array(z.string()).optional(),
 })
 
 export type CreateWorkspaceSchemaValues = z.infer<typeof createWorkspaceSchema>
@@ -43,6 +54,7 @@ export function CreateWorkspaceModal({
   onClose,
 }: CreateWorkspaceModalProps) {
   const createWorkspaceMutation = useCreateWorkspaceMutation()
+  const { data: dbTags = [] } = useTagsQuery()
 
   const form = useForm<CreateWorkspaceSchemaValues>({
     resolver: zodResolver(createWorkspaceSchema as any),
@@ -51,6 +63,7 @@ export function CreateWorkspaceModal({
       name: '',
       color: DEFAULT_PRESET_COLORS[0],
       description: '',
+      tags: [],
     },
   })
 
@@ -60,6 +73,7 @@ export function CreateWorkspaceModal({
         name: '',
         color: DEFAULT_PRESET_COLORS[0],
         description: '',
+        tags: [],
       })
     }
   }, [isOpen, form])
@@ -70,6 +84,7 @@ export function CreateWorkspaceModal({
         name: data.name,
         color: data.color,
         description: data.description,
+        tags: data.tags,
       })
       onClose()
     } catch {
@@ -100,7 +115,7 @@ export function CreateWorkspaceModal({
           onSubmit={form.handleSubmit(handleSubmit)}
           className="flex min-h-0 flex-1 flex-col pt-2"
         >
-          <div className="flex flex-1 flex-col gap-5 overflow-y-auto pt-1 pr-1.5">
+          <div className="no-scrollbar flex flex-1 flex-col gap-5 overflow-y-auto">
             <Controller
               name="name"
               control={form.control}
@@ -154,10 +169,65 @@ export function CreateWorkspaceModal({
                     <ColorPicker
                       value={field.value}
                       onChange={field.onChange}
+                      isDefaultOpen
                     />
                   </div>
                 </div>
               )}
+            />
+
+            {/* Workspace Topic Tags */}
+            <Controller
+              name="tags"
+              control={form.control}
+              render={({ field }) => {
+                const selectedTags: string[] = field.value || []
+
+                const toggleTag = (tagName: string) => {
+                  if (selectedTags.includes(tagName)) {
+                    field.onChange(selectedTags.filter((t) => t !== tagName))
+                  } else {
+                    field.onChange([...selectedTags, tagName])
+                  }
+                }
+
+                return (
+                  <Field>
+                    <FieldLabel className="flex items-center gap-1.5">
+                      <Tag size={14} className="text-white" />
+                      Topic Tags / Keywords
+                    </FieldLabel>
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {dbTags.map((t) => {
+                        const isSelected = selectedTags.includes(t.name)
+                        return (
+                          <button
+                            key={t.id}
+                            type="button"
+                            onClick={() => toggleTag(t.name)}
+                            className={cn(
+                              'flex cursor-pointer items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-semibold transition-all outline-none',
+                              isSelected
+                                ? 'border-purple-500/60 bg-purple-500/20 text-white shadow-sm ring-1 ring-purple-500/40'
+                                : 'border-ns-border/60 bg-ns-panel/40 text-ns-muted hover:border-ns-border-md hover:bg-ns-hover/50 hover:text-white'
+                            )}
+                          >
+                            <span className="font-mono text-purple-400">#</span>
+                            <span>{t.name}</span>
+                            {isSelected && (
+                              <Check
+                                size={10}
+                                strokeWidth={3}
+                                className="ml-0.5 text-purple-300"
+                              />
+                            )}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </Field>
+                )
+              }}
             />
           </div>
 

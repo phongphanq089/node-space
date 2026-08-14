@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Search, Plus, Layers, ChevronDown, Loader2, X } from 'lucide-react'
-import { useDebounce } from '@/shared/lib/hooks'
 import { GlowCardGrid } from '@/shared/ui/system/glow-card-grid'
 import { EmptyState } from '@/shared/ui/system/empty-state'
 import { Button, Input } from '@/shared/ui'
@@ -8,10 +7,11 @@ import { CreateWorkspaceModal } from './create-workspace-modal'
 import { WorkspaceCard } from './workspace-card'
 import { WorkspaceGridSkeleton } from './workspace-skeleton'
 import { useInfiniteWorkspacesQuery } from '../hooks/use-workspaces'
+import { useDebounce } from '@/shared/hooks'
 
 export function WorkspacesList() {
   const [search, setSearch] = useState('')
-  const debouncedSearch = useDebounce(search, 350)
+  const debouncedSearch = useDebounce(search, 500)
   const [isCreateWorkspaceOpen, setIsCreateWorkspaceOpen] = useState(false)
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =

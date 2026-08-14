@@ -1,8 +1,12 @@
 import { Tag } from 'lucide-react'
 import { POPULAR_TAGS } from '@/shared/mocks/mock-data'
 import { Link } from '@tanstack/react-router'
+import { useTagsQuery } from '@/features/tag'
 
 export function PopularTagsWidget() {
+  const { data: dbTags = [] } = useTagsQuery()
+  const displayTags = dbTags.length > 0 ? dbTags.slice(0, 8) : POPULAR_TAGS
+
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-ns-border/30 bg-ns-panel/60 p-4 shadow-lg backdrop-blur-md">
       {/* Header */}
@@ -25,9 +29,9 @@ export function PopularTagsWidget() {
 
       {/* Tag Badges Grid */}
       <div className="flex flex-wrap gap-2">
-        {POPULAR_TAGS.map((tag) => (
+        {displayTags.map((tag: any) => (
           <Link
-            key={tag.id}
+            key={tag.id || tag.name}
             to="/workspace/tags"
             className="group flex items-center gap-1.5 rounded-xl border border-ns-border/40 bg-ns-surface px-2.5 py-1.5 text-[0.68rem] font-bold text-ns-ghost no-underline transition-all hover:border-sky-500/50 hover:bg-sky-500/10 hover:text-sky-300"
           >

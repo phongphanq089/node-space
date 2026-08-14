@@ -34,12 +34,10 @@ export function ConfirmDeleteModal({
       open={isOpen}
       onOpenChange={(open) => !open && !isPending && onClose()}
     >
-      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden border-red-500/30 bg-ns-panel/95 p-6 text-ns-text shadow-2xl backdrop-blur-2xl sm:max-w-md">
-        <div className="pointer-events-none absolute -top-12 left-1/2 -z-10 h-32 w-48 -translate-x-1/2 rounded-full bg-red-500/15 blur-3xl" />
-
+      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-lg border-red-500/30 bg-ns-panel/95 p-6 text-ns-text shadow-2xl backdrop-blur-2xl sm:max-w-md">
         <DialogHeader className="shrink-0 gap-3 border-b border-ns-border-soft pb-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 shadow-inner">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border border-red-500/30 bg-red-500/10 text-red-400 shadow-inner">
               <AlertTriangle size={20} />
             </div>
             <div className="flex flex-col text-left">
@@ -54,7 +52,7 @@ export function ConfirmDeleteModal({
         </DialogHeader>
 
         {itemName && (
-          <div className="my-2 rounded-xl border border-red-500/20 bg-red-500/5 p-3 text-xs font-medium text-white/90">
+          <div className="my-2 rounded-sm border border-red-500/20 bg-red-500/5 p-5 text-xs font-medium text-white/90">
             Item to delete:{' '}
             <span className="font-bold text-red-400">
               &quot;{itemName}&quot;

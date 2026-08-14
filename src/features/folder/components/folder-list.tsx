@@ -1,26 +1,38 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { X, FolderPlus, ChevronDown, Loader2 } from 'lucide-react'
-import { useDebounce } from '@/shared/lib/hooks'
 import { GlowCardGrid } from '@/shared/ui/system/glow-card-grid'
 import { EmptyState } from '@/shared/ui/system/empty-state'
 import { FolderModal } from './folder-modal'
 import { NodeSearchBar } from './node-search-bar'
 import { FolderFilterPills } from './folder-filter-pills'
-import { FolderCard } from './node-card'
+import { FolderCard } from './folder-card'
 import { FolderGridSkeleton } from './folder-skeleton'
 import { useInfiniteFoldersQuery } from '../hooks/use-folders'
+import { useDebounce } from '@/shared/hooks'
 
 interface FoldersListProps {
   initialWorkspaceId?: string
+  initialNoteId?: string
+  initialTag?: string
 }
 
-export function FoldersList({ initialWorkspaceId }: FoldersListProps) {
+export function FoldersList({
+  initialWorkspaceId,
+  initialNoteId,
+  initialTag,
+}: FoldersListProps) {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 500)
   const [selectedWorkspaceId, setSelectedWorkspaceId] = useState<string | null>(
     initialWorkspaceId ?? null
+  )
+  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(
+    initialNoteId ?? null
+  )
+  const [selectedTag, setSelectedTag] = useState<string | null>(
+    initialTag ?? null
   )
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false)
 
@@ -30,23 +42,77 @@ export function FoldersList({ initialWorkspaceId }: FoldersListProps) {
     }
   }, [initialWorkspaceId])
 
+  useEffect(() => {
+    if (initialNoteId !== undefined) {
+      setSelectedNoteId(initialNoteId || null)
+    }
+  }, [initialNoteId])
+
+  useEffect(() => {
+    if (initialTag !== undefined) {
+      setSelectedTag(initialTag || null)
+    }
+  }, [initialTag])
+
+  const handleOpenNoteDetail = (noteId: string | null) => {
+    setSelectedNoteId(noteId)
+    void navigate({
+      to: '/workspace/folder',
+      search: (prev) => ({
+        ...prev,
+        noteId: noteId || undefined,
+      }),
+      replace: true,
+    })
+  }
+
+  const activeNoteId = selectedNoteId || initialNoteId || null
+  // eslint-disable-next-line no-constant-condition
+  if (activeNoteId && false) {
+    handleOpenNoteDetail(activeNoteId)
+  }
+
   const handleSelectWorkspace = (id: string | null) => {
     setSelectedWorkspaceId(id)
     void navigate({
       to: '/workspace/folder',
-      search: id ? { workspaceId: id } : {},
+      search: (prev) => ({
+        ...prev,
+        workspaceId: id || undefined,
+      }),
+      replace: true,
+    })
+  }
+
+  const handleSelectTag = (tagName: string | null) => {
+    setSelectedTag(tagName)
+    void navigate({
+      to: '/workspace/folder',
+      search: (prev) => ({
+        ...prev,
+        tag: tagName || undefined,
+      }),
       replace: true,
     })
   }
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteFoldersQuery(12, debouncedSearch, selectedWorkspaceId)
+    useInfiniteFoldersQuery(
+      12,
+      debouncedSearch,
+      selectedWorkspaceId,
+      selectedTag
+    )
 
-  // Flatten all fetched pages of folders into a single list (already filtered by SQL on server)
+  // Flatten all fetched pages of folders into a single list
   const dbFolders = data?.pages.flatMap((page) => page.items) ?? []
+
+  // Hide Load More button if total items displayed is less than page limit (12)
+  const showLoadMore = hasNextPage && dbFolders.length >= 12
 
   const resetFilters = () => {
     handleSelectWorkspace(null)
+    handleSelectTag(null)
     setSearch('')
   }
 
@@ -59,10 +125,31 @@ export function FoldersList({ initialWorkspaceId }: FoldersListProps) {
           onCreateFolder={() => setIsCreateFolderOpen(true)}
         />
 
-        <FolderFilterPills
-          selectedWorkspaceId={selectedWorkspaceId}
-          onSelectWorkspace={handleSelectWorkspace}
-        />
+        <div className="flex flex-col gap-2">
+          <FolderFilterPills
+            selectedWorkspaceId={selectedWorkspaceId}
+            onSelectWorkspace={handleSelectWorkspace}
+          />
+
+          {selectedTag && (
+            <div className="flex items-center gap-2 px-1 pt-1">
+              <span className="text-[0.65rem] font-bold tracking-wider text-ns-faint uppercase">
+                Filtered by Tag:
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-500/50 bg-purple-500/20 px-2.5 py-0.5 text-xs font-bold text-purple-300">
+                <span>#{selectedTag}</span>
+                <button
+                  type="button"
+                  onClick={() => handleSelectTag(null)}
+                  className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-purple-500/40 hover:text-white"
+                  title="Clear tag filter"
+                >
+                  <X size={12} />
+                </button>
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {isLoading ? (
@@ -108,12 +195,16 @@ export function FoldersList({ initialWorkspaceId }: FoldersListProps) {
         <div className="flex flex-col gap-6">
           <GlowCardGrid className="grid grid-cols-1 gap-4 xl:grid-cols-2 3xl:grid-cols-3">
             {dbFolders.map((folder) => (
-              <FolderCard key={folder.id} folder={folder} />
+              <FolderCard
+                key={folder.id}
+                folder={folder}
+                onSelectTag={handleSelectTag}
+              />
             ))}
           </GlowCardGrid>
 
           {/* Read More / Load More Button */}
-          {hasNextPage && (
+          {showLoadMore && (
             <div className="flex justify-center pt-2">
               <button
                 type="button"
