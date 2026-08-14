@@ -25,13 +25,7 @@ export const Route = createRootRoute({
     ],
   }),
   shellComponent: RootDocument,
-  errorComponent: (props) => {
-    return (
-      <RootDocument>
-        <DefaultCatchBoundary {...props} />
-      </RootDocument>
-    )
-  },
+  errorComponent: DefaultCatchBoundary,
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
