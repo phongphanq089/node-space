@@ -11,6 +11,12 @@ import Workspace from '@/app/workspace'
 registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType)
 
 export const Route = createFileRoute('/_workspace')({
+  head: () => ({
+    meta: [
+      { title: 'Workspace | Node Space' },
+      { name: 'robots', content: 'noindex, nofollow' },
+    ],
+  }),
   beforeLoad: async () => {
     const session = await getSessionFn()
     if (!session) {

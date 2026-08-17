@@ -1,3 +1,17 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+
+# Allow public landing page to be crawled
+Allow: /$
+Allow: /hero-banner.png
+
+# Block private authenticated app area — not useful in search results
+Disallow: /workspace
+Disallow: /workspace/
+Disallow: /api/
+
+# Block auth utility pages from being indexed
+Disallow: /verify-email
+Disallow: /forgot-password
+
+Sitemap: https://phongphan.dev/sitemap.xml
