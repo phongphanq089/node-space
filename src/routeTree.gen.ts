@@ -24,6 +24,7 @@ import { Route as WorkspaceWorkspaceTagsRouteImport } from './routes/_workspace/
 import { Route as WorkspaceWorkspaceTrashRouteImport } from './routes/_workspace/workspace.trash'
 import { Route as WorkspaceWorkspaceWorkspacesRouteImport } from './routes/_workspace/workspace.workspaces'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiMediaSplatRouteImport } from './routes/api/media/$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -102,6 +103,11 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMediaSplatRoute = ApiMediaSplatRouteImport.update({
+  id: '/api/media/$',
+  path: '/api/media/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/workspace/trash': typeof WorkspaceWorkspaceTrashRoute
   '/workspace/workspaces': typeof WorkspaceWorkspaceWorkspacesRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/media/$': typeof ApiMediaSplatRoute
   '/workspace/': typeof WorkspaceWorkspaceIndexRoute
 }
 export interface FileRoutesByTo {
@@ -133,6 +140,7 @@ export interface FileRoutesByTo {
   '/workspace/trash': typeof WorkspaceWorkspaceTrashRoute
   '/workspace/workspaces': typeof WorkspaceWorkspaceWorkspacesRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/media/$': typeof ApiMediaSplatRoute
   '/workspace': typeof WorkspaceWorkspaceIndexRoute
 }
 export interface FileRoutesById {
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/_workspace/workspace/trash': typeof WorkspaceWorkspaceTrashRoute
   '/_workspace/workspace/workspaces': typeof WorkspaceWorkspaceWorkspacesRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/media/$': typeof ApiMediaSplatRoute
   '/_workspace/workspace/': typeof WorkspaceWorkspaceIndexRoute
 }
 export interface FileRouteTypes {
@@ -169,6 +178,7 @@ export interface FileRouteTypes {
     | '/workspace/trash'
     | '/workspace/workspaces'
     | '/api/auth/$'
+    | '/api/media/$'
     | '/workspace/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -185,6 +195,7 @@ export interface FileRouteTypes {
     | '/workspace/trash'
     | '/workspace/workspaces'
     | '/api/auth/$'
+    | '/api/media/$'
     | '/workspace'
   id:
     | '__root__'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
     | '/_workspace/workspace/trash'
     | '/_workspace/workspace/workspaces'
     | '/api/auth/$'
+    | '/api/media/$'
     | '/_workspace/workspace/'
   fileRoutesById: FileRoutesById
 }
@@ -213,6 +225,7 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiMediaSplatRoute: typeof ApiMediaSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -322,6 +335,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/media/$': {
+      id: '/api/media/$'
+      path: '/api/media/$'
+      fullPath: '/api/media/$'
+      preLoaderRoute: typeof ApiMediaSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -348,7 +368,7 @@ const WorkspaceRouteChildren: WorkspaceRouteChildren = {
 }
 
 const WorkspaceRouteWithChildren = WorkspaceRoute._addFileChildren(
-  WorkspaceRouteChildren,
+  WorkspaceRouteChildren
 )
 
 const rootRouteChildren: RootRouteChildren = {
@@ -359,6 +379,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   VerifyEmailRoute: VerifyEmailRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiMediaSplatRoute: ApiMediaSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

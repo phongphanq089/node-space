@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-import { useEffect, useRef } from 'react'
+ 
+import React, { useEffect, useMemo, useCallback, useState } from 'react'
 import { z } from 'zod'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -12,6 +12,7 @@ import {
   Loader2,
   Check,
   Tag,
+  Upload,
 } from 'lucide-react'
 import { cn } from '@/shared/lib/utils'
 import { WORKSPACES } from '@/shared/mocks/mock-data'
@@ -22,6 +23,7 @@ import {
 import type { FolderItemRecord } from './folder-card'
 import { useWorkspacesQuery } from '@/features/workspace/hooks/use-workspaces'
 import { useTagsQuery } from '@/features/tag'
+import { useUploadMediaMutation } from '@/features/media'
 import {
   Dialog,
   DialogContent,
@@ -38,6 +40,7 @@ import {
   DEFAULT_PRESET_COLORS,
 } from '@/shared/ui/core/color-picker'
 import { Button } from '@/shared/ui/core/button'
+import { FilePond } from 'react-filepond'
 
 export const folderSchema = z.object({
   name: z
@@ -48,12 +51,7 @@ export const folderSchema = z.object({
   workspaceId: z.string().optional(),
   color: z.string().optional(),
   tags: z.array(z.string()).optional(),
-  image: z
-    .string()
-    .optional()
-    .refine((val) => !val || z.string().url().safeParse(val).success, {
-      message: 'Please enter a valid URL',
-    }),
+  image: z.string().optional(),
 })
 
 export type FolderSchemaValues = z.infer<typeof folderSchema>
@@ -73,7 +71,7 @@ export interface FolderModalProps {
   }) => void
 }
 
-export function FolderModal({
+function FolderModalComponent({
   isOpen,
   onClose,
   mode = 'create',
@@ -81,35 +79,19 @@ export function FolderModal({
   defaultWorkspaceId = null,
   onSubmit,
 }: FolderModalProps) {
+  const [files, setFiles] = useState<any[]>([])
+
   const isEdit = mode === 'edit' || !!folder
   const createFolderMutation = useCreateFolderMutation()
   const updateFolderMutation = useUpdateFolderMutation()
+  const uploadMediaMutation = useUploadMediaMutation()
 
-  const { data: dbWorkspaces = [] } = useWorkspacesQuery()
+  const { data: dbWorkspaces } = useWorkspacesQuery()
   const { data: dbTags = [] } = useTagsQuery()
-  const displayWorkspaces = dbWorkspaces.length > 0 ? dbWorkspaces : WORKSPACES
 
-  const getInitialWorkspaceId = () => {
-    if (isEdit && folder) {
-      const currentWsId =
-        (folder as any).workspace_id || (folder as any).workspaceId || ''
-      const found = displayWorkspaces.find(
-        (w: any) => w.id === currentWsId || w.name === currentWsId
-      )
-      if (found) return (found as any).id || (found as any).name
-      return ''
-    }
-
-    if (defaultWorkspaceId) {
-      const found = displayWorkspaces.find(
-        (w: any) => w.id === defaultWorkspaceId || w.name === defaultWorkspaceId
-      )
-      if (found) return (found as any).id || (found as any).name
-      return defaultWorkspaceId
-    }
-
-    return ''
-  }
+  const displayWorkspaces = useMemo(() => {
+    return dbWorkspaces && dbWorkspaces.length > 0 ? dbWorkspaces : WORKSPACES
+  }, [dbWorkspaces])
 
   const form = useForm<FolderSchemaValues>({
     resolver: zodResolver(folderSchema as any),
@@ -123,27 +105,80 @@ export function FolderModal({
     },
   })
 
-  const prevIsOpenRef = useRef(false)
-
+  // Reset form and files ONLY when modal opens or target folder changes
   useEffect(() => {
-    if (isOpen && !prevIsOpenRef.current) {
+    if (isOpen) {
+      const initialImage = (isEdit ? folder?.image : null) || ''
+      const currentWsId =
+        (folder as any)?.workspace_id ||
+        (folder as any)?.workspaceId ||
+        defaultWorkspaceId ||
+        ''
+
       form.reset({
         name: isEdit ? folder?.name || '' : '',
-        workspaceId: getInitialWorkspaceId(),
+        workspaceId: currentWsId,
         color: (isEdit ? folder?.color : null) || DEFAULT_PRESET_COLORS[0],
         tags: (isEdit ? (folder as any)?.tags : null) || [],
-        image: (isEdit ? folder?.image : null) || '',
+        image: initialImage,
       })
-    }
-    prevIsOpenRef.current = isOpen
-  }, [isOpen, folder, isEdit, defaultWorkspaceId, displayWorkspaces, form])
 
-  const isSubmitting = isEdit
-    ? updateFolderMutation.isPending
-    : createFolderMutation.isPending
+      setFiles(
+        initialImage
+          ? [{ source: initialImage, options: { type: 'local' } }]
+          : []
+      )
+    }
+  }, [isOpen, folder?.id, isEdit, defaultWorkspaceId, form])
+
+  // Prevent recursive state updates from FilePond initialization
+  const handleUpdateFiles = useCallback((fileItems: any[]) => {
+    setFiles((prev) => {
+      if (prev.length === 0 && fileItems.length === 0) return prev
+      if (
+        prev.length === fileItems.length &&
+        prev[0]?.file === fileItems[0]?.file &&
+        prev[0]?.source === fileItems[0]?.source
+      ) {
+        return prev
+      }
+      return fileItems
+    })
+  }, [])
+
+  const isSubmitting =
+    (isEdit
+      ? updateFolderMutation.isPending
+      : createFolderMutation.isPending) || uploadMediaMutation.isPending
 
   const handleSubmit = async (data: FolderSchemaValues) => {
     try {
+      let finalImageUrl = data.image || ''
+
+      // Process FilePond file if a new file is uploaded
+      const fileItem = files[0]
+      if (fileItem?.file instanceof File) {
+        const uploadRes = await uploadMediaMutation.mutateAsync({
+          file: fileItem.file,
+          options: {
+            folder: 'folders',
+            maxSizeInMB: 10,
+            allowedTypes: [
+              'image/jpeg',
+              'image/png',
+              'image/webp',
+              'image/gif',
+              'image/svg+xml',
+            ],
+          },
+        })
+        finalImageUrl = uploadRes.url
+      } else if (files.length === 0) {
+        finalImageUrl = ''
+      } else if (typeof fileItem?.source === 'string') {
+        finalImageUrl = fileItem.source
+      }
+
       if (isEdit && folder) {
         await updateFolderMutation.mutateAsync({
           folderId: folder.id,
@@ -151,7 +186,7 @@ export function FolderModal({
           workspaceId: data.workspaceId,
           color: data.color,
           tags: data.tags,
-          image: data.image,
+          image: finalImageUrl,
         })
       } else {
         await createFolderMutation.mutateAsync({
@@ -159,7 +194,7 @@ export function FolderModal({
           workspaceId: data.workspaceId,
           color: data.color,
           tags: data.tags,
-          image: data.image,
+          image: finalImageUrl,
         })
       }
 
@@ -169,7 +204,7 @@ export function FolderModal({
           workspaceId: data.workspaceId,
           color: data.color,
           tags: data.tags,
-          image: data.image,
+          image: finalImageUrl,
         })
       }
       onClose()
@@ -410,6 +445,34 @@ export function FolderModal({
                 )
               }}
             />
+
+            {/* Folder Cover Image Upload with FilePond & Cloudflare R2 */}
+            <div className="flex flex-col gap-1.5">
+              <FieldLabel className="flex items-center gap-1.5">
+                <Upload size={14} className="text-white" />
+                Folder Cover Image{' '}
+                <span className="text-[0.6rem] font-normal text-ns-faint">
+                  (Upload to Cloudflare R2)
+                </span>
+              </FieldLabel>
+              <FilePond
+                files={files}
+                onupdatefiles={handleUpdateFiles}
+                allowMultiple={false}
+                allowImagePreview={true}
+                acceptedFileTypes={[
+                  'image/jpeg',
+                  'image/png',
+                  'image/webp',
+                  'image/gif',
+                  'image/svg+xml',
+                ]}
+                name="file"
+                labelIdle='Drag & Drop image or <span class="filepond--label-action">Browse</span>'
+                labelFileTypeNotAllowed="Only image files are allowed"
+                credits={false}
+              />
+            </div>
           </div>
 
           <DialogFooter className="mt-6 border-t border-ns-border-soft pt-4 sm:space-x-0">
@@ -422,7 +485,13 @@ export function FolderModal({
               {isSubmitting ? (
                 <>
                   <Loader2 size={13} className="animate-spin" />
-                  <span>{isEdit ? 'Saving...' : 'Creating...'}</span>
+                  <span>
+                    {uploadMediaMutation.isPending
+                      ? 'Uploading Cover...'
+                      : isEdit
+                        ? 'Saving...'
+                        : 'Creating...'}
+                  </span>
                 </>
               ) : (
                 <>
@@ -437,6 +506,8 @@ export function FolderModal({
     </Dialog>
   )
 }
+
+export const FolderModal = React.memo(FolderModalComponent)
 
 // Backward-compatible wrappers
 export function CreateFolderModal(props: Omit<FolderModalProps, 'mode'>) {

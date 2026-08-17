@@ -1,16 +1,13 @@
 /* eslint-disable no-shadow */
- 
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-'use client'
-
-import type { CSSProperties } from 'react'
-
-import { useMemo } from 'react'
 import {
   useDotMatrixPhases,
   usePrefersReducedMotion,
   useCyclePhase,
-} from '@/shared/lib/dotmatrix-hooks'
+} from '@/shared/hooks'
+import type { CSSProperties } from 'react'
+
+import { useMemo } from 'react'
 
 export type MatrixPattern =
   'diamond' | 'full' | 'outline' | 'rose' | 'cross' | 'rings'

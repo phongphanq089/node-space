@@ -1,14 +1,19 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { X, FolderPlus, ChevronDown, Loader2 } from 'lucide-react'
 import { GlowCardGrid } from '@/shared/ui/system/glow-card-grid'
 import { EmptyState } from '@/shared/ui/system/empty-state'
+import { ConfirmDeleteModal } from '@/shared/ui/system'
 import { FolderModal } from './folder-modal'
 import { NodeSearchBar } from './node-search-bar'
 import { FolderFilterPills } from './folder-filter-pills'
 import { FolderCard } from './folder-card'
+import type { FolderItemRecord } from './folder-card'
 import { FolderGridSkeleton } from './folder-skeleton'
-import { useInfiniteFoldersQuery } from '../hooks/use-folders'
+import {
+  useInfiniteFoldersQuery,
+  useDeleteFolderMutation,
+} from '../hooks/use-folders'
 import { useDebounce } from '@/shared/hooks'
 
 interface FoldersListProps {
@@ -19,7 +24,7 @@ interface FoldersListProps {
 
 export function FoldersList({
   initialWorkspaceId,
-  initialNoteId,
+  initialNoteId: _initialNoteId,
   initialTag,
 }: FoldersListProps) {
   const navigate = useNavigate()
@@ -28,13 +33,18 @@ export function FoldersList({
   const [selectedWorkspaceId, setSelectedWorkspaceId] = useState<string | null>(
     initialWorkspaceId ?? null
   )
-  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(
-    initialNoteId ?? null
-  )
   const [selectedTag, setSelectedTag] = useState<string | null>(
     initialTag ?? null
   )
   const [isCreateFolderOpen, setIsCreateFolderOpen] = useState(false)
+  const [editingFolder, setEditingFolder] = useState<FolderItemRecord | null>(
+    null
+  )
+  const [deletingFolder, setDeletingFolder] = useState<FolderItemRecord | null>(
+    null
+  )
+
+  const deleteFolderMutation = useDeleteFolderMutation()
 
   useEffect(() => {
     if (initialWorkspaceId !== undefined) {
@@ -43,58 +53,77 @@ export function FoldersList({
   }, [initialWorkspaceId])
 
   useEffect(() => {
-    if (initialNoteId !== undefined) {
-      setSelectedNoteId(initialNoteId || null)
-    }
-  }, [initialNoteId])
-
-  useEffect(() => {
     if (initialTag !== undefined) {
       setSelectedTag(initialTag || null)
     }
   }, [initialTag])
 
-  const handleOpenNoteDetail = (noteId: string | null) => {
-    setSelectedNoteId(noteId)
-    void navigate({
-      to: '/workspace/folder',
-      search: (prev) => ({
-        ...prev,
-        noteId: noteId || undefined,
-      }),
-      replace: true,
-    })
-  }
+  const handleSelectWorkspace = useCallback(
+    (id: string | null) => {
+      setSelectedWorkspaceId(id)
+      void navigate({
+        to: '/workspace/folder',
+        search: (prev) => ({
+          ...prev,
+          workspaceId: id || undefined,
+        }),
+        replace: true,
+      })
+    },
+    [navigate]
+  )
 
-  const activeNoteId = selectedNoteId || initialNoteId || null
-  // eslint-disable-next-line no-constant-condition
-  if (activeNoteId && false) {
-    handleOpenNoteDetail(activeNoteId)
-  }
+  const handleSelectTag = useCallback(
+    (tagName: string | null) => {
+      setSelectedTag(tagName)
+      void navigate({
+        to: '/workspace/folder',
+        search: (prev) => ({
+          ...prev,
+          tag: tagName || undefined,
+        }),
+        replace: true,
+      })
+    },
+    [navigate]
+  )
 
-  const handleSelectWorkspace = (id: string | null) => {
-    setSelectedWorkspaceId(id)
-    void navigate({
-      to: '/workspace/folder',
-      search: (prev) => ({
-        ...prev,
-        workspaceId: id || undefined,
-      }),
-      replace: true,
-    })
-  }
+  const handleEditFolder = useCallback((folder: FolderItemRecord) => {
+    setEditingFolder(folder)
+  }, [])
 
-  const handleSelectTag = (tagName: string | null) => {
-    setSelectedTag(tagName)
-    void navigate({
-      to: '/workspace/folder',
-      search: (prev) => ({
-        ...prev,
-        tag: tagName || undefined,
-      }),
-      replace: true,
+  const handleDeleteFolder = useCallback((folder: FolderItemRecord) => {
+    setDeletingFolder(folder)
+  }, [])
+
+  const handleSelectFolder = useCallback(
+    (folder: FolderItemRecord) => {
+      void navigate({
+        to: '/workspace/folder',
+        search: (prev) => ({
+          ...prev,
+          folderId: folder.id,
+        }),
+      })
+    },
+    [navigate]
+  )
+
+  const handleCloseFolderModal = useCallback(() => {
+    setIsCreateFolderOpen(false)
+    setEditingFolder(null)
+  }, [])
+
+  const handleCloseDeleteModal = useCallback(() => {
+    setDeletingFolder(null)
+  }, [])
+
+  const handleConfirmDelete = useCallback(() => {
+    if (!deletingFolder) return
+    deleteFolderMutation.mutate(deletingFolder.id, {
+      onSuccess: () => setDeletingFolder(null),
     })
-  }
+  }, [deletingFolder, deleteFolderMutation])
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteFoldersQuery(
@@ -110,11 +139,11 @@ export function FoldersList({
   // Hide Load More button if total items displayed is less than page limit (12)
   const showLoadMore = hasNextPage && dbFolders.length >= 12
 
-  const resetFilters = () => {
+  const resetFilters = useCallback(() => {
     handleSelectWorkspace(null)
     handleSelectTag(null)
     setSearch('')
-  }
+  }, [handleSelectWorkspace, handleSelectTag])
 
   return (
     <>
@@ -199,6 +228,13 @@ export function FoldersList({
                 key={folder.id}
                 folder={folder}
                 onSelectTag={handleSelectTag}
+                onSelect={handleSelectFolder}
+                onEdit={handleEditFolder}
+                onDelete={handleDeleteFolder}
+                isDeleting={
+                  deleteFolderMutation.isPending &&
+                  deletingFolder?.id === folder.id
+                }
               />
             ))}
           </GlowCardGrid>
@@ -231,12 +267,24 @@ export function FoldersList({
         </div>
       )}
 
-      {/* Create Folder Modal */}
+      {/* Single Lifted Folder Modal (Handles both Create & Edit) */}
       <FolderModal
-        mode="create"
-        isOpen={isCreateFolderOpen}
-        onClose={() => setIsCreateFolderOpen(false)}
+        mode={editingFolder ? 'edit' : 'create'}
+        folder={editingFolder}
+        isOpen={isCreateFolderOpen || Boolean(editingFolder)}
+        onClose={handleCloseFolderModal}
         defaultWorkspaceId={selectedWorkspaceId}
+      />
+
+      {/* Single Lifted Confirm Delete Modal */}
+      <ConfirmDeleteModal
+        isOpen={Boolean(deletingFolder)}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        title="Delete Folder"
+        description="Are you sure you want to delete this folder? This action cannot be undone."
+        itemName={deletingFolder?.name}
+        isPending={deleteFolderMutation.isPending}
       />
     </>
   )

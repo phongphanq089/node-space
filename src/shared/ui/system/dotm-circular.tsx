@@ -4,16 +4,16 @@ import {
   DotMatrixBase,
   isWithinCircularMask,
   rowMajorIndex,
-} from '@/shared/lib/dotmatrix-core'
+} from '@/shared/ui/core/dotmatrix-core'
 import type {
   DotAnimationResolver,
   DotMatrixCommonProps,
-} from '@/shared/lib/dotmatrix-core'
+} from '@/shared/ui/core/dotmatrix-core'
 import {
   useDotMatrixPhases,
   usePrefersReducedMotion,
   useSteppedCycle,
-} from '@/shared/lib/dotmatrix-hooks'
+} from '@/shared/hooks/dotmatrix-hooks'
 
 export type DotmCircular3Props = DotMatrixCommonProps
 

@@ -3,9 +3,16 @@ compatibility_date = "2026-06-16"
 compatibility_flags = ["nodejs_compat"]
 main = "@tanstack/react-start/server-entry"
 
+[vars]
+R2_PUBLIC_URL = "https://pub-d67355446a304a4cb69d91b2b303bc75.r2.dev"
+
 [[d1_databases]]
 binding = "DB"
 database_name = "note-space-db"
 database_id = "260d08a1-c939-41f3-be50-35f65c8570a9"
 migrations_dir = "drizzle"
 migrations_pattern = "drizzle/*/migration.sql"
+
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "node-space-media"

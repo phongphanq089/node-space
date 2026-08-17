@@ -16,7 +16,6 @@ export function WorkspacesList() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteWorkspacesQuery(12, debouncedSearch)
 
-  // Flatten all fetched pages of workspaces (server-filtered)
   const dbWorkspaces = data?.pages.flatMap((page) => page.items) ?? []
 
   return (
