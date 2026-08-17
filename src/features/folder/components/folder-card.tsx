@@ -1,13 +1,5 @@
 import { useState } from 'react'
-import {
-  Star,
-  Trash2,
-  FileText,
-  Clock,
-  ArrowRight,
-  Folder,
-  Pencil,
-} from 'lucide-react'
+import { Star, Trash2, Clock, ArrowRight, Folder, Pencil } from 'lucide-react'
 import { GlowCard } from '@/shared/ui/system/glow-card-grid'
 import { ConfirmDeleteModal } from '@/shared/ui/system'
 import { FolderModal } from './folder-modal'
@@ -15,6 +7,7 @@ import {
   useDeleteFolderMutation,
   useToggleFavoriteFolderMutation,
 } from '../hooks/use-folders'
+import { Button } from '@/shared/ui'
 
 export interface FolderItemRecord {
   id: string
@@ -73,43 +66,46 @@ export function FolderCard({ folder, onSelect, onSelectTag }: FolderCardProps) {
       <GlowCard avatar={folder.image || undefined} className="cursor-pointer">
         <div
           onClick={() => onSelect?.(folder)}
-          className="group flex items-stretch gap-4 p-4"
+          className="group flex gap-3.5 p-3.5"
         >
-          {/* Left: Thumbnail or Color Accent Box */}
+          {/* Thumbnail */}
           {folder.image ? (
             <img
               src={folder.image}
               alt={folder.name}
-              className="h-24 w-24 flex-shrink-0 rounded-2xl border border-ns-border object-cover shadow-sm transition-all group-hover:border-ns-border-md"
+              className="size-[76px] shrink-0 rounded-xl border border-ns-border object-cover shadow-sm transition-all group-hover:border-ns-border-md"
             />
           ) : (
             <div
-              className="flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-2xl border border-ns-border shadow-inner transition-all group-hover:border-ns-border-md"
+              className="flex size-[76px] shrink-0 items-center justify-center rounded-xl border border-ns-border shadow-inner transition-all group-hover:border-ns-border-md"
               style={{
-                background: `linear-gradient(135deg, ${
-                  folder.color ?? '#3b82f6'
-                }22, ${folder.color ?? '#3b82f6'}44)`,
+                background: `linear-gradient(
+            135deg,
+            ${folder.color ?? '#3b82f6'}22,
+            ${folder.color ?? '#3b82f6'}44
+          )`,
               }}
             >
               <Folder
-                size={32}
+                size={28}
                 style={{ color: folder.color ?? '#60a5fa' }}
                 className="drop-shadow-md"
               />
             </div>
           )}
 
-          {/* Right: Info Area */}
-          <div className="flex min-w-0 flex-1 flex-col justify-between">
-            {/* Row 1: Title & Star */}
-            <div className="flex items-start justify-between gap-2">
-              <h3 className="line-clamp-2 text-sm font-bold text-white transition-colors group-hover:text-ns-primary-lt">
+          {/* Content */}
+          <div className="min-w-0 flex-1">
+            {/* Title */}
+            <div className="flex items-start gap-2">
+              <h3 className="min-w-0 flex-1 truncate text-sm font-bold text-white transition-colors group-hover:text-ns-primary-lt">
                 {folder.name}
               </h3>
+
               <button
                 onClick={handleToggleFavorite}
                 disabled={favoriteMutation.isPending}
-                className="flex-shrink-0 cursor-pointer rounded p-1 text-ns-ghost transition-all hover:bg-ns-hover/80 hover:text-amber-400"
+                className="shrink-0 cursor-pointer rounded-md p-1 text-ns-ghost transition-all hover:bg-ns-hover hover:text-amber-400"
                 title={
                   folder.isFavorite
                     ? 'Remove from favorites'
@@ -125,72 +121,84 @@ export function FolderCard({ folder, onSelect, onSelectTag }: FolderCardProps) {
                 />
               </button>
             </div>
+            <div className="mt-1 flex min-w-0 items-center gap-2">
+              {/* Date */}
+              <div className="flex shrink-0 items-center gap-1.5 text-[10px] text-ns-faint">
+                <Clock size={11} />
+                <span>Created {formattedDate}</span>
+              </div>
 
-            {/* Row 2: Creation / Updated Date */}
-            <div className="mt-1 flex items-center gap-1.5 text-[0.68rem] text-ns-faint">
-              <Clock size={11} className="flex-shrink-0" />
-              <span>Created {formattedDate}</span>
-            </div>
-
-            <div className="mt-2.5 flex items-center justify-between">
-              <span className="flex items-center gap-1 rounded border border-ns-border-soft bg-ns-active/40 px-2 py-0.5 text-[0.62rem] font-bold text-ns-muted">
-                <FileText size={10} className="text-ns-ghost" />
-                <span>Folder</span>
-              </span>
-
+              {/* Tags */}
               {folder.tags && folder.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {folder.tags.map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onSelectTag?.(t)
-                      }}
-                      className="flex cursor-pointer items-center gap-0.5 rounded border border-purple-500/30 bg-purple-500/10 px-1.5 py-0.5 font-mono text-[0.6rem] font-bold text-purple-300 transition-all hover:border-purple-500/60 hover:bg-purple-500/20 hover:text-white"
-                      title={`Filter by #${t}`}
-                    >
-                      <span>#</span>
-                      <span>{t}</span>
-                    </button>
-                  ))}
-                </div>
+                <>
+                  <span className="text-ns-border">·</span>
+
+                  <div className="flex min-w-0 items-center gap-1 overflow-hidden">
+                    {folder.tags.slice(0, 3).map((tag) => (
+                      <button
+                        key={tag}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onSelectTag?.(tag)
+                        }}
+                        className="max-w-[80px] shrink-0 truncate rounded-md border border-purple-500/20 bg-purple-500/10 px-1.5 py-0.5 font-mono text-[9px] font-semibold text-purple-300 transition-colors hover:border-purple-500/50 hover:bg-purple-500/15 hover:text-white"
+                        title={`Filter by #${tag}`}
+                      >
+                        #{tag}
+                      </button>
+                    ))}
+
+                    {folder.tags.length > 3 && (
+                      <span className="shrink-0 text-[9px] font-medium text-ns-faint">
+                        +{folder.tags.length - 3}
+                      </span>
+                    )}
+                  </div>
+                </>
               )}
             </div>
 
-            {/* Row 4: View Details & Actions */}
-            <div className="mt-3 flex items-center justify-between border-t border-ns-border-soft/60 pt-2.5">
-              <span className="group/link flex items-center gap-1.5 text-[0.68rem] font-bold text-ns-primary-lt transition-colors hover:text-white">
+            <div className="mt-2.5 flex items-center justify-between border-t border-ns-border-soft/50 pt-2">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onSelect?.(folder)
+                }}
+                className="flex items-center gap-1 text-[10px] font-semibold text-ns-primary-lt transition-colors hover:text-white"
+              >
                 <span>Open folder</span>
                 <ArrowRight
                   size={11}
-                  className="transition-transform group-hover/link:translate-x-0.5"
+                  className="transition-transform group-hover:translate-x-0.5"
                 />
-              </span>
+              </button>
+
               <div className="flex gap-1 text-ns-ghost">
-                <button
+                <Button
                   onClick={handleEdit}
-                  className="cursor-pointer rounded p-1 transition-colors hover:bg-ns-hover hover:text-ns-primary-lt"
                   title="Edit Folder"
+                  size={'icon-sm'}
+                  className="bg-ns-primary/30"
                 >
-                  <Pencil size={14} />
-                </button>
-                <button
+                  <Pencil />
+                </Button>
+                <Button
                   onClick={handleDelete}
                   disabled={deleteMutation.isPending}
-                  className="cursor-pointer rounded p-1 transition-colors hover:bg-ns-hover hover:text-red-400 disabled:opacity-50"
                   title="Delete Folder"
+                  size={'icon-sm'}
+                  className="bg-ns-primary/30"
                 >
-                  <Trash2 size={14} />
-                </button>
+                  <Trash2 />
+                </Button>
               </div>
             </div>
           </div>
         </div>
       </GlowCard>
 
-      {/* Edit Folder Modal */}
       <FolderModal
         mode="edit"
         folder={folder}
@@ -198,7 +206,6 @@ export function FolderCard({ folder, onSelect, onSelectTag }: FolderCardProps) {
         onClose={() => setIsEditModalOpen(false)}
       />
 
-      {/* Confirm Delete Modal */}
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}

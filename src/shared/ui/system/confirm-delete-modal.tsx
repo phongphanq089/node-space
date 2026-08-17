@@ -25,7 +25,7 @@ export function ConfirmDeleteModal({
   onClose,
   onConfirm,
   title = 'Delete Item',
-  description = 'Are you sure you want to delete this item? This action cannot be undone.',
+  description = 'This action is permanent and cannot be undone.',
   itemName,
   isPending = false,
 }: ConfirmDeleteModalProps) {
@@ -34,51 +34,86 @@ export function ConfirmDeleteModal({
       open={isOpen}
       onOpenChange={(open) => !open && !isPending && onClose()}
     >
-      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden rounded-lg border-red-500/30 bg-ns-panel/95 p-6 text-ns-text shadow-2xl backdrop-blur-2xl sm:max-w-md">
-        <DialogHeader className="shrink-0 gap-3 border-b border-ns-border-soft pb-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border border-red-500/30 bg-red-500/10 text-red-400 shadow-inner">
-              <AlertTriangle size={20} />
+      <DialogContent className="rounded-lg border-red-500/25 bg-ns-panel text-ns-text shadow-[0_20px_70px_rgba(0,0,0,0.45)] backdrop-blur-2xl sm:max-w-md">
+        <DialogHeader className="relative gap-4">
+          <div className="flex items-start gap-4">
+            <div className="flex size-11 shrink-0 items-center justify-center rounded-lg border border-red-500/20 bg-red-500/10 text-red-400">
+              <AlertTriangle size={21} strokeWidth={2} />
             </div>
-            <div className="flex flex-col text-left">
-              <DialogTitle className="text-base font-extrabold text-white">
+
+            <div className="min-w-0 pt-0.5 text-left">
+              <DialogTitle className="text-base font-bold text-white">
                 {title}
               </DialogTitle>
-              <DialogDescription className="text-xs text-ns-faint">
+
+              <DialogDescription className="mt-1 text-xs leading-relaxed text-ns-muted">
                 {description}
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
 
-        {itemName && (
-          <div className="my-2 rounded-sm border border-red-500/20 bg-red-500/5 p-5 text-xs font-medium text-white/90">
-            Item to delete:{' '}
-            <span className="font-bold text-red-400">
-              &quot;{itemName}&quot;
-            </span>
-          </div>
-        )}
+        <div className="space-y-3 px-6 py-3">
+          {itemName && (
+            <div className="rounded-sm border border-red-500/20 bg-red-500/[0.06] p-4">
+              <div className="flex items-start gap-3">
+                <AlertTriangle
+                  size={14}
+                  className="mt-0.5 shrink-0 text-red-400"
+                />
 
-        <DialogFooter className="mt-3 flex shrink-0 items-center justify-end gap-2 border-t border-ns-border-soft/40 pt-3">
-          <DialogClose asChild>
-            <Button variant="outline" type="button" disabled={isPending}>
-              Cancel
+                <div className="min-w-0">
+                  <p className="text-[10px] font-bold tracking-wider text-red-400/80 uppercase">
+                    You are about to delete
+                  </p>
+
+                  <p className="mt-1.5 truncate text-sm font-semibold text-white">
+                    &quot;{itemName}&quot;
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="rounded-lg border border-ns-border-soft/60 bg-ns-bg/40 px-3.5 py-1">
+            <p className="text-[11px] leading-relaxed text-ns-muted">
+              <span className="font-semibold text-white">
+                This action cannot be undone.
+              </span>{' '}
+              The folder and its associated data may no longer be available
+              after deletion.
+            </p>
+          </div>
+        </div>
+
+        <DialogFooter className="border-t border-ns-border-soft/50 bg-ns-bg/20">
+          <div className="flex w-full items-center justify-end gap-2">
+            <DialogClose asChild>
+              <Button
+                variant="outline"
+                type="button"
+                disabled={isPending}
+                className="px-6"
+              >
+                Cancel
+              </Button>
+            </DialogClose>
+
+            <Button
+              type="button"
+              variant={'destructive'}
+              onClick={onConfirm}
+              disabled={isPending}
+            >
+              {isPending ? (
+                <Loader2 size={13} className="mr-1.5 animate-spin" />
+              ) : (
+                <Trash2 size={13} className="mr-1.5" />
+              )}
+
+              {isPending ? 'Deleting...' : 'Delete permanently'}
             </Button>
-          </DialogClose>
-          <Button
-            type="button"
-            onClick={onConfirm}
-            disabled={isPending}
-            className="flex cursor-pointer items-center gap-1.5 rounded-sm bg-red-600 px-4 py-2 text-xs font-bold text-white hover:bg-red-700 active:scale-95 disabled:opacity-50"
-          >
-            {isPending ? (
-              <Loader2 size={13} className="animate-spin" />
-            ) : (
-              <Trash2 size={13} />
-            )}
-            <span>{isPending ? 'Deleting...' : 'Delete'}</span>
-          </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

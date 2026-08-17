@@ -5,8 +5,16 @@ export * from './workspace.fns'
 export * from './hooks/use-workspaces'
 
 // Components
-export { CreateWorkspaceModal } from './components/create-workspace-modal'
-export { EditWorkspaceModal } from './components/edit-workspace-modal'
+export {
+  WorkspaceModal,
+  CreateWorkspaceModal,
+  EditWorkspaceModal,
+} from './components/workspace-modal'
+export type {
+  WorkspaceModalProps,
+  WorkspaceItemRecord,
+  WorkspaceModalSchemaValues,
+} from './components/workspace-modal'
 export { WorkspaceCard } from './components/workspace-card'
 export { WorkspacesList } from './components/workspace-list'
 export {

@@ -17,13 +17,13 @@ export function DefaultCatchBoundary({ error }: ErrorComponentProps) {
   const errorStack = error instanceof Error ? error.stack : undefined
 
   return (
-    <div className="flex min-h-screen w-full flex-1 flex-col items-center justify-center bg-ns-bg p-4 font-sans text-ns-text sm:p-6">
+    <div className="flex min-h-[75vh] w-full flex-1 flex-col items-center justify-center bg-ns-bg p-4 font-sans text-ns-text sm:p-6">
       {/* Subtle Glow orb background */}
       <div className="pointer-events-none absolute h-72 w-72 rounded-full bg-red-500/10 blur-3xl" />
 
-      <div className="relative z-10 flex w-full max-w-xl flex-col gap-5 rounded-2xl border border-red-500/30 bg-ns-panel/95 p-6 shadow-2xl backdrop-blur-2xl sm:p-8">
+      <div className="relative z-10 flex w-full max-w-xl flex-col gap-5 rounded-lg border border-red-500/30 bg-ns-panel/95 p-6 shadow-2xl backdrop-blur-2xl sm:p-8">
         <div className="flex items-center gap-3 border-b border-ns-border-soft pb-4">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 shadow-inner">
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-sm border border-red-500/30 bg-red-500/10 text-red-400 shadow-inner">
             <AlertCircle size={20} />
           </div>
           <div className="flex flex-col text-left">
@@ -37,7 +37,7 @@ export function DefaultCatchBoundary({ error }: ErrorComponentProps) {
         </div>
 
         <div className="flex flex-col gap-3 text-left">
-          <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3.5 font-mono text-xs font-semibold break-all text-red-300 shadow-inner">
+          <div className="rounded-sm border border-red-500/20 bg-red-500/10 p-3.5 font-mono text-xs font-semibold break-all text-red-300 shadow-inner">
             {errorMessage}
           </div>
 

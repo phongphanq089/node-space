@@ -90,7 +90,6 @@ export function SidebarGroupLayout<T = SidebarGroupItemData>({
   moreLabel = 'More',
   onMoreClick,
 }: SidebarGroupLayoutProps<T>) {
-  // Safe route location lookup for TanStack Router
   let pathname = ''
   try {
     pathname = useRouterState({ select: (s) => s.location.pathname })
@@ -172,7 +171,7 @@ export function SidebarGroupLayout<T = SidebarGroupItemData>({
           const baseItemClasses = cn(
             'flex w-full cursor-pointer items-center gap-2.5 rounded-sm px-3 py-2 text-xs font-medium no-underline transition-all',
             isActive
-              ? 'bg-ns-active text-ns-primary-lt shadow-[inset_0_0_0_1px_var(--color-ns-border-em)]'
+              ? 'bg-ns-primary! text-ns-primary-lt shadow-[inset_0_0_0_1px_var(--color-ns-border-em)]'
               : 'text-ns-muted hover:bg-ns-hover hover:text-ns-text-2'
           )
 

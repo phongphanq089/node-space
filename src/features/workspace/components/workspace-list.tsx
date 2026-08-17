@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { Search, Plus, Layers, ChevronDown, Loader2, X } from 'lucide-react'
-import { GlowCardGrid } from '@/shared/ui/system/glow-card-grid'
 import { EmptyState } from '@/shared/ui/system/empty-state'
 import { Button, Input } from '@/shared/ui'
-import { CreateWorkspaceModal } from './create-workspace-modal'
+import { WorkspaceModal } from './workspace-modal'
 import { WorkspaceCard } from './workspace-card'
 import { WorkspaceGridSkeleton } from './workspace-skeleton'
 import { useInfiniteWorkspacesQuery } from '../hooks/use-workspaces'
@@ -79,11 +78,11 @@ export function WorkspacesList() {
         />
       ) : (
         <div className="flex flex-col gap-6">
-          <GlowCardGrid className="grid grid-cols-1 gap-4 xl:grid-cols-2 3xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 xl:grid-cols-4 sm:grid-cols-2 lg:grid-cols-3">
             {dbWorkspaces.map((ws) => (
               <WorkspaceCard key={ws.id} workspaceItem={ws} />
             ))}
-          </GlowCardGrid>
+          </div>
 
           {/* Read More / Load More Button */}
           {hasNextPage && (
@@ -115,7 +114,7 @@ export function WorkspacesList() {
       )}
 
       {/* Create Workspace Modal */}
-      <CreateWorkspaceModal
+      <WorkspaceModal
         isOpen={isCreateWorkspaceOpen}
         onClose={() => setIsCreateWorkspaceOpen(false)}
       />

@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { Layers, Pencil, Trash2, Clock, ArrowRight } from 'lucide-react'
-import { GlowCard } from '@/shared/ui/system/glow-card-grid'
+import { PixelCard } from '@/shared/ui/system/pixel-card'
 import { ConfirmDeleteModal } from '@/shared/ui/system'
 import { useDeleteWorkspaceMutation } from '../hooks/use-workspaces'
-import { EditWorkspaceModal } from './edit-workspace-modal'
-import type { WorkspaceItemRecord } from './edit-workspace-modal'
+import { WorkspaceModal } from './workspace-modal'
+import type { WorkspaceItemRecord } from './workspace-modal'
 
 interface WorkspaceCardProps {
   workspaceItem: WorkspaceItemRecord
@@ -53,101 +53,116 @@ export function WorkspaceCard({ workspaceItem, onSelect }: WorkspaceCardProps) {
     })
   }
 
+  const accentColor = workspaceItem.color ?? '#3b82f6'
+  const pixelColors = `${accentColor},${accentColor}cc,${accentColor}88,#ffffff`
+
   return (
     <>
-      <GlowCard className="cursor-pointer">
+      <PixelCard
+        colors={pixelColors}
+        gap={6}
+        speed={35}
+        className="group relative flex h-full flex-col justify-between overflow-hidden border-ns-border/80 bg-ns-panel/90 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-ns-border-em hover:shadow-2xl hover:shadow-black/40"
+      >
         <div
           onClick={handleCardClick}
-          className="group flex items-stretch gap-4 p-4"
+          className="flex h-full flex-1 cursor-pointer flex-col justify-between"
         >
-          {/* Left: Color Accent Icon Box */}
-          <div
-            className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-2xl border border-ns-border shadow-inner transition-all group-hover:border-ns-border-md"
-            style={{
-              background: `linear-gradient(135deg, ${
-                workspaceItem.color ?? '#3b82f6'
-              }22, ${workspaceItem.color ?? '#3b82f6'}44)`,
-            }}
-          >
-            <Layers
-              size={28}
-              style={{ color: workspaceItem.color ?? '#60a5fa' }}
-              className="drop-shadow-md"
-            />
-          </div>
+          {/* Top Section: Icon & Actions */}
+          <div>
+            <div className="flex items-start justify-between gap-3">
+              {/* Icon Box with Accent Gradient */}
+              <div
+                className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-ns-border shadow-inner transition-transform duration-300 group-hover:scale-105"
+                style={{
+                  background: `linear-gradient(135deg, ${accentColor}22, ${accentColor}44)`,
+                }}
+              >
+                <Layers
+                  size={22}
+                  style={{ color: accentColor }}
+                  className="drop-shadow-sm"
+                />
+              </div>
 
-          {/* Right: Info Area */}
-          <div className="flex min-w-0 flex-1 flex-col justify-between">
-            {/* Row 1: Title & Color indicator */}
-            <div className="flex items-start justify-between gap-2">
-              <h3 className="line-clamp-1 text-sm font-bold text-white transition-colors group-hover:text-ns-primary-lt">
+              {/* Top Right: Accent Color Indicator + Edit/Delete Buttons */}
+              <div
+                className="flex items-center gap-1.5"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span
+                  className="h-2.5 w-2.5 flex-shrink-0 rounded-full border border-white/20 shadow-sm"
+                  style={{ backgroundColor: accentColor }}
+                  title={`Accent Color: ${accentColor}`}
+                />
+                <div className="ml-1 flex items-center gap-0.5 text-ns-ghost">
+                  <button
+                    type="button"
+                    onClick={handleEdit}
+                    className="cursor-pointer rounded-lg p-1.5 transition-colors hover:bg-ns-hover hover:text-ns-primary-lt"
+                    title="Edit Workspace"
+                  >
+                    <Pencil size={13} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDelete}
+                    disabled={deleteMutation.isPending}
+                    className="cursor-pointer rounded-lg p-1.5 transition-colors hover:bg-ns-hover hover:text-red-400 disabled:opacity-50"
+                    title="Delete Workspace"
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Middle Section: Title, Description & Tags */}
+            <div className="mt-4">
+              <h3 className="line-clamp-1 text-base font-bold text-white transition-colors group-hover:text-ns-primary-lt">
                 {workspaceItem.name}
               </h3>
-              <span
-                className="h-2.5 w-2.5 flex-shrink-0 rounded-full border border-white/20 shadow-sm"
-                style={{ backgroundColor: workspaceItem.color ?? '#3b82f6' }}
-              />
-            </div>
+              <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed font-normal text-ns-muted">
+                {workspaceItem.description || 'No description provided.'}
+              </p>
 
-            {/* Row 2: Description */}
-            <p className="line-clamp-2 text-xs font-normal text-ns-muted">
-              {workspaceItem.description || 'No description provided.'}
-            </p>
-
-            {/* Row 3: Creation Date */}
-            <div className="mt-1 flex items-center gap-1.5 text-[0.68rem] text-ns-faint">
-              <Clock size={11} className="flex-shrink-0" />
-              <span>Created {formattedDate}</span>
-            </div>
-
-            {/* Topic Tags */}
-            {workspaceItem.tags && workspaceItem.tags.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-1">
-                {workspaceItem.tags.map((t) => (
-                  <span
-                    key={t}
-                    className="flex items-center gap-0.5 rounded border border-purple-500/30 bg-purple-500/10 px-1.5 py-0.5 font-mono text-[0.6rem] font-bold text-purple-300"
-                  >
-                    <span>#</span>
-                    <span>{t}</span>
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* Row 4: Actions */}
-            <div className="mt-3 flex items-center justify-between border-t border-ns-border-soft/60 pt-2.5">
-              <span className="group/link flex items-center gap-1.5 text-[0.68rem] font-bold text-ns-primary-lt transition-colors hover:text-white">
-                <span>View workspace</span>
-                <ArrowRight
-                  size={11}
-                  className="transition-transform group-hover/link:translate-x-0.5"
-                />
-              </span>
-              <div className="flex gap-1 text-ns-ghost">
-                <button
-                  onClick={handleEdit}
-                  className="cursor-pointer rounded p-1 transition-colors hover:bg-ns-hover hover:text-ns-primary-lt"
-                  title="Edit Workspace"
-                >
-                  <Pencil size={11} />
-                </button>
-                <button
-                  onClick={handleDelete}
-                  disabled={deleteMutation.isPending}
-                  className="cursor-pointer rounded p-1 transition-colors hover:bg-ns-hover hover:text-red-400 disabled:opacity-50"
-                  title="Delete Workspace"
-                >
-                  <Trash2 size={11} />
-                </button>
-              </div>
+              {/* Topic Tags */}
+              {workspaceItem.tags && workspaceItem.tags.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-1">
+                  {workspaceItem.tags.map((t) => (
+                    <span
+                      key={t}
+                      className="flex items-center gap-0.5 rounded-md border border-purple-500/30 bg-purple-500/10 px-2 py-0.5 font-mono text-[0.65rem] font-medium text-purple-300"
+                    >
+                      <span>#</span>
+                      <span>{t}</span>
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
+
+          {/* Bottom Section: Date & View Action */}
+          <div className="mt-5 flex items-center justify-between border-t border-ns-border-soft/60 pt-3 text-[0.7rem] text-ns-faint">
+            <div className="flex items-center gap-1.5">
+              <Clock size={12} className="flex-shrink-0" />
+              <span>{formattedDate}</span>
+            </div>
+
+            <span className="flex items-center gap-1 font-semibold text-ns-primary-lt transition-colors group-hover:text-white">
+              <span>Open</span>
+              <ArrowRight
+                size={12}
+                className="transition-transform duration-200 group-hover:translate-x-1"
+              />
+            </span>
+          </div>
         </div>
-      </GlowCard>
+      </PixelCard>
 
       {/* Edit Workspace Modal */}
-      <EditWorkspaceModal
+      <WorkspaceModal
         workspaceItem={workspaceItem}
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}

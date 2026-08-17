@@ -133,10 +133,10 @@ export function FoldersList({
 
           {selectedTag && (
             <div className="flex items-center gap-2 px-1 pt-1">
-              <span className="text-[0.65rem] font-bold tracking-wider text-ns-faint uppercase">
+              <span className="text-xs font-bold whitespace-nowrap text-white/60 uppercase">
                 Filtered by Tag:
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-500/50 bg-purple-500/20 px-2.5 py-0.5 text-xs font-bold text-purple-300">
+              <span className="inline-flex items-center gap-1.5 rounded-sm border border-purple-500/50 bg-purple-500/20 px-2.5 py-1 text-xs font-bold text-purple-300">
                 <span>#{selectedTag}</span>
                 <button
                   type="button"
@@ -153,7 +153,7 @@ export function FoldersList({
       </div>
 
       {isLoading ? (
-        <FolderGridSkeleton count={6} />
+        <FolderGridSkeleton count={9} />
       ) : dbFolders.length === 0 ? (
         <EmptyState
           variant={
@@ -203,7 +203,6 @@ export function FoldersList({
             ))}
           </GlowCardGrid>
 
-          {/* Read More / Load More Button */}
           {showLoadMore && (
             <div className="flex justify-center pt-2">
               <button

@@ -11,7 +11,7 @@
     "build": "tsc -b && node --max-old-space-size=4096 node_modules/vite/bin/vite.js build",
     "preview:cloudflare": "wrangler dev",
     "start": "node .output/server/index.mjs",
-    "preview": "vite preview",
+    "preview": "vite preview --port 5732",
     "test": "vitest run",
     "lint": "eslint",
     "format": "prettier --write . && eslint --fix",

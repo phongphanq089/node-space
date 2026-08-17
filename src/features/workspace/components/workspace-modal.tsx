@@ -12,7 +12,10 @@ import {
   Check,
 } from 'lucide-react'
 import { cn } from '@/shared/lib/utils'
-import { useUpdateWorkspaceMutation } from '../hooks/use-workspaces'
+import {
+  useCreateWorkspaceMutation,
+  useUpdateWorkspaceMutation,
+} from '../hooks/use-workspaces'
 import { useTagsQuery } from '@/features/tag'
 import {
   Dialog,
@@ -31,7 +34,7 @@ import {
 } from '@/shared/ui/core/color-picker'
 import { Button } from '@/shared/ui/core/button'
 
-export const editWorkspaceSchema = z.object({
+export const workspaceModalSchema = z.object({
   name: z
     .string()
     .trim()
@@ -42,7 +45,11 @@ export const editWorkspaceSchema = z.object({
   tags: z.array(z.string()).optional(),
 })
 
-export type EditWorkspaceSchemaValues = z.infer<typeof editWorkspaceSchema>
+export type WorkspaceModalSchemaValues = z.infer<typeof workspaceModalSchema>
+export type CreateWorkspaceSchemaValues = WorkspaceModalSchemaValues
+export type EditWorkspaceSchemaValues = WorkspaceModalSchemaValues
+export const createWorkspaceSchema = workspaceModalSchema
+export const editWorkspaceSchema = workspaceModalSchema
 
 export interface WorkspaceItemRecord {
   id: string
@@ -54,22 +61,29 @@ export interface WorkspaceItemRecord {
   updatedAt?: Date | string
 }
 
-interface EditWorkspaceModalProps {
-  workspaceItem: WorkspaceItemRecord | null
+export interface WorkspaceModalProps {
   isOpen: boolean
   onClose: () => void
+  workspaceItem?: WorkspaceItemRecord | null
+  mode?: 'create' | 'edit'
 }
 
-export function EditWorkspaceModal({
-  workspaceItem,
+export function WorkspaceModal({
   isOpen,
   onClose,
-}: EditWorkspaceModalProps) {
+  workspaceItem = null,
+  mode,
+}: WorkspaceModalProps) {
+  const isEditing = mode === 'edit' || Boolean(workspaceItem)
+  const createWorkspaceMutation = useCreateWorkspaceMutation()
   const updateWorkspaceMutation = useUpdateWorkspaceMutation()
   const { data: dbTags = [] } = useTagsQuery()
 
-  const form = useForm<EditWorkspaceSchemaValues>({
-    resolver: zodResolver(editWorkspaceSchema as any),
+  const isPending =
+    createWorkspaceMutation.isPending || updateWorkspaceMutation.isPending
+
+  const form = useForm<WorkspaceModalSchemaValues>({
+    resolver: zodResolver(workspaceModalSchema as any),
     criteriaMode: 'all',
     defaultValues: {
       name: '',
@@ -80,26 +94,43 @@ export function EditWorkspaceModal({
   })
 
   useEffect(() => {
-    if (isOpen && workspaceItem) {
-      form.reset({
-        name: workspaceItem.name || '',
-        color: workspaceItem.color || DEFAULT_PRESET_COLORS[0],
-        description: workspaceItem.description || '',
-        tags: (workspaceItem as any).tags || [],
-      })
+    if (isOpen) {
+      if (workspaceItem) {
+        form.reset({
+          name: workspaceItem.name || '',
+          color: workspaceItem.color || DEFAULT_PRESET_COLORS[0],
+          description: workspaceItem.description || '',
+          tags: workspaceItem.tags || [],
+        })
+      } else {
+        form.reset({
+          name: '',
+          color: DEFAULT_PRESET_COLORS[0],
+          description: '',
+          tags: [],
+        })
+      }
     }
   }, [isOpen, workspaceItem, form])
 
-  const handleSubmit = async (data: EditWorkspaceSchemaValues) => {
-    if (!workspaceItem) return
+  const handleSubmit = async (data: WorkspaceModalSchemaValues) => {
     try {
-      await updateWorkspaceMutation.mutateAsync({
-        workspaceId: workspaceItem.id,
-        name: data.name,
-        color: data.color,
-        description: data.description,
-        tags: data.tags,
-      })
+      if (isEditing && workspaceItem) {
+        await updateWorkspaceMutation.mutateAsync({
+          workspaceId: workspaceItem.id,
+          name: data.name,
+          color: data.color,
+          description: data.description,
+          tags: data.tags,
+        })
+      } else {
+        await createWorkspaceMutation.mutateAsync({
+          name: data.name,
+          color: data.color,
+          description: data.description,
+          tags: data.tags,
+        })
+      }
       onClose()
     } catch {
       // Error handled in mutation toast
@@ -117,10 +148,14 @@ export function EditWorkspaceModal({
             </div>
             <div className="flex flex-col text-left">
               <DialogTitle className="text-base font-extrabold text-white">
-                Edit Workspace
+                {isEditing ? 'Edit Workspace' : 'Create Workspace'}
               </DialogTitle>
               <DialogDescription className="text-xs text-ns-faint">
-                Update details for &quot;{workspaceItem?.name}&quot;
+                {isEditing
+                  ? workspaceItem?.name
+                    ? `Update details for "${workspaceItem.name}"`
+                    : 'Update workspace details'
+                  : 'Set up a dedicated environment for your projects'}
               </DialogDescription>
             </div>
           </div>
@@ -220,7 +255,7 @@ export function EditWorkspaceModal({
                             type="button"
                             onClick={() => toggleTag(t.name)}
                             className={cn(
-                              'flex cursor-pointer items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-semibold transition-all outline-none',
+                              'flex cursor-pointer items-center gap-1 rounded-sm border px-2.5 py-1 text-xs font-semibold transition-all outline-none',
                               isSelected
                                 ? 'border-purple-500/60 bg-purple-500/20 text-white shadow-sm ring-1 ring-purple-500/40'
                                 : 'border-ns-border/60 bg-ns-panel/40 text-ns-muted hover:border-ns-border-md hover:bg-ns-hover/50 hover:text-white'
@@ -251,16 +286,20 @@ export function EditWorkspaceModal({
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit" disabled={updateWorkspaceMutation.isPending}>
-              {updateWorkspaceMutation.isPending ? (
+            <Button type="submit" disabled={isPending}>
+              {isPending ? (
                 <Loader2 size={13} className="animate-spin" />
               ) : (
                 <Sparkles size={13} />
               )}
               <span>
-                {updateWorkspaceMutation.isPending
-                  ? 'Saving...'
-                  : 'Save Changes'}
+                {isPending
+                  ? isEditing
+                    ? 'Saving...'
+                    : 'Creating...'
+                  : isEditing
+                    ? 'Save Changes'
+                    : 'Create Workspace'}
               </span>
             </Button>
           </DialogFooter>
@@ -268,4 +307,18 @@ export function EditWorkspaceModal({
       </DialogContent>
     </Dialog>
   )
+}
+
+export function CreateWorkspaceModal(
+  props: Omit<WorkspaceModalProps, 'mode' | 'workspaceItem'>
+) {
+  return <WorkspaceModal {...props} mode="create" workspaceItem={null} />
+}
+
+export function EditWorkspaceModal(
+  props: Omit<WorkspaceModalProps, 'mode'> & {
+    workspaceItem: WorkspaceItemRecord | null
+  }
+) {
+  return <WorkspaceModal {...props} mode="edit" />
 }

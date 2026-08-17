@@ -240,7 +240,7 @@ export function FolderModal({
                       type="button"
                       onClick={() => field.onChange('')}
                       className={cn(
-                        'group relative flex cursor-pointer items-center justify-between rounded-xl border p-2.5 text-left transition-all outline-none',
+                        'group relative flex cursor-pointer items-center justify-between rounded-sm border p-2.5 text-left transition-all outline-none',
                         !field.value
                           ? 'border-ns-primary bg-ns-primary/10 shadow-[0_0_15px_rgba(59,130,246,0.15)] ring-1 ring-ns-primary/50'
                           : 'border-ns-border/70 bg-ns-panel/40 hover:border-ns-border-md hover:bg-ns-hover/50'
@@ -286,7 +286,7 @@ export function FolderModal({
                           type="button"
                           onClick={() => field.onChange(wsId)}
                           className={cn(
-                            'group relative flex cursor-pointer items-center justify-between rounded-xl border p-2.5 text-left transition-all outline-none',
+                            'group relative flex cursor-pointer items-center justify-between rounded-sm border p-2.5 text-left transition-all outline-none',
                             isSelected
                               ? 'border-ns-primary bg-ns-primary/10 shadow-[0_0_15px_rgba(59,130,246,0.15)] ring-1 ring-ns-primary/50'
                               : 'border-ns-border/70 bg-ns-panel/40 hover:border-ns-border-md hover:bg-ns-hover/50'
@@ -387,7 +387,7 @@ export function FolderModal({
                             type="button"
                             onClick={() => toggleTag(t.name)}
                             className={cn(
-                              'flex cursor-pointer items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-semibold transition-all outline-none',
+                              'flex cursor-pointer items-center gap-1 rounded border px-2.5 py-1 text-xs font-semibold transition-all outline-none',
                               isSelected
                                 ? 'border-purple-500/60 bg-purple-500/20 text-white shadow-sm ring-1 ring-purple-500/40'
                                 : 'border-ns-border/60 bg-ns-panel/40 text-ns-muted hover:border-ns-border-md hover:bg-ns-hover/50 hover:text-white'
