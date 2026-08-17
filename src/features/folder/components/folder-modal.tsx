@@ -1,4 +1,3 @@
- 
 import React, { useEffect, useMemo, useCallback, useState } from 'react'
 import { z } from 'zod'
 import { useForm, Controller } from 'react-hook-form'
@@ -215,7 +214,7 @@ function FolderModalComponent({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="flex max-h-[85vh] flex-col overflow-hidden border-ns-border-em bg-ns-panel/95 p-6 text-ns-text shadow-2xl backdrop-blur-2xl sm:max-h-[90vh] sm:max-w-md">
+      <DialogContent className="flex max-h-[85vh] w-full flex-col overflow-hidden border-ns-border-em bg-ns-panel/95 p-6 text-ns-text shadow-2xl backdrop-blur-2xl sm:max-h-[90vh] sm:max-w-xl">
         <div className="pointer-events-none absolute -top-12 left-1/2 -z-10 h-32 w-48 -translate-x-1/2 rounded-full bg-ns-primary/20 blur-3xl" />
         <DialogHeader className="shrink-0 gap-1 border-b border-ns-border-soft pb-3">
           <div className="flex items-center gap-3">

@@ -1,22 +1,57 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Search, Plus, Layers, ChevronDown, Loader2, X } from 'lucide-react'
 import { EmptyState } from '@/shared/ui/system/empty-state'
+import { ConfirmDeleteModal } from '@/shared/ui/system'
 import { Button, Input } from '@/shared/ui'
 import { WorkspaceModal } from './workspace-modal'
+import type { WorkspaceItemRecord } from './workspace-modal'
 import { WorkspaceCard } from './workspace-card'
 import { WorkspaceGridSkeleton } from './workspace-skeleton'
-import { useInfiniteWorkspacesQuery } from '../hooks/use-workspaces'
+import {
+  useInfiniteWorkspacesQuery,
+  useDeleteWorkspaceMutation,
+} from '../hooks/use-workspaces'
 import { useDebounce } from '@/shared/hooks'
 
 export function WorkspacesList() {
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 500)
   const [isCreateWorkspaceOpen, setIsCreateWorkspaceOpen] = useState(false)
+  const [editingWorkspace, setEditingWorkspace] =
+    useState<WorkspaceItemRecord | null>(null)
+  const [deletingWorkspace, setDeletingWorkspace] =
+    useState<WorkspaceItemRecord | null>(null)
+
+  const deleteWorkspaceMutation = useDeleteWorkspaceMutation()
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteWorkspacesQuery(12, debouncedSearch)
 
   const dbWorkspaces = data?.pages.flatMap((page) => page.items) ?? []
+
+  const handleEditWorkspace = useCallback((item: WorkspaceItemRecord) => {
+    setEditingWorkspace(item)
+  }, [])
+
+  const handleDeleteWorkspace = useCallback((item: WorkspaceItemRecord) => {
+    setDeletingWorkspace(item)
+  }, [])
+
+  const handleCloseWorkspaceModal = useCallback(() => {
+    setIsCreateWorkspaceOpen(false)
+    setEditingWorkspace(null)
+  }, [])
+
+  const handleCloseDeleteModal = useCallback(() => {
+    setDeletingWorkspace(null)
+  }, [])
+
+  const handleConfirmDelete = useCallback(() => {
+    if (!deletingWorkspace) return
+    deleteWorkspaceMutation.mutate(deletingWorkspace.id, {
+      onSuccess: () => setDeletingWorkspace(null),
+    })
+  }, [deletingWorkspace, deleteWorkspaceMutation])
 
   return (
     <>
@@ -79,7 +114,16 @@ export function WorkspacesList() {
         <div className="flex flex-col gap-6">
           <div className="grid grid-cols-1 gap-4 xl:grid-cols-4 sm:grid-cols-2 lg:grid-cols-3">
             {dbWorkspaces.map((ws) => (
-              <WorkspaceCard key={ws.id} workspaceItem={ws} />
+              <WorkspaceCard
+                key={ws.id}
+                workspaceItem={ws}
+                onEdit={handleEditWorkspace}
+                onDelete={handleDeleteWorkspace}
+                isDeleting={
+                  deleteWorkspaceMutation.isPending &&
+                  deletingWorkspace?.id === ws.id
+                }
+              />
             ))}
           </div>
 
@@ -112,10 +156,23 @@ export function WorkspacesList() {
         </div>
       )}
 
-      {/* Create Workspace Modal */}
+      {/* Single Lifted Workspace Modal (Handles both Create & Edit) */}
       <WorkspaceModal
-        isOpen={isCreateWorkspaceOpen}
-        onClose={() => setIsCreateWorkspaceOpen(false)}
+        mode={editingWorkspace ? 'edit' : 'create'}
+        workspaceItem={editingWorkspace}
+        isOpen={isCreateWorkspaceOpen || Boolean(editingWorkspace)}
+        onClose={handleCloseWorkspaceModal}
+      />
+
+      {/* Single Lifted Confirm Delete Modal */}
+      <ConfirmDeleteModal
+        isOpen={Boolean(deletingWorkspace)}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        title="Delete Workspace"
+        description="Are you sure you want to delete this workspace? This action cannot be undone."
+        itemName={deletingWorkspace?.name}
+        isPending={deleteWorkspaceMutation.isPending}
       />
     </>
   )
