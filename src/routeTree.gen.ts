@@ -22,7 +22,9 @@ import { Route as WorkspaceWorkspaceFolderRouteImport } from './routes/_workspac
 import { Route as WorkspaceWorkspaceMusicRouteImport } from './routes/_workspace/workspace.music'
 import { Route as WorkspaceWorkspaceTagsRouteImport } from './routes/_workspace/workspace.tags'
 import { Route as WorkspaceWorkspaceTrashRouteImport } from './routes/_workspace/workspace.trash'
+import { Route as WorkspaceWorkspaceWorkspacesRouteImport } from './routes/_workspace/workspace.workspaces'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiMediaSplatRouteImport } from './routes/api/media/$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -90,9 +92,20 @@ const WorkspaceWorkspaceTrashRoute = WorkspaceWorkspaceTrashRouteImport.update({
   path: '/workspace/trash',
   getParentRoute: () => WorkspaceRoute,
 } as any)
+const WorkspaceWorkspaceWorkspacesRoute =
+  WorkspaceWorkspaceWorkspacesRouteImport.update({
+    id: '/workspace/workspaces',
+    path: '/workspace/workspaces',
+    getParentRoute: () => WorkspaceRoute,
+  } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMediaSplatRoute = ApiMediaSplatRouteImport.update({
+  id: '/api/media/$',
+  path: '/api/media/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -108,7 +121,9 @@ export interface FileRoutesByFullPath {
   '/workspace/music': typeof WorkspaceWorkspaceMusicRoute
   '/workspace/tags': typeof WorkspaceWorkspaceTagsRoute
   '/workspace/trash': typeof WorkspaceWorkspaceTrashRoute
+  '/workspace/workspaces': typeof WorkspaceWorkspaceWorkspacesRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/media/$': typeof ApiMediaSplatRoute
   '/workspace/': typeof WorkspaceWorkspaceIndexRoute
 }
 export interface FileRoutesByTo {
@@ -123,7 +138,9 @@ export interface FileRoutesByTo {
   '/workspace/music': typeof WorkspaceWorkspaceMusicRoute
   '/workspace/tags': typeof WorkspaceWorkspaceTagsRoute
   '/workspace/trash': typeof WorkspaceWorkspaceTrashRoute
+  '/workspace/workspaces': typeof WorkspaceWorkspaceWorkspacesRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/media/$': typeof ApiMediaSplatRoute
   '/workspace': typeof WorkspaceWorkspaceIndexRoute
 }
 export interface FileRoutesById {
@@ -140,7 +157,9 @@ export interface FileRoutesById {
   '/_workspace/workspace/music': typeof WorkspaceWorkspaceMusicRoute
   '/_workspace/workspace/tags': typeof WorkspaceWorkspaceTagsRoute
   '/_workspace/workspace/trash': typeof WorkspaceWorkspaceTrashRoute
+  '/_workspace/workspace/workspaces': typeof WorkspaceWorkspaceWorkspacesRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/media/$': typeof ApiMediaSplatRoute
   '/_workspace/workspace/': typeof WorkspaceWorkspaceIndexRoute
 }
 export interface FileRouteTypes {
@@ -157,7 +176,9 @@ export interface FileRouteTypes {
     | '/workspace/music'
     | '/workspace/tags'
     | '/workspace/trash'
+    | '/workspace/workspaces'
     | '/api/auth/$'
+    | '/api/media/$'
     | '/workspace/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -172,7 +193,9 @@ export interface FileRouteTypes {
     | '/workspace/music'
     | '/workspace/tags'
     | '/workspace/trash'
+    | '/workspace/workspaces'
     | '/api/auth/$'
+    | '/api/media/$'
     | '/workspace'
   id:
     | '__root__'
@@ -188,7 +211,9 @@ export interface FileRouteTypes {
     | '/_workspace/workspace/music'
     | '/_workspace/workspace/tags'
     | '/_workspace/workspace/trash'
+    | '/_workspace/workspace/workspaces'
     | '/api/auth/$'
+    | '/api/media/$'
     | '/_workspace/workspace/'
   fileRoutesById: FileRoutesById
 }
@@ -200,6 +225,7 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiMediaSplatRoute: typeof ApiMediaSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -295,11 +321,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceWorkspaceTrashRouteImport
       parentRoute: typeof WorkspaceRoute
     }
+    '/_workspace/workspace/workspaces': {
+      id: '/_workspace/workspace/workspaces'
+      path: '/workspace/workspaces'
+      fullPath: '/workspace/workspaces'
+      preLoaderRoute: typeof WorkspaceWorkspaceWorkspacesRouteImport
+      parentRoute: typeof WorkspaceRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/media/$': {
+      id: '/api/media/$'
+      path: '/api/media/$'
+      fullPath: '/api/media/$'
+      preLoaderRoute: typeof ApiMediaSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -312,6 +352,7 @@ interface WorkspaceRouteChildren {
   WorkspaceWorkspaceMusicRoute: typeof WorkspaceWorkspaceMusicRoute
   WorkspaceWorkspaceTagsRoute: typeof WorkspaceWorkspaceTagsRoute
   WorkspaceWorkspaceTrashRoute: typeof WorkspaceWorkspaceTrashRoute
+  WorkspaceWorkspaceWorkspacesRoute: typeof WorkspaceWorkspaceWorkspacesRoute
   WorkspaceWorkspaceIndexRoute: typeof WorkspaceWorkspaceIndexRoute
 }
 
@@ -322,6 +363,7 @@ const WorkspaceRouteChildren: WorkspaceRouteChildren = {
   WorkspaceWorkspaceMusicRoute: WorkspaceWorkspaceMusicRoute,
   WorkspaceWorkspaceTagsRoute: WorkspaceWorkspaceTagsRoute,
   WorkspaceWorkspaceTrashRoute: WorkspaceWorkspaceTrashRoute,
+  WorkspaceWorkspaceWorkspacesRoute: WorkspaceWorkspaceWorkspacesRoute,
   WorkspaceWorkspaceIndexRoute: WorkspaceWorkspaceIndexRoute,
 }
 
@@ -337,6 +379,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   VerifyEmailRoute: VerifyEmailRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiMediaSplatRoute: ApiMediaSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

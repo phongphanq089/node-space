@@ -41,9 +41,9 @@ export function Logout() {
   return (
     <>
       <Button
-        variant="ghost"
+        variant="destructive"
         onClick={() => setOpen(true)}
-        className="flex w-full items-center justify-between gap-3 border border-red-500/20 bg-red-500/5 text-xs font-semibold text-red-400 transition-all hover:border-red-500/40 hover:bg-red-500/15 hover:text-red-300"
+        className="flex w-full items-center justify-between gap-3 border border-red-500/20 bg-red-500/20 text-xs font-semibold text-red-600 transition-all hover:border-red-500/40 hover:text-red-500"
       >
         <span>Logout</span>
         <LogOut size={15} />

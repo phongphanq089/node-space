@@ -1,14 +1,6 @@
 import type { ErrorComponentProps } from '@tanstack/react-router'
 import { Link, rootRouteId, useMatch, useRouter } from '@tanstack/react-router'
 import { AlertCircle, ChevronLeft, Home, RefreshCw } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/shared/ui/core/dialog'
 import { Button } from '@/shared/ui/core/button'
 
 export function DefaultCatchBoundary({ error }: ErrorComponentProps) {
@@ -25,93 +17,85 @@ export function DefaultCatchBoundary({ error }: ErrorComponentProps) {
   const errorStack = error instanceof Error ? error.stack : undefined
 
   return (
-    <div className="bg-back flex min-h-screen flex-1 flex-col items-center justify-center p-6 text-center">
-      <Dialog open={true}>
-        <DialogContent
-          showCloseButton={false}
-          className="flex max-h-[85vh] flex-col overflow-hidden border-destructive/20 p-0 shadow-2xl sm:max-w-2xl dark:shadow-red-900/10"
-          onInteractOutside={(e: Event) => e.preventDefault()}
-          onEscapeKeyDown={(e: KeyboardEvent) => e.preventDefault()}
-        >
-          <div className="border-b border-destructive/20 bg-destructive/10 p-4 dark:bg-destructive/20">
-            <DialogHeader className="gap-1 space-y-0 text-left">
-              <DialogTitle className="flex items-center gap-2 text-lg font-bold text-destructive">
-                <AlertCircle className="h-5 w-5" />
-                Unhandled Runtime Error
-              </DialogTitle>
-              <DialogDescription className="text-xs font-medium text-destructive/80">
-                An unexpected exception occurred while rendering this page
-                component.
-              </DialogDescription>
-            </DialogHeader>
+    <div className="flex min-h-[75vh] w-full flex-1 flex-col items-center justify-center bg-ns-bg p-4 font-sans text-ns-text sm:p-6">
+      {/* Subtle Glow orb background */}
+      <div className="pointer-events-none absolute h-72 w-72 rounded-full bg-red-500/10 blur-3xl" />
+
+      <div className="relative z-10 flex w-full max-w-xl flex-col gap-5 rounded-lg border border-red-500/30 bg-ns-panel/95 p-6 shadow-2xl backdrop-blur-2xl sm:p-8">
+        <div className="flex items-center gap-3 border-b border-ns-border-soft pb-4">
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-sm border border-red-500/30 bg-red-500/10 text-red-400 shadow-inner">
+            <AlertCircle size={20} />
+          </div>
+          <div className="flex flex-col text-left">
+            <h2 className="text-base font-extrabold text-white sm:text-lg">
+              Application Runtime Error
+            </h2>
+            <p className="text-xs text-ns-faint">
+              An unexpected exception occurred while rendering this page
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-3 text-left">
+          <div className="rounded-sm border border-red-500/20 bg-red-500/10 p-3.5 font-mono text-xs font-semibold break-all text-red-300 shadow-inner">
+            {errorMessage}
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 text-left">
-            <div className="rounded-lg border border-destructive/10 bg-destructive/5 p-3 font-mono text-sm break-all text-destructive dark:bg-destructive/10">
-              {errorMessage}
+          {errorStack && (
+            <div className="flex flex-col gap-1 pt-1">
+              <span className="font-mono text-[0.65rem] font-bold tracking-wider text-ns-ghost uppercase">
+                Stack Trace
+              </span>
+              <pre className="max-h-44 overflow-x-auto rounded-xl border border-ns-border-soft bg-ns-bg/80 p-3 font-mono text-[0.7rem] leading-relaxed text-ns-muted">
+                {errorStack}
+              </pre>
             </div>
+          )}
+        </div>
 
-            {errorStack && (
-              <div className="mt-3">
-                <span className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
-                  Stack Trace
-                </span>
-                <pre className="mt-1 max-h-48 overflow-x-auto rounded-lg border border-border/40 bg-muted/40 p-3 font-mono text-xs leading-relaxed text-muted-foreground">
-                  {errorStack}
-                </pre>
-              </div>
-            )}
-          </div>
+        <div className="flex flex-col gap-2 border-t border-ns-border-soft pt-4 sm:flex-row sm:items-center sm:justify-between">
+          <Button
+            variant="outline"
+            onClick={() => router.invalidate()}
+            className="flex items-center justify-center gap-1.5 border-ns-border-soft text-xs text-ns-muted hover:text-white"
+          >
+            <RefreshCw size={13} />
+            <span>Retry Render</span>
+          </Button>
 
-          <DialogFooter className="flex-col gap-2 border-t border-border/40 bg-muted/20 p-4 sm:flex-row sm:justify-between sm:space-x-0">
-            <Button
-              variant="ghost"
-              onClick={() => router.invalidate()}
-              className="w-full text-muted-foreground hover:text-foreground sm:w-auto"
-            >
-              <RefreshCw className="mr-2 h-4 w-4" />
-              Retry Render
-            </Button>
-            <div className="flex w-full items-center gap-2 sm:w-auto">
-              {!isRoot ? (
-                <Button
-                  variant="outline"
-                  onClick={(e: React.MouseEvent) => {
-                    e.preventDefault()
-                    window.history.back()
-                  }}
-                  className="flex-1 sm:flex-none"
-                >
-                  <ChevronLeft className="mr-2 h-4 w-4" />
-                  Go Back
-                </Button>
-              ) : (
-                <Button
-                  variant="outline"
-                  asChild
-                  className="flex-1 sm:flex-none"
-                >
-                  <Link to="/">
-                    <Home className="mr-2 h-4 w-4" />
-                    Home
-                  </Link>
-                </Button>
-              )}
-
+          <div className="flex items-center gap-2">
+            {!isRoot ? (
               <Button
-                variant="default"
-                onClick={() => {
-                  router.invalidate()
-                }}
-                className="flex flex-1 items-center justify-center bg-red-700 text-white hover:bg-red-800 sm:flex-none"
+                variant="outline"
+                onClick={() => window.history.back()}
+                className="flex items-center gap-1.5 border-ns-border-soft text-xs text-ns-muted hover:text-white"
               >
-                <RefreshCw className="mr-2" />
-                Try Again
+                <ChevronLeft size={13} />
+                <span>Go Back</span>
               </Button>
-            </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            ) : (
+              <Button
+                variant="outline"
+                asChild
+                className="flex items-center gap-1.5 border-ns-border-soft text-xs text-ns-muted hover:text-white"
+              >
+                <Link to="/">
+                  <Home size={13} />
+                  <span>Home</span>
+                </Link>
+              </Button>
+            )}
+
+            <Button
+              onClick={() => router.invalidate()}
+              className="flex items-center gap-1.5 bg-red-600 text-xs font-bold text-white shadow-md transition-all hover:bg-red-700 active:scale-95"
+            >
+              <RefreshCw size={13} />
+              <span>Try Again</span>
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

@@ -256,6 +256,7 @@ export function ColorPicker({
             onClick={() => setIsOpenCustomCard(!isOpenCustomCard)}
             title="Toggle Custom Color Card"
             className="mt-2"
+            type="button"
           >
             <SlidersHorizontal size={12} />
             <span>Custom</span>

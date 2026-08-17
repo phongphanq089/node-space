@@ -27,13 +27,10 @@ import {
   CommandShortcut,
 } from '@/shared/ui'
 
-import { NODES, FOLDERS, NOTES, WORKSPACES } from '@/shared/mocks/mock-data'
-import type {
-  FolderItem,
-  NoteItem,
-  WorkspaceItem,
-} from '@/shared/mocks/mock-data'
+import { NODES, NOTES, WORKSPACES } from '@/shared/mocks/mock-data'
+import type { NoteItem, WorkspaceItem } from '@/shared/mocks/mock-data'
 import { useMusicStore } from '@/features/music-player'
+import { useFoldersQuery } from '@/features/folder'
 
 type FilterCategory =
   'all' | 'nodes' | 'folders' | 'notes' | 'workspaces' | 'actions'
@@ -54,6 +51,7 @@ export function SearchGlobal({
   const [category, setCategory] = React.useState<FilterCategory>('all')
   const navigate = useNavigate()
   const { setYoutubePlayerMode, setIsPlaying } = useMusicStore()
+  const { data: dbFolders = [] } = useFoldersQuery()
 
   // Global Ctrl+K / Cmd+K listener
   React.useEffect(() => {
@@ -82,10 +80,10 @@ export function SearchGlobal({
 
   const filteredFolders = React.useMemo(() => {
     if (category !== 'all' && category !== 'folders') return []
-    if (!search.trim()) return FOLDERS.slice(0, 3)
+    if (!search.trim()) return dbFolders.slice(0, 4)
     const q = search.toLowerCase()
-    return FOLDERS.filter((f) => f.name.toLowerCase().includes(q))
-  }, [search, category])
+    return dbFolders.filter((f) => f.name.toLowerCase().includes(q))
+  }, [search, category, dbFolders])
 
   const filteredNotes = React.useMemo(() => {
     if (category !== 'all' && category !== 'notes') return []
@@ -393,7 +391,7 @@ export function SearchGlobal({
                   <CommandSeparator />
                 )}
                 <CommandGroup heading="Folders">
-                  {filteredFolders.map((folder: FolderItem) => (
+                  {filteredFolders.map((folder) => (
                     <CommandItem
                       key={folder.id}
                       onSelect={() => {
@@ -415,7 +413,7 @@ export function SearchGlobal({
                       </div>
 
                       <span className="rounded-full bg-ns-border-soft px-2 py-0.5 text-[0.65rem] font-medium text-ns-muted">
-                        {folder.count || 0} nodes
+                        {(folder as { count?: number }).count ?? 0} nodes
                       </span>
                     </CommandItem>
                   ))}

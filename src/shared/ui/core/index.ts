@@ -185,5 +185,5 @@ export {
 } from './empty'
 
 // ─── Custom / Extended ────────────────────────────────────────
-export { DotmCircular } from './dotm-circular'
-export type { DotmCircular3Props } from './dotm-circular'
+export { DotmCircular } from '../system/dotm-circular'
+export type { DotmCircular3Props } from '../system/dotm-circular'

@@ -17,6 +17,7 @@ import {
   Music,
   FolderClosed,
   MoreHorizontal,
+  Layers,
 } from 'lucide-react'
 import { cn } from '@/shared/lib/utils'
 
@@ -65,6 +66,7 @@ export interface SidebarGroupLayoutProps<T = SidebarGroupItemData> {
 
 const defaultIconMap: Record<string, ReactNode> = {
   home: <Home size={15} />,
+  layers: <Layers size={15} />,
   folder: <FolderClosed size={15} />,
   hexagon: <Hexagon size={15} />,
   star: <Star size={15} />,
@@ -88,7 +90,6 @@ export function SidebarGroupLayout<T = SidebarGroupItemData>({
   moreLabel = 'More',
   onMoreClick,
 }: SidebarGroupLayoutProps<T>) {
-  // Safe route location lookup for TanStack Router
   let pathname = ''
   try {
     pathname = useRouterState({ select: (s) => s.location.pathname })
@@ -140,7 +141,9 @@ export function SidebarGroupLayout<T = SidebarGroupItemData>({
             ? mapItem(rawItem)
             : (rawItem as unknown as SidebarGroupItemData)
           const key =
-            mapped.id || mapped.to || mapped.href || `${mapped.label}-${index}`
+            (rawItem as any)?.id ||
+            mapped.id ||
+            `${mapped.label}-${mapped.to || mapped.href || index}`
 
           const isActive =
             mapped.active ??
@@ -168,7 +171,7 @@ export function SidebarGroupLayout<T = SidebarGroupItemData>({
           const baseItemClasses = cn(
             'flex w-full cursor-pointer items-center gap-2.5 rounded-sm px-3 py-2 text-xs font-medium no-underline transition-all',
             isActive
-              ? 'bg-ns-active text-ns-primary-lt shadow-[inset_0_0_0_1px_var(--color-ns-border-em)]'
+              ? 'bg-ns-primary! text-ns-primary-lt shadow-[inset_0_0_0_1px_var(--color-ns-border-em)]'
               : 'text-ns-muted hover:bg-ns-hover hover:text-ns-text-2'
           )
 

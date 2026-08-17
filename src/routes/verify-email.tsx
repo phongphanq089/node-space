@@ -3,6 +3,12 @@ import { getSessionFn } from '@/features/auth/auth.fns'
 import { VerifyEmailPage } from '@/features/auth/components/VerifyEmailPage'
 
 export const Route = createFileRoute('/verify-email')({
+  head: () => ({
+    meta: [
+      { title: 'Verify Your Email | Node Space' },
+      { name: 'robots', content: 'noindex, nofollow' },
+    ],
+  }),
   beforeLoad: async ({ location }) => {
     const session = await getSessionFn()
     if (!session) {
