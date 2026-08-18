@@ -1,11 +1,13 @@
 export { NoteCanvas } from './components/note-canvas'
 export { NoteDetailHeader } from './components/note-detail-header'
-export { NoteDetailModal } from './components/note-detail-modal'
+export { NoteDetailView } from './components/note-detail-view'
 export { NoteEditor } from './components/note-editor'
 export { NoteStatusBar } from './components/note-status-bar'
 export { NoteToolbar } from './components/note-toolbar'
 export { NotesSidebar } from './components/notes-sidebar'
 export { NewNotePanel } from './components/new-note-panel'
+export { FolderNoteTabsBar } from './components/folder-note-tabs-bar'
+export type { NoteTab } from './components/folder-note-tabs-bar'
 export { useNoteEditor } from './components/use-note-editor'
 export type {
   ActiveFormatKey,
@@ -16,4 +18,6 @@ export type {
 // Stores
 export { useNewNoteDialogStore } from './store/use-new-note-dialog-store'
 export { useNoteDetailModalStore } from './store/use-note-detail-modal-store'
+export { useNoteTabsStore } from './store/use-note-tabs-store'
 export type { NoteDetailNode } from './store/use-note-detail-modal-store'
+export type { NoteTabItem } from './store/use-note-tabs-store'

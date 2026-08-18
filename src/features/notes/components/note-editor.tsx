@@ -1,4 +1,4 @@
-﻿import type { NoteItem } from '@/shared/mocks/mock-data'
+import type { NoteItem } from '@/shared/mocks/mock-data'
 import type { ViewMode } from './use-note-editor'
 import { useNoteEditor } from './use-note-editor'
 import { NoteToolbar } from './note-toolbar'
@@ -6,7 +6,7 @@ import { NoteCanvas } from './note-canvas'
 import { NoteStatusBar } from './note-status-bar'
 
 interface NoteEditorProps {
-  note: NoteItem
+  note?: NoteItem | null
   content: string
   viewMode: ViewMode
   isFocusMode: boolean

@@ -9,7 +9,7 @@ const folderSearchSchema = z.object({
   tag: z.string().optional(),
 })
 
-export const Route = createFileRoute('/_workspace/workspace/folder')({
+export const Route = createFileRoute('/_workspace/workspace/folder/')({
   validateSearch: (search) => folderSearchSchema.parse(search),
   component: RouteComponent,
 })

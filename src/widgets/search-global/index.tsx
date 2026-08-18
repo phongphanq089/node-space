@@ -28,6 +28,7 @@ import {
 } from '@/shared/ui'
 
 import { NODES, NOTES, WORKSPACES } from '@/shared/mocks/mock-data'
+import { useNoteTabsStore } from '@/features/notes'
 import type { NoteItem, WorkspaceItem } from '@/shared/mocks/mock-data'
 import { useMusicStore } from '@/features/music-player'
 import { useFoldersQuery } from '@/features/folder'
@@ -50,6 +51,7 @@ export function SearchGlobal({
   const [search, setSearch] = React.useState('')
   const [category, setCategory] = React.useState<FilterCategory>('all')
   const navigate = useNavigate()
+  const { openTab } = useNoteTabsStore()
   const { setYoutubePlayerMode, setIsPlaying } = useMusicStore()
   const { data: dbFolders = [] } = useFoldersQuery()
 
@@ -334,7 +336,16 @@ export function SearchGlobal({
                       key={node.title}
                       onSelect={() => {
                         setOpen(false)
-                        navigate({ to: '/workspace' })
+                        const noteId = encodeURIComponent(node.title)
+                        openTab({
+                          id: noteId,
+                          title: node.title,
+                          folderId: node.folderId,
+                          folderName: node.folderName,
+                          thumbnail: node.thumbnail,
+                          updatedAt: node.updated,
+                        })
+                        navigate({ to: `/workspace/folder/${noteId}` as any })
                       }}
                       className="group flex items-center justify-between rounded-xl px-3 py-2.5"
                     >
@@ -433,7 +444,14 @@ export function SearchGlobal({
                       key={note.title}
                       onSelect={() => {
                         setOpen(false)
-                        navigate({ to: '/workspace' })
+                        const noteId = encodeURIComponent(note.title)
+                        openTab({
+                          id: noteId,
+                          title: note.title,
+                          updatedAt: note.updated,
+                          isPinned: note.starred,
+                        })
+                        navigate({ to: `/workspace/folder/${noteId}` as any })
                       }}
                       className="group flex items-center justify-between rounded-xl px-3 py-2.5"
                     >

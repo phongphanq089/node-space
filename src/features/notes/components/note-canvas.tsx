@@ -3,7 +3,7 @@ import type { NoteItem } from '@/shared/mocks/mock-data'
 import type { ViewMode } from './use-note-editor'
 
 interface NoteCanvasProps {
-  note: NoteItem
+  note?: NoteItem | null
   content: string
   viewMode: ViewMode
   wordCount: number
@@ -19,6 +19,10 @@ export function NoteCanvas({
   readingTime,
   onContentChange,
 }: NoteCanvasProps) {
+  const displayTitle = note?.title || 'Untitled Note'
+  const displayUpdated = note?.updated || 'Draft'
+  const displayTags = note?.tags || []
+
   return (
     <div className="relative no-scrollbar flex flex-1 overflow-y-auto">
       <div
@@ -31,17 +35,17 @@ export function NoteCanvas({
         <div className="mb-8">
           <input
             type="text"
-            value={note.title}
+            value={displayTitle}
             readOnly
             className="w-full bg-transparent text-3xl leading-tight font-bold text-white outline-none placeholder:text-ns-ghost sm:text-4xl md:text-[2.75rem]"
           />
 
           <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-ns-muted">
             <span className="rounded-full bg-ns-active/80 px-2.5 py-0.5 text-[0.65rem] font-semibold text-ns-primary-lt">
-              {note.updated}
+              {displayUpdated}
             </span>
 
-            {note.tags.map((t) => (
+            {displayTags.map((t) => (
               <span
                 key={t}
                 className="rounded-md border border-ns-border-soft bg-ns-hover/40 px-2 py-0.5 text-[0.65rem] text-ns-ghost"

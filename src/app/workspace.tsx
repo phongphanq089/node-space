@@ -6,7 +6,6 @@ import { GlobalMusicDrawer } from '@/widgets/global-music-drawer'
 
 import { useEffect, useRef } from 'react'
 import MainContentWorkspace from './layouts/main-content-workspace'
-import { NoteDetailModal } from '@/features/notes'
 
 function isYoutubeUrl(url: string) {
   return url.includes('youtube.com') || url.includes('youtu.be')
@@ -127,9 +126,6 @@ const Workspace = () => {
 
         {/* Global Standalone Music & Focus Drawer Widget */}
         <GlobalMusicDrawer />
-
-        {/* Global Note Modal */}
-        <NoteDetailModal />
       </div>
     </SidebarProvider>
   )

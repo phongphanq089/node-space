@@ -1,16 +1,34 @@
 import { useState } from 'react'
 import { Pin, ArrowRight } from 'lucide-react'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { PINNED_NOTES } from '@/shared/mocks/mock-data'
 import type { PinnedNoteItem } from '@/shared/mocks/mock-data'
-import { Link } from '@tanstack/react-router'
+import { useNoteTabsStore } from '@/features/notes'
 
 export function PinnedNotesWidget() {
+  const navigate = useNavigate()
+  const { openTab } = useNoteTabsStore()
   const [pinnedList, setPinnedList] = useState<PinnedNoteItem[]>(() => [
     ...PINNED_NOTES,
   ])
 
-  const togglePin = (id: string) => {
+  const togglePin = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation()
     setPinnedList((prev) => prev.filter((item) => item.id !== id))
+  }
+
+  const handleOpenNote = (item: PinnedNoteItem) => {
+    const noteId = encodeURIComponent(item.name)
+    openTab({
+      id: noteId,
+      title: item.name,
+      folderId: item.folder_id,
+      folderName: item.folderName,
+      thumbnail: item.thumbnail,
+      updatedAt: item.updatedAt,
+      isPinned: true,
+    })
+    navigate({ to: `/workspace/folder/${noteId}` as any })
   }
 
   return (
@@ -30,7 +48,8 @@ export function PinnedNotesWidget() {
         {pinnedList.map((item) => (
           <div
             key={item.id}
-            className="group flex items-center justify-between gap-2.5 rounded-xl border border-ns-border/30 bg-ns-surface p-2.5 transition-all hover:border-amber-500/40 hover:bg-ns-hover"
+            onClick={() => handleOpenNote(item)}
+            className="group flex cursor-pointer items-center justify-between gap-2.5 rounded-xl border border-ns-border/30 bg-ns-surface p-2.5 transition-all hover:border-amber-500/40 hover:bg-ns-hover"
           >
             <div className="flex min-w-0 items-center gap-2.5">
               <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-lg border border-white/10 bg-black/40">
@@ -56,7 +75,7 @@ export function PinnedNotesWidget() {
             </div>
 
             <button
-              onClick={() => togglePin(item.id)}
+              onClick={(e) => togglePin(e, item.id)}
               type="button"
               className="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-md text-amber-400 transition-colors hover:bg-amber-400/10"
               title="Unpin"

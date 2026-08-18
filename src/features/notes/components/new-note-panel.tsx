@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { useState, useMemo, useRef, useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -9,23 +10,36 @@ import {
   ChevronDown,
   Search,
   Check,
-  Folder as FolderIcon,
   Layers,
 } from 'lucide-react'
 
-import { useFoldersQuery } from '@/features/folder'
 import { NOTEBOOKS, POPULAR_TAGS } from '@/shared/mocks/mock-data'
 import { newNoteSchema } from '../note.validate'
 import type { NewNoteValues } from '../note.validate'
 import { useNewNoteDialogStore } from '../store/use-new-note-dialog-store'
+import { useNoteDetailModalStore } from '../store/use-note-detail-modal-store'
 import { cn } from '@/shared/lib/utils'
 import {
   Button,
+  Combobox,
+  ComboboxChip,
+  ComboboxChips,
+  ComboboxChipsInput,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxValue,
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
   Input,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+  useComboboxAnchor,
 } from '@/shared/ui'
 
 /* ─── Custom Searchable Combobox Component ───────────────────────────── */
@@ -220,20 +234,34 @@ function CustomCombobox({
 /* ─── Main NewNotePanel (Embedded inside NoteDetailModal) ─────────────── */
 interface NewNotePanelProps {
   onSubmit?: (values: NewNoteValues) => void
+  defaultFolderId?: string
 }
 
-export function NewNotePanel({ onSubmit }: NewNotePanelProps) {
+export function NewNotePanel({ onSubmit, defaultFolderId }: NewNotePanelProps) {
   const { isOpen, close } = useNewNoteDialogStore()
-  const [tagInput, setTagInput] = useState('')
+  const { node } = useNoteDetailModalStore()
+  const anchor = useComboboxAnchor()
   const [mounted, setMounted] = useState(false)
   const [visible, setVisible] = useState(false)
 
-  const { data: dbFolders = [] } = useFoldersQuery()
+  const currentFolderId = defaultFolderId ?? node?.folderId ?? ''
 
-  // Smooth mount and slide-in transition
+  const form = useForm<NewNoteValues>({
+    resolver: zodResolver(newNoteSchema as any),
+    defaultValues: {
+      name: '',
+      folder_id: currentFolderId,
+      workspace_id: '',
+      tags: [],
+      isPinned: false,
+    },
+  })
+
+  // Smooth mount and slide-in transition & sync folder_id
   useEffect(() => {
     if (isOpen) {
       setMounted(true)
+      form.setValue('folder_id', currentFolderId)
       const raf = requestAnimationFrame(() => {
         setVisible(true)
       })
@@ -243,31 +271,9 @@ export function NewNotePanel({ onSubmit }: NewNotePanelProps) {
       const timer = setTimeout(() => setMounted(false), 300)
       return () => clearTimeout(timer)
     }
-  }, [isOpen])
+  }, [isOpen, currentFolderId, form])
 
-  const form = useForm<NewNoteValues>({
-    resolver: zodResolver(newNoteSchema as any),
-    defaultValues: {
-      name: '',
-      folder_id: '',
-      workspace_id: '',
-      tags: [],
-      isPinned: false,
-    },
-  })
-
-  const tags = form.watch('tags')
-  const isPinned = form.watch('isPinned')
-
-  const folderOptions = useMemo(
-    () =>
-      dbFolders.map((f) => ({
-        id: f.id,
-        name: f.name,
-        color: f.color,
-      })),
-    [dbFolders]
-  )
+  const tagOptions = useMemo(() => POPULAR_TAGS.map((t) => t.name), [])
 
   const workspaceOptions = useMemo(
     () =>
@@ -280,130 +286,140 @@ export function NewNotePanel({ onSubmit }: NewNotePanelProps) {
 
   const handleClose = () => {
     close()
-    form.reset()
-    setTagInput('')
+    form.reset({
+      name: '',
+      folder_id: currentFolderId,
+      workspace_id: '',
+      tags: [],
+      isPinned: false,
+    })
   }
 
   const handleSubmit = (data: NewNoteValues) => {
-    onSubmit?.(data)
+    const finalData: NewNoteValues = {
+      ...data,
+      folder_id: data.folder_id || currentFolderId,
+    }
+    onSubmit?.(finalData)
     handleClose()
-  }
-
-  const addTag = (name: string) => {
-    const cleaned = name.replace(/^#/, '').trim().toLowerCase()
-    if (!cleaned || tags.includes(cleaned) || tags.length >= 10) return
-    form.setValue('tags', [...tags, cleaned])
-    setTagInput('')
-  }
-
-  const removeTag = (tag: string) => {
-    form.setValue(
-      'tags',
-      tags.filter((t) => t !== tag)
-    )
-  }
-
-  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' || e.key === ',') {
-      e.preventDefault()
-      addTag(tagInput)
-    }
-    if (e.key === 'Backspace' && !tagInput && tags.length > 0) {
-      removeTag(tags[tags.length - 1])
-    }
   }
 
   if (!mounted) return null
 
   return (
-    <div className="pointer-events-auto absolute inset-0 z-50 overflow-hidden">
-      {/* Backdrop inside modal with smooth fade */}
-      <div
-        className={cn(
-          'absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300 ease-out',
-          visible ? 'opacity-100' : 'opacity-0'
-        )}
-        onClick={handleClose}
-        aria-hidden="true"
-      />
+    <TooltipProvider delayDuration={200}>
+      <div className="pointer-events-auto absolute inset-0 z-50 overflow-hidden">
+        {/* Backdrop inside modal with smooth fade */}
+        <div
+          className={cn(
+            'absolute inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300 ease-out',
+            visible ? 'opacity-100' : 'opacity-0'
+          )}
+          onClick={handleClose}
+          aria-hidden="true"
+        />
 
-      {/* Slide-in Panel from Right */}
-      <aside
-        className={cn(
-          'absolute top-0 right-0 bottom-0 z-50 flex w-full max-w-md flex-col border-l border-ns-border bg-ns-panel shadow-2xl transition-transform duration-300 ease-out',
-          visible ? 'translate-x-0' : 'translate-x-full'
-        )}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-ns-border-soft/60 px-5 py-4">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-ns-primary/15 text-ns-primary-lt">
-              <FilePlus size={16} />
+        {/* Slide-in Panel from Right */}
+        <aside
+          className={cn(
+            'absolute top-0 right-0 bottom-0 z-50 flex w-full max-w-md flex-col border-l border-ns-border/60 bg-ns-panel shadow-2xl transition-transform duration-300 ease-out',
+            visible ? 'translate-x-0' : 'translate-x-full'
+          )}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-ns-border-soft/60 px-5 py-4">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-ns-primary/15 text-ns-primary-lt">
+                <FilePlus size={16} />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-white">New Note</h3>
+                <p className="text-[0.68rem] text-ns-ghost">
+                  Create and organize your note
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="text-sm font-semibold text-white">New Note</h3>
-              <p className="text-[0.68rem] text-ns-ghost">
-                Create and organize your note
-              </p>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={handleClose}
-            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-ns-ghost transition-colors hover:bg-ns-hover hover:text-white"
-          >
-            <X size={15} />
-          </button>
-        </div>
 
-        {/* Scrollable Form Body */}
-        <div className="no-scrollbar flex-1 overflow-y-auto px-5 py-5">
-          <form
-            id="new-note-inline-form"
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="flex flex-col gap-5"
-          >
-            <FieldGroup className="gap-4">
-              {/* Title */}
+            <div className="flex items-center gap-1.5">
+              {/* Pin Toggle Button with Tooltip */}
               <Controller
-                name="name"
+                name="isPinned"
                 control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="note-name">Title</FieldLabel>
-                    <Input
-                      {...field}
-                      id="note-name"
-                      placeholder="Note title…"
-                      autoFocus
-                      aria-invalid={fieldState.invalid}
-                      className="h-10 bg-ns-surface/60 text-sm focus:bg-ns-surface"
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
+                render={({ field }) => (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        onClick={() => field.onChange(!field.value)}
+                        className={cn(
+                          'flex h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-all',
+                          field.value
+                            ? 'border border-ns-primary/40 bg-ns-primary/20 text-ns-primary-lt shadow-xs'
+                            : 'text-ns-ghost hover:bg-ns-hover hover:text-white'
+                        )}
+                        aria-label={
+                          field.value ? 'Unpin note' : 'Pin this note'
+                        }
+                      >
+                        <Pin
+                          size={14}
+                          className={cn(
+                            'transition-transform duration-200',
+                            field.value
+                              ? 'rotate-45 fill-ns-primary-lt text-ns-primary-lt'
+                              : 'hover:rotate-12'
+                          )}
+                        />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      <p>{field.value ? 'Unpin note' : 'Pin this note'}</p>
+                    </TooltipContent>
+                  </Tooltip>
                 )}
               />
 
-              {/* Folder & Workspace Grid */}
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {/* Folder Combobox */}
+              {/* Close Button with Tooltip */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={handleClose}
+                    className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-ns-ghost transition-colors hover:bg-ns-hover hover:text-white"
+                    aria-label="Close"
+                  >
+                    <X size={15} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Close</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </div>
+
+          {/* Scrollable Form Body */}
+          <div className="no-scrollbar flex-1 overflow-y-auto px-5 py-5">
+            <form
+              id="new-note-inline-form"
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="flex flex-col gap-5"
+            >
+              <FieldGroup className="gap-4">
+                {/* Title */}
                 <Controller
-                  name="folder_id"
+                  name="name"
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor="note-folder">Folder</FieldLabel>
-                      <CustomCombobox
-                        id="note-folder"
-                        value={field.value}
-                        onChange={field.onChange}
-                        options={folderOptions}
-                        placeholder="Select folder"
-                        searchPlaceholder="Search folder…"
-                        icon={<FolderIcon size={12} />}
-                        error={fieldState.invalid}
+                      <FieldLabel htmlFor="note-name">Title</FieldLabel>
+                      <Input
+                        {...field}
+                        id="note-name"
+                        placeholder="Note title…"
+                        autoFocus
+                        aria-invalid={fieldState.invalid}
+                        className="h-10 bg-ns-surface/60 text-sm focus:bg-ns-surface"
                       />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
@@ -437,126 +453,91 @@ export function NewNotePanel({ onSubmit }: NewNotePanelProps) {
                     </Field>
                   )}
                 />
-              </div>
 
-              {/* Tags Input */}
-              <Controller
-                name="tags"
-                control={form.control}
-                render={({ fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel>
-                      <Hash size={11} className="mr-0.5 text-ns-ghost" />
-                      Tags
-                    </FieldLabel>
+                {/* Tags Combobox */}
+                <Controller
+                  name="tags"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel>
+                        <Hash size={11} className="mr-0.5 text-ns-ghost" />
+                        Tags
+                      </FieldLabel>
 
-                    {/* Chips Box */}
-                    <div
-                      className={cn(
-                        'flex min-h-10 flex-wrap items-center gap-1.5 rounded-lg border border-ns-border bg-ns-surface/60 px-2.5 py-1.5 transition-colors',
-                        'focus-within:border-ns-primary/50 focus-within:ring-2 focus-within:ring-ns-primary/20',
-                        fieldState.invalid && 'border-destructive'
-                      )}
-                    >
-                      {tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="flex items-center gap-1 rounded border border-ns-border-soft/60 bg-ns-primary/15 px-1.5 py-0.5 text-[0.65rem] font-medium text-ns-primary-lt"
+                      <Combobox
+                        multiple
+                        autoHighlight
+                        items={tagOptions}
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <ComboboxChips
+                          ref={anchor}
+                          className="min-h-10 w-full border-ns-border bg-ns-surface/60 text-xs transition-colors focus-within:border-ns-primary/50 focus-within:ring-2 focus-within:ring-ns-primary/20"
                         >
-                          #{tag}
-                          <button
-                            type="button"
-                            onClick={() => removeTag(tag)}
-                            className="cursor-pointer text-ns-primary-lt/50 transition-colors hover:text-ns-primary-lt"
-                          >
-                            <X size={10} />
-                          </button>
-                        </span>
-                      ))}
-                      <input
-                        type="text"
-                        value={tagInput}
-                        onChange={(e) => setTagInput(e.target.value)}
-                        onKeyDown={handleTagKeyDown}
-                        placeholder={tags.length === 0 ? 'Add tags…' : ''}
-                        className="min-w-[72px] flex-1 bg-transparent text-xs text-ns-text outline-none placeholder:text-ns-ghost"
-                      />
-                    </div>
+                          <ComboboxValue>
+                            {(values: string[]) => (
+                              <React.Fragment>
+                                {values.map((value: string) => (
+                                  <ComboboxChip key={value}>
+                                    {value}
+                                  </ComboboxChip>
+                                ))}
+                                <ComboboxChipsInput
+                                  placeholder={
+                                    values.length === 0 ? 'Add tags…' : ''
+                                  }
+                                />
+                              </React.Fragment>
+                            )}
+                          </ComboboxValue>
+                        </ComboboxChips>
+                        <ComboboxContent anchor={anchor}>
+                          <ComboboxEmpty>No items found.</ComboboxEmpty>
+                          <ComboboxList>
+                            {(item: string) => (
+                              <ComboboxItem key={item} value={item}>
+                                {item}
+                              </ComboboxItem>
+                            )}
+                          </ComboboxList>
+                        </ComboboxContent>
+                      </Combobox>
 
-                    {/* Popular Tags */}
-                    {tags.length < 10 && (
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        {POPULAR_TAGS.filter((t) => !tags.includes(t.name))
-                          .slice(0, 6)
-                          .map((t) => (
-                            <button
-                              key={t.id}
-                              type="button"
-                              onClick={() => addTag(t.name)}
-                              className="cursor-pointer rounded border border-ns-border-soft/40 bg-ns-hover/30 px-2 py-0.5 text-[0.6rem] text-ns-ghost transition-colors hover:border-ns-primary/40 hover:bg-ns-primary/10 hover:text-ns-primary-lt"
-                            >
-                              #{t.name}
-                            </button>
-                          ))}
-                      </div>
-                    )}
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
+            </form>
+          </div>
 
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                )}
-              />
-
-              {/* Pin Toggle */}
-              <Controller
-                name="isPinned"
-                control={form.control}
-                render={({ field }) => (
-                  <button
-                    type="button"
-                    onClick={() => field.onChange(!field.value)}
-                    className={cn(
-                      'flex w-fit cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium transition-all',
-                      isPinned
-                        ? 'border-ns-primary/40 bg-ns-primary/10 text-ns-primary-lt'
-                        : 'border-ns-border bg-ns-surface/40 text-muted-foreground hover:text-ns-text'
-                    )}
-                  >
-                    <Pin
-                      size={12}
-                      className={isPinned ? 'fill-ns-primary-lt' : ''}
-                    />
-                    {isPinned ? 'Pinned' : 'Pin this note'}
-                  </button>
-                )}
-              />
-            </FieldGroup>
-          </form>
-        </div>
-
-        {/* Footer */}
-        <div className="flex items-center justify-end gap-2 border-t border-ns-border-soft/40 bg-ns-bg/30 px-5 py-3.5">
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={handleClose}
-            className="cursor-pointer"
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            size="sm"
-            form="new-note-inline-form"
-            className="cursor-pointer bg-ns-primary font-semibold text-white shadow-md hover:bg-ns-primary/85"
-          >
-            Create Note
-          </Button>
-        </div>
-      </aside>
-    </div>
+          {/* Footer */}
+          <div className="flex items-center justify-end gap-2 border-t border-ns-border-soft/40 bg-ns-bg/30 px-5 py-3.5">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleClose}
+              className="cursor-pointer"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              size="sm"
+              form="new-note-inline-form"
+              className="cursor-pointer bg-ns-primary font-semibold text-white shadow-md hover:bg-ns-primary/85"
+            >
+              Create Note
+            </Button>
+          </div>
+        </aside>
+      </div>
+    </TooltipProvider>
   )
 }
 

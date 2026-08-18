@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import {
   Star,
   FileText,
@@ -15,12 +15,15 @@ import {
   useFoldersQuery,
   useToggleFavoriteFolderMutation,
 } from '@/features/folder'
+import { useNoteTabsStore } from '@/features/notes'
 
 export const Route = createFileRoute('/_workspace/workspace/favorites')({
   component: FavoritesPage,
 })
 
 function FavoritesPage() {
+  const navigate = useNavigate()
+  const { openTab } = useNoteTabsStore()
   const [filter, setFilter] = useState<'all' | 'folders' | 'notes'>('all')
   const [search, setSearch] = useState('')
 
@@ -29,6 +32,17 @@ function FavoritesPage() {
 
   const starredFolders = dbFolders.filter((f) => f.isFavorite)
   const starredNotes = NOTES.filter((n) => n.starred)
+
+  const handleOpenNote = (note: (typeof NOTES)[number]) => {
+    const noteId = encodeURIComponent(note.title)
+    openTab({
+      id: noteId,
+      title: note.title,
+      updatedAt: note.updated,
+      isPinned: true,
+    })
+    navigate({ to: `/workspace/folder/${noteId}` as any })
+  }
 
   const filteredFolders = starredFolders.filter((f) =>
     f.name.toLowerCase().includes(search.toLowerCase())
@@ -241,7 +255,8 @@ function FavoritesPage() {
                 {filteredNotes.map((note) => (
                   <div
                     key={note.title}
-                    className="group relative flex items-center justify-between gap-4 rounded-xl border border-ns-border-soft bg-ns-panel/70 p-4 transition-all hover:border-ns-primary/50 hover:bg-ns-panel hover:shadow-xl"
+                    onClick={() => handleOpenNote(note)}
+                    className="group relative flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-ns-border-soft bg-ns-panel/70 p-4 transition-all hover:border-ns-primary/50 hover:bg-ns-panel hover:shadow-xl"
                   >
                     <div className="flex min-w-0 items-center gap-3.5">
                       <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-ns-border-soft bg-ns-primary/20 text-ns-primary-lt shadow-inner">

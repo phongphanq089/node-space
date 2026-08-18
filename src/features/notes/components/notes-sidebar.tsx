@@ -9,7 +9,7 @@ import { useNewNoteDialogStore } from '../store/use-new-note-dialog-store'
 interface NotesSidebarProps {
   open: boolean
   notes: readonly NoteItem[]
-  selectedNote: NoteItem
+  selectedNote?: NoteItem | null
   onSelectNote: (note: NoteItem) => void
   onCloseMobile?: () => void
 }
@@ -74,12 +74,48 @@ export function NotesSidebar({
       {/* Note list */}
       <div className="no-scrollbar flex flex-1 flex-col space-y-1.5 overflow-y-auto p-2">
         {filteredNotes.length === 0 ? (
-          <div className="py-8 text-center text-xs text-ns-ghost">
-            No notes found
+          <div className="flex flex-1 flex-col items-center justify-center p-4 text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-ns-border/40 bg-ns-surface/80 text-ns-ghost shadow-inner">
+              {searchQuery ? (
+                <Search size={20} className="text-ns-ghost" />
+              ) : (
+                <FileText size={20} className="text-ns-primary-lt/70" />
+              )}
+            </div>
+            <h4 className="mt-3 text-xs font-bold text-white">
+              {searchQuery ? 'No matching notes' : 'No notes yet'}
+            </h4>
+            <p className="mt-1 max-w-[180px] text-[0.68rem] leading-relaxed text-ns-ghost">
+              {searchQuery
+                ? `No notes match "${searchQuery}". Try searching with a different term.`
+                : 'This node is empty. Create your first note to start writing.'}
+            </p>
+            {searchQuery ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSearchQuery('')}
+                className="mt-3 cursor-pointer border-ns-border text-[0.68rem] font-semibold text-ns-ghost hover:text-white"
+              >
+                Clear search
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => useNewNoteDialogStore.getState().open()}
+                className="mt-3 cursor-pointer gap-1.5 border-ns-border text-[0.68rem] font-semibold text-ns-primary-lt hover:border-ns-primary/50 hover:bg-ns-primary/10"
+              >
+                <Plus size={12} />
+                <span>Create note</span>
+              </Button>
+            )}
           </div>
         ) : (
           filteredNotes.map((note) => {
-            const isActive = note.title === selectedNote.title
+            const isActive = selectedNote
+              ? note.title === selectedNote.title
+              : false
             return (
               <Button
                 key={note.title}

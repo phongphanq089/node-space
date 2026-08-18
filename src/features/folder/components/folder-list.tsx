@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { X, FolderPlus, ChevronDown, Loader2 } from 'lucide-react'
 import { GlowCardGrid } from '@/shared/ui/system/glow-card-grid'
@@ -15,8 +15,7 @@ import {
   useDeleteFolderMutation,
 } from '../hooks/use-folders'
 import { useDebounce } from '@/shared/hooks'
-import { useNoteDetailModalStore } from '@/features/notes'
-import type { NoteDetailNode } from '@/features/notes'
+import { useNoteTabsStore } from '@/features/notes'
 
 interface FoldersListProps {
   initialWorkspaceId?: string
@@ -101,36 +100,35 @@ export function FoldersList({
     setDeletingFolder(folder)
   }, [])
 
-  const { openModal, node: activeNode } = useNoteDetailModalStore()
+  const { openTab } = useNoteTabsStore()
 
   const mapFolderToNode = useCallback(
     (folder: FolderItemRecord) => ({
+      id: encodeURIComponent(folder.name),
       title: folder.name,
-      count: 0,
-      updated: folder.updatedAt
+      folderId: folder.id,
+      folderName: folder.name,
+      thumbnail: folder.image ?? undefined,
+      updatedAt: folder.updatedAt
         ? new Date(folder.updatedAt).toLocaleDateString(undefined, {
             month: 'short',
             day: 'numeric',
             year: 'numeric',
           })
         : 'Recently',
-      folderId: folder.id,
-      thumbnail: folder.image ?? undefined,
     }),
     []
   )
+
   const handleSelectFolder = useCallback(
     (folder: FolderItemRecord) => {
+      const tabData = mapFolderToNode(folder)
+      openTab(tabData)
       void navigate({
-        to: '/workspace/folder',
-        search: (prev) => ({
-          ...prev,
-          folderId: folder.id,
-        }),
+        to: `/workspace/folder/${tabData.id}` as any,
       })
-      openModal(mapFolderToNode(folder))
     },
-    [navigate, openModal, mapFolderToNode]
+    [navigate, openTab, mapFolderToNode]
   )
 
   const handleCloseFolderModal = useCallback(() => {
@@ -158,7 +156,8 @@ export function FoldersList({
     )
 
   // Flatten all fetched pages of folders into a single list
-  const dbFolders = data?.pages.flatMap((page) => page.items) ?? []
+  const dbFolders: FolderItemRecord[] =
+    data?.pages.flatMap((page) => page.items) ?? []
 
   // Hide Load More button if total items displayed is less than page limit (12)
   const showLoadMore = hasNextPage && dbFolders.length >= 12
@@ -167,22 +166,9 @@ export function FoldersList({
     if (!initialFolderId || isLoading || dbFolders.length === 0) return
     const matched = dbFolders.find((f) => f.id === initialFolderId)
     if (matched) {
-      openModal(mapFolderToNode(matched))
+      handleSelectFolder(matched)
     }
-  }, [initialFolderId, isLoading])
-
-  const prevNodeRef = useRef<NoteDetailNode | null>(activeNode)
-  useEffect(() => {
-    const hadNode = prevNodeRef.current
-    prevNodeRef.current = activeNode
-    if (!activeNode && hadNode) {
-      void navigate({
-        to: '/workspace/folder',
-        search: (prev) => ({ ...prev, folderId: undefined }),
-        replace: true,
-      })
-    }
-  }, [activeNode, navigate])
+  }, [initialFolderId, isLoading, dbFolders, handleSelectFolder])
 
   const resetFilters = useCallback(() => {
     handleSelectWorkspace(null)

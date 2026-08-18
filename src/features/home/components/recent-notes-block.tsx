@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { FileText, Star, Clock, Layers, ChevronRight } from 'lucide-react'
+import { useNavigate } from '@tanstack/react-router'
 import { NODES } from '@/shared/mocks/mock-data'
-import { useNoteDetailModalStore } from '@/features/notes/store/use-note-detail-modal-store'
+import { useNoteTabsStore } from '@/features/notes'
 
 type NodeWithThumbnail = (typeof NODES)[number] & { thumbnail?: string }
 
@@ -10,10 +11,24 @@ interface RecentNotesBlockProps {
 }
 
 export function RecentNotesBlock({ searchQuery = '' }: RecentNotesBlockProps) {
+  const navigate = useNavigate()
+  const { openTab } = useNoteTabsStore()
   const [nodes, setNodes] = useState<NodeWithThumbnail[]>(() =>
     NODES.map((n) => ({ ...n }))
   )
-  const { openModal } = useNoteDetailModalStore()
+
+  const handleOpenNote = (node: NodeWithThumbnail) => {
+    const noteId = encodeURIComponent(node.title)
+    openTab({
+      id: noteId,
+      title: node.title,
+      folderId: node.folderId,
+      folderName: node.folderName,
+      thumbnail: node.thumbnail,
+      updatedAt: node.updated,
+    })
+    navigate({ to: `/workspace/folder/${noteId}` as any })
+  }
 
   const toggleStar = (e: React.MouseEvent, title: string) => {
     e.stopPropagation()
@@ -52,7 +67,7 @@ export function RecentNotesBlock({ searchQuery = '' }: RecentNotesBlockProps) {
         {filteredNodes.slice(0, 5).map((node) => (
           <div
             key={node.title}
-            onClick={() => openModal(node)}
+            onClick={() => handleOpenNote(node)}
             className="group flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-ns-border/30 bg-ns-surface p-3 transition-all hover:-translate-y-0.5 hover:border-violet-500/50 hover:bg-ns-hover active:scale-[0.99]"
           >
             {/* Left: Thumbnail & Info */}
