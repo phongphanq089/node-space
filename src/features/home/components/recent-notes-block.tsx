@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { FileText, Star, Clock, Layers, ChevronRight } from 'lucide-react'
 import { NODES } from '@/shared/mocks/mock-data'
-import { NoteDetailModal } from '@/features/notes/components/note-detail-modal'
+import { useNoteDetailModalStore } from '@/features/notes/store/use-note-detail-modal-store'
 
 type NodeWithThumbnail = (typeof NODES)[number] & { thumbnail?: string }
 
@@ -13,9 +13,7 @@ export function RecentNotesBlock({ searchQuery = '' }: RecentNotesBlockProps) {
   const [nodes, setNodes] = useState<NodeWithThumbnail[]>(() =>
     NODES.map((n) => ({ ...n }))
   )
-  const [selectedNode, setSelectedNode] = useState<NodeWithThumbnail | null>(
-    null
-  )
+  const { openModal } = useNoteDetailModalStore()
 
   const toggleStar = (e: React.MouseEvent, title: string) => {
     e.stopPropagation()
@@ -54,7 +52,7 @@ export function RecentNotesBlock({ searchQuery = '' }: RecentNotesBlockProps) {
         {filteredNodes.slice(0, 5).map((node) => (
           <div
             key={node.title}
-            onClick={() => setSelectedNode(node)}
+            onClick={() => openModal(node)}
             className="group flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-ns-border/30 bg-ns-surface p-3 transition-all hover:-translate-y-0.5 hover:border-violet-500/50 hover:bg-ns-hover active:scale-[0.99]"
           >
             {/* Left: Thumbnail & Info */}
@@ -122,14 +120,6 @@ export function RecentNotesBlock({ searchQuery = '' }: RecentNotesBlockProps) {
           </div>
         ))}
       </div>
-
-      {/* Note Detail Modal */}
-      {selectedNode && (
-        <NoteDetailModal
-          node={selectedNode}
-          onClose={() => setSelectedNode(null)}
-        />
-      )}
     </div>
   )
 }

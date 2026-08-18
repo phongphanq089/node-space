@@ -108,7 +108,7 @@ export function NoteDetailHeader({
                 {node.tag}
               </span>
             )}
-            <span>â€¢ {selectedNote.updated}</span>
+            <span>{selectedNote.updated}</span>
             {selectedNote.starred && (
               <Star
                 size={10}

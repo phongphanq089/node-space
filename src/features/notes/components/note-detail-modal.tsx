@@ -1,15 +1,13 @@
-﻿/* eslint-disable import/consistent-type-specifier-style */
+ 
 import { useEffect, useState } from 'react'
 import { Minimize2 } from 'lucide-react'
-import { NOTES, type NODES, type NoteItem } from '@/shared/mocks/mock-data'
+import { NOTES } from '@/shared/mocks/mock-data'
 import { NoteDetailHeader } from './note-detail-header'
 import { NotesSidebar } from './notes-sidebar'
 import { NoteEditor } from './note-editor'
-
-interface NodeDetailModalProps {
-  node: (typeof NODES)[number] & { thumbnail?: string }
-  onClose: () => void
-}
+import { NewNotePanel } from './new-note-panel'
+import { useNoteDetailModalStore } from '../store/use-note-detail-modal-store'
+import type { NoteItem } from '@/shared/mocks/mock-data'
 
 const MOCK_CONTENT: Record<string, string> = {
   'Key Features': `# Key Features\n\nThis node contains the key features of the Node-based Note System.\n\n## Core Capabilities\n\n- **Bi-directional links** between notes\n- **Graph visualization** of all connections\n- **Lexical.dev integration** with rich WYSIWYG capabilities\n- **Focus mode** for distraction-free writing\n\n## Design Philosophy\n\nEvery note is a node. Every node can connect to any other node, creating a web of knowledge that grows organically over time.`,
@@ -18,7 +16,9 @@ const MOCK_CONTENT: Record<string, string> = {
   default: `# Untitled Note\n\nStart writing your note here...\n\nThis is a **rich text / Lexical-ready** editor layout with support for:\n- *italic text*\n- **bold text**\n- \`inline code\`\n- [links](https://example.com)\n\n## Heading Example\n\nYour content goes here. Type '/' to invoke Lexical slash commands...`,
 }
 
-export function NoteDetailModal({ node, onClose }: NodeDetailModalProps) {
+export function NoteDetailModal() {
+  const { node, closeModal } = useNoteDetailModalStore()
+
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [selectedNote, setSelectedNote] = useState<NoteItem>(NOTES[0])
   const [content, setContent] = useState<string>(
@@ -29,6 +29,7 @@ export function NoteDetailModal({ node, onClose }: NodeDetailModalProps) {
 
   // Body scroll lock & Escape key handling
   useEffect(() => {
+    if (!node) return
     const originalOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
 
@@ -37,7 +38,7 @@ export function NoteDetailModal({ node, onClose }: NodeDetailModalProps) {
         if (isFocusMode) {
           setIsFocusMode(false)
         } else {
-          onClose()
+          closeModal()
         }
       }
     }
@@ -47,7 +48,7 @@ export function NoteDetailModal({ node, onClose }: NodeDetailModalProps) {
       document.body.style.overflow = originalOverflow
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [onClose, isFocusMode])
+  }, [node, closeModal, isFocusMode])
 
   const handleSelectNote = (note: NoteItem) => {
     setSelectedNote(note)
@@ -58,8 +59,10 @@ export function NoteDetailModal({ node, onClose }: NodeDetailModalProps) {
     }
   }
 
+  if (!node) return null
+
   return (
-    <div className="fixed inset-0 z-ns-overlay flex flex-col bg-ns-bg/98 text-ns-text backdrop-blur-xl selection:bg-ns-primary/30">
+    <div className="fixed inset-0 z-ns-overlay flex flex-col overflow-hidden bg-ns-bg/98 text-ns-text backdrop-blur-xl selection:bg-ns-primary/30">
       {/* Top Navigation Header (Hidden during Focus Mode) */}
       {!isFocusMode && (
         <NoteDetailHeader
@@ -71,7 +74,7 @@ export function NoteDetailModal({ node, onClose }: NodeDetailModalProps) {
           onToggleSidebar={() => setSidebarOpen((v) => !v)}
           onToggleFocusMode={() => setIsFocusMode((v) => !v)}
           onChangeViewMode={setViewMode}
-          onClose={onClose}
+          onClose={closeModal}
         />
       )}
 
@@ -120,7 +123,10 @@ export function NoteDetailModal({ node, onClose }: NodeDetailModalProps) {
           onChangeViewMode={setViewMode}
           onToggleSidebar={() => setSidebarOpen((v) => !v)}
         />
+
+        {/* Custom Slide-in New Note Panel (strictly within note-detail-modal) */}
       </div>
+      <NewNotePanel />
     </div>
   )
 }

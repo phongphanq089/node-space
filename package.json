@@ -29,6 +29,7 @@
     "email:dev": "email dev --dir src/features/auth/emails"
   },
   "dependencies": {
+    "@base-ui/react": "^1.7.0",
     "@better-auth/drizzle-adapter": "^1.6.23",
     "@fontsource-variable/geist": "^5.2.9",
     "@hookform/resolvers": "^5.4.0",

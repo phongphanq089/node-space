@@ -4,7 +4,7 @@ import type { NoteItem } from '@/shared/mocks/mock-data'
 
 import { cn } from '@/shared/lib/utils'
 import { Button, Input } from '@/shared/ui'
-import { NewNoteDialog } from './new-note-dialog'
+import { useNewNoteDialogStore } from '../store/use-new-note-dialog-store'
 
 interface NotesSidebarProps {
   open: boolean
@@ -145,14 +145,13 @@ export function NotesSidebar({
 
       {/* Action Footer */}
       <div className="border-t border-ns-border-soft bg-ns-panel/80 p-2">
-        <NewNoteDialog
-          trigger={
-            <Button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-ns-primary py-2 text-xs font-bold text-white shadow-md transition-all hover:bg-ns-primary/80">
-              <Plus size={14} />
-              <span>New Note</span>
-            </Button>
-          }
-        />
+        <Button
+          onClick={() => useNewNoteDialogStore.getState().open()}
+          className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-ns-primary py-2 text-xs font-bold text-white shadow-md transition-all hover:bg-ns-primary/80"
+        >
+          <Plus size={14} />
+          <span>New Note</span>
+        </Button>
       </div>
     </aside>
   )

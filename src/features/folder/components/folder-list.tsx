@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { X, FolderPlus, ChevronDown, Loader2 } from 'lucide-react'
 import { GlowCardGrid } from '@/shared/ui/system/glow-card-grid'
@@ -15,21 +15,26 @@ import {
   useDeleteFolderMutation,
 } from '../hooks/use-folders'
 import { useDebounce } from '@/shared/hooks'
+import { useNoteDetailModalStore } from '@/features/notes'
+import type { NoteDetailNode } from '@/features/notes'
 
 interface FoldersListProps {
   initialWorkspaceId?: string
   initialNoteId?: string
+  initialFolderId?: string
   initialTag?: string
 }
 
 export function FoldersList({
   initialWorkspaceId,
   initialNoteId: _initialNoteId,
+  initialFolderId,
   initialTag,
 }: FoldersListProps) {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 500)
+
   const [selectedWorkspaceId, setSelectedWorkspaceId] = useState<string | null>(
     initialWorkspaceId ?? null
   )
@@ -96,6 +101,24 @@ export function FoldersList({
     setDeletingFolder(folder)
   }, [])
 
+  const { openModal, node: activeNode } = useNoteDetailModalStore()
+
+  const mapFolderToNode = useCallback(
+    (folder: FolderItemRecord) => ({
+      title: folder.name,
+      count: 0,
+      updated: folder.updatedAt
+        ? new Date(folder.updatedAt).toLocaleDateString(undefined, {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          })
+        : 'Recently',
+      folderId: folder.id,
+      thumbnail: folder.image ?? undefined,
+    }),
+    []
+  )
   const handleSelectFolder = useCallback(
     (folder: FolderItemRecord) => {
       void navigate({
@@ -105,8 +128,9 @@ export function FoldersList({
           folderId: folder.id,
         }),
       })
+      openModal(mapFolderToNode(folder))
     },
-    [navigate]
+    [navigate, openModal, mapFolderToNode]
   )
 
   const handleCloseFolderModal = useCallback(() => {
@@ -138,6 +162,27 @@ export function FoldersList({
 
   // Hide Load More button if total items displayed is less than page limit (12)
   const showLoadMore = hasNextPage && dbFolders.length >= 12
+
+  useEffect(() => {
+    if (!initialFolderId || isLoading || dbFolders.length === 0) return
+    const matched = dbFolders.find((f) => f.id === initialFolderId)
+    if (matched) {
+      openModal(mapFolderToNode(matched))
+    }
+  }, [initialFolderId, isLoading])
+
+  const prevNodeRef = useRef<NoteDetailNode | null>(activeNode)
+  useEffect(() => {
+    const hadNode = prevNodeRef.current
+    prevNodeRef.current = activeNode
+    if (!activeNode && hadNode) {
+      void navigate({
+        to: '/workspace/folder',
+        search: (prev) => ({ ...prev, folderId: undefined }),
+        replace: true,
+      })
+    }
+  }, [activeNode, navigate])
 
   const resetFilters = useCallback(() => {
     handleSelectWorkspace(null)
