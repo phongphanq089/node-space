@@ -15,6 +15,10 @@ export type {
   ViewMode,
 } from './components/use-note-editor'
 
+// Server Functions & Query Hooks
+export * from './note.fns'
+export * from './hooks/use-notes'
+
 // Stores
 export { useNewNoteDialogStore } from './store/use-new-note-dialog-store'
 export { useNoteDetailModalStore } from './store/use-note-detail-modal-store'

@@ -9,6 +9,13 @@ import { NewNotePanel } from './new-note-panel'
 import type { NoteTab } from './folder-note-tabs-bar'
 import { Button, EmptyState } from '@/shared/ui'
 import { useNewNoteDialogStore } from '../store/use-new-note-dialog-store'
+import { useNoteTabsStore } from '../store/use-note-tabs-store'
+import {
+  useNotesQuery,
+  useCreateNoteMutation,
+  useUpdateNoteMutation,
+  useTogglePinNoteMutation,
+} from '../hooks/use-notes'
 import type { NoteItem } from '@/shared/mocks/mock-data'
 import type { NewNoteValues } from '../note.validate'
 
@@ -53,13 +60,55 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
     }
   }, [noteId])
 
+  const folderKey = node.folderId || node.title
+
+  // Folder-scoped tabs persisted in localStorage via Zustand store
+  const {
+    folderTabsMap,
+    openNoteTab,
+    closeNoteTab,
+    setActiveNoteTab,
+    togglePinNoteTab,
+  } = useNoteTabsStore()
+
+  const currentFolderTabsData = folderTabsMap[folderKey] ?? {
+    tabs: [],
+    activeTabId: null,
+  }
+
+  const openNoteTabs: NoteTab[] = currentFolderTabsData.tabs
+  const activeTabId = currentFolderTabsData.activeTabId
+
+  // Fetch server notes for this folder
+  const { data: serverNotes = [], isLoading } = useNotesQuery({
+    folderId: folderKey,
+  })
+
+  const createNoteMutation = useCreateNoteMutation()
+  const updateNoteMutation = useUpdateNoteMutation()
+  const togglePinNoteMutation = useTogglePinNoteMutation()
+
   const [sidebarOpen, setSidebarOpen] = useState(true)
-  const [notesList, setNotesList] = useState<NoteItem[]>([])
-  const [openNoteTabs, setOpenNoteTabs] = useState<NoteTab[]>([])
-  const [activeTabId, setActiveTabId] = useState<string | null>(null)
   const [contents, setContents] = useState<Record<string, string>>({})
   const [isFocusMode, setIsFocusMode] = useState(false)
   const [viewMode, setViewMode] = useState<'edit' | 'preview' | 'split'>('edit')
+
+  // Map server notes to NoteItem format
+  const notesList: NoteItem[] = useMemo(() => {
+    return serverNotes.map((n) => ({
+      id: n.id,
+      title: n.name,
+      tags: (n.tags as string[]) || [],
+      updated: n.updatedAt
+        ? new Intl.DateTimeFormat('en-US', {
+            month: 'short',
+            day: 'numeric',
+          }).format(new Date(n.updatedAt))
+        : 'Just now',
+      starred: n.isPinned,
+      content: n.content ?? undefined,
+    }))
+  }, [serverNotes])
 
   // Find active note object from active tab ID
   const activeTab = useMemo(
@@ -70,7 +119,10 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
   const activeNoteItem: NoteItem | null = useMemo(() => {
     if (!activeTab) return null
     return (
-      notesList.find((n) => n.title === activeTab.title) ?? {
+      notesList.find(
+        (n) => (n.id && n.id === activeTab.id) || n.title === activeTab.title
+      ) ?? {
+        id: activeTab.id,
         title: activeTab.title,
         tags: activeTab.tags ?? [],
         updated: activeTab.updated ?? 'Just now',
@@ -83,10 +135,12 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
     if (!activeTabId) return MOCK_CONTENT.default
     return (
       contents[activeTabId] ??
+      activeNoteItem?.content ??
+      activeTab?.content ??
       MOCK_CONTENT[activeTabId] ??
-      `# ${activeTabId}\n\nStart writing your note content...`
+      `# ${activeTab?.title || activeTabId}\n\nStart writing your note content...`
     )
-  }, [activeTabId, contents])
+  }, [activeTabId, contents, activeNoteItem, activeTab])
 
   // Focus mode ESC key handler
   useEffect(() => {
@@ -100,19 +154,18 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
   }, [isFocusMode])
 
   const handleSelectNote = (item: NoteItem) => {
-    const existingTabIndex = openNoteTabs.findIndex((t) => t.id === item.title)
-    if (existingTabIndex !== -1) {
-      setActiveTabId(item.title)
-    } else {
-      const newTab: NoteTab = {
-        id: item.title,
-        title: item.title,
-        tags: item.tags,
-        isPinned: item.starred,
-        updated: item.updated,
-      }
-      setOpenNoteTabs((prev) => [...prev, newTab])
-      setActiveTabId(newTab.id)
+    const tabId = item.id || item.title
+    openNoteTab(folderKey, {
+      id: tabId,
+      title: item.title,
+      tags: item.tags,
+      isPinned: item.starred,
+      updated: item.updated,
+      content: item.content,
+    })
+
+    if (item.content) {
+      setContents((prev) => ({ ...prev, [tabId]: item.content! }))
     }
 
     if (typeof window !== 'undefined' && window.innerWidth < 768) {
@@ -121,56 +174,51 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
   }
 
   const handleCloseNoteTab = (tabId: string) => {
-    const tabIndex = openNoteTabs.findIndex((t) => t.id === tabId)
-    const newTabs = openNoteTabs.filter((t) => t.id !== tabId)
-    setOpenNoteTabs(newTabs)
+    closeNoteTab(folderKey, tabId)
+  }
 
-    if (activeTabId === tabId) {
-      if (newTabs.length > 0) {
-        const nextIndex = Math.min(tabIndex, newTabs.length - 1)
-        setActiveTabId(newTabs[nextIndex].id)
-      } else {
-        setActiveTabId(null)
-      }
-    }
+  const handleSelectTab = (tabId: string) => {
+    setActiveNoteTab(folderKey, tabId)
   }
 
   const handleTogglePinTab = (tabId: string) => {
-    setOpenNoteTabs((prev) => {
-      const updated = prev.map((t) =>
-        t.id === tabId ? { ...t, isPinned: !t.isPinned } : t
-      )
-      // Sort pinned tabs first
-      return [...updated].sort(
-        (a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0)
-      )
-    })
+    // If it's a server note, trigger mutation
+    if (tabId && !tabId.includes(' ')) {
+      togglePinNoteMutation.mutate(tabId)
+    }
+    togglePinNoteTab(folderKey, tabId)
   }
 
-  const handleCreateNote = (values: NewNoteValues) => {
-    const newNoteItem: NoteItem = {
-      title: values.name,
-      tags: values.tags || [],
-      updated: 'Just now',
-      starred: !!values.isPinned,
+  const handleCreateNote = async (values: NewNoteValues) => {
+    try {
+      const created = await createNoteMutation.mutateAsync({
+        name: values.name,
+        folderId: folderKey,
+        tags: values.tags || [],
+        isPinned: !!values.isPinned,
+        content: `# ${values.name}\n\nStart writing your note content...`,
+      })
+
+      if (created) {
+        openNoteTab(folderKey, {
+          id: created.id,
+          title: created.name,
+          tags: (created.tags as string[]) || [],
+          isPinned: created.isPinned,
+          updated: 'Just now',
+          content: created.content ?? undefined,
+        })
+
+        setContents((prev) => ({
+          ...prev,
+          [created.id]:
+            created.content ??
+            `# ${created.name}\n\nStart writing your note content...`,
+        }))
+      }
+    } catch (err) {
+      console.error('Failed to create note on server:', err)
     }
-
-    setNotesList((prev) => [newNoteItem, ...prev])
-
-    const newTab: NoteTab = {
-      id: newNoteItem.title,
-      title: newNoteItem.title,
-      tags: newNoteItem.tags,
-      isPinned: newNoteItem.starred,
-      updated: newNoteItem.updated,
-    }
-
-    setOpenNoteTabs((prev) => [...prev, newTab])
-    setActiveTabId(newTab.id)
-    setContents((prev) => ({
-      ...prev,
-      [newTab.id]: `# ${newTab.title}\n\nStart writing your note content...`,
-    }))
   }
 
   const handleContentChange = (value: string) => {
@@ -179,6 +227,14 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
         ...prev,
         [activeTabId]: value,
       }))
+
+      // Persist note content to server if ID is valid
+      if (activeTabId && !activeTabId.includes(' ')) {
+        updateNoteMutation.mutate({
+          id: activeTabId,
+          content: value,
+        })
+      }
     }
   }
 
@@ -206,7 +262,7 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
           onToggleSidebar={() => setSidebarOpen((v) => !v)}
           onToggleFocusMode={() => setIsFocusMode((v) => !v)}
           onChangeViewMode={setViewMode}
-          onSelectTab={setActiveTabId}
+          onSelectTab={handleSelectTab}
           onCloseTab={handleCloseNoteTab}
           onTogglePinTab={handleTogglePinTab}
           onClose={handleCloseFolder}
@@ -264,15 +320,28 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
             <div className="flex flex-1 flex-col items-center justify-center p-6 text-center">
               <EmptyState
                 icon={FileText}
-                title="No note opened in this folder"
-                description={`Choose a note from the left sidebar or create a new note in "${node.title}" to start editing.`}
+                title={
+                  isLoading
+                    ? 'Loading notes...'
+                    : 'No note opened in this folder'
+                }
+                description={
+                  isLoading
+                    ? 'Retrieving notes from server...'
+                    : `Choose a note from the left sidebar or create a new note in "${node.title}" to start editing.`
+                }
                 action={
                   <Button
                     onClick={() => openNewNoteDialog()}
+                    disabled={createNoteMutation.isPending}
                     className="cursor-pointer gap-2 bg-ns-primary font-semibold text-white shadow-lg hover:bg-ns-primary/85"
                   >
                     <Plus size={15} />
-                    <span>Create Note</span>
+                    <span>
+                      {createNoteMutation.isPending
+                        ? 'Creating...'
+                        : 'Create Note'}
+                    </span>
                   </Button>
                 }
                 className="max-w-md py-12"

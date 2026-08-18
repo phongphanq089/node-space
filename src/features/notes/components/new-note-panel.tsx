@@ -295,12 +295,12 @@ export function NewNotePanel({ onSubmit, defaultFolderId }: NewNotePanelProps) {
     })
   }
 
-  const handleSubmit = (data: NewNoteValues) => {
+  const handleSubmit = async (data: NewNoteValues) => {
     const finalData: NewNoteValues = {
       ...data,
       folder_id: data.folder_id || currentFolderId,
     }
-    onSubmit?.(finalData)
+    await onSubmit?.(finalData)
     handleClose()
   }
 

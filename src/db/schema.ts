@@ -110,13 +110,15 @@ export const note = sqliteTable('note', {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   workspace_id: text('workspace_id').references(() => workspace.id),
-  folder_id: text('folder_id')
-    .notNull()
-    .references(() => folder.id, { onDelete: 'set null' }),
+  folder_id: text('folder_id').references(() => folder.id, {
+    onDelete: 'set null',
+  }),
   author_id: text('author_id')
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
+  content: text('content'),
+  tags: text('tags', { mode: 'json' }).$type<string[]>(),
   isPinned: integer('is_pinned', { mode: 'boolean' }).default(false).notNull(),
   isFavorite: integer('is_favorite', { mode: 'boolean' })
     .default(false)

@@ -6,68 +6,102 @@ export interface NoteTabItem {
   title: string
   folderId?: string
   folderName?: string
+  tags?: string[]
   isPinned?: boolean
   isDirty?: boolean
   thumbnail?: string
   updatedAt?: string
+  updated?: string
+  content?: string
+}
+
+export interface FolderTabsData {
+  tabs: NoteTabItem[]
+  activeTabId: string | null
 }
 
 interface NoteTabsState {
+  // Dictionary of tabs per folder: folderId -> { tabs, activeTabId }
+  folderTabsMap: Record<string, FolderTabsData>
+
+  // Global fallback (for backward compatibility if needed)
   tabs: NoteTabItem[]
   activeTabId: string | null
-  // Actions
+
+  // Folder-scoped actions
+  openNoteTab: (folderId: string, tab: NoteTabItem) => void
+  closeNoteTab: (folderId: string, noteId: string) => void
+  setActiveNoteTab: (folderId: string, noteId: string | null) => void
+  togglePinNoteTab: (folderId: string, noteId: string) => void
+  setFolderTabs: (folderId: string, data: FolderTabsData) => void
+
+  // Backward compatibility actions
   openTab: (tab: NoteTabItem) => void
   closeTab: (id: string, onNextTab?: (nextTabId: string | null) => void) => void
-  closeOtherTabs: (id: string) => void
-  closeAllTabs: (onClear?: () => void) => void
   setActiveTab: (id: string | null) => void
   togglePinTab: (id: string) => void
-  updateTabTitle: (id: string, title: string) => void
-  reorderTabs: (sourceIndex: number, destinationIndex: number) => void
 }
 
 export const useNoteTabsStore = create<NoteTabsState>()(
   persist(
     (set, get) => ({
+      folderTabsMap: {},
       tabs: [],
       activeTabId: null,
 
-      openTab: (tab: NoteTabItem) => {
-        const { tabs } = get()
-        const existingIndex = tabs.findIndex((t) => t.id === tab.id)
+      openNoteTab: (folderId: string, tab: NoteTabItem) => {
+        const { folderTabsMap } = get()
+        const current = folderTabsMap[folderId] ?? {
+          tabs: [],
+          activeTabId: null,
+        }
+        const existingIndex = current.tabs.findIndex(
+          (t) => t.id === tab.id || t.title === tab.title
+        )
 
+        let newTabs: NoteTabItem[]
         if (existingIndex !== -1) {
-          // Tab already exists — update any updated metadata & activate it
-          const updatedTabs = [...tabs]
-          updatedTabs[existingIndex] = {
-            ...updatedTabs[existingIndex],
+          newTabs = [...current.tabs]
+          newTabs[existingIndex] = {
+            ...newTabs[existingIndex],
             ...tab,
           }
-          set({
-            tabs: updatedTabs,
-            activeTabId: tab.id,
-          })
         } else {
-          // Add new tab and activate it
-          set({
-            tabs: [...tabs, tab],
-            activeTabId: tab.id,
-          })
+          newTabs = [...current.tabs, tab]
         }
+
+        set({
+          folderTabsMap: {
+            ...folderTabsMap,
+            [folderId]: {
+              tabs: newTabs,
+              activeTabId: tab.id,
+            },
+          },
+        })
       },
 
-      closeTab: (id: string, onNextTab) => {
-        const { tabs, activeTabId } = get()
-        const tabIndex = tabs.findIndex((t) => t.id === id)
+      closeNoteTab: (folderId: string, noteId: string) => {
+        const { folderTabsMap } = get()
+        const current = folderTabsMap[folderId] ?? {
+          tabs: [],
+          activeTabId: null,
+        }
+        const tabIndex = current.tabs.findIndex(
+          (t) => t.id === noteId || t.title === noteId
+        )
         if (tabIndex === -1) return
 
-        const newTabs = tabs.filter((t) => t.id !== id)
-        let nextActiveId = activeTabId
+        const newTabs = current.tabs.filter(
+          (t) => t.id !== noteId && t.title !== noteId
+        )
 
-        // If closing the currently active tab, pick the adjacent tab
-        if (activeTabId === id) {
+        let nextActiveId = current.activeTabId
+        if (
+          current.activeTabId === noteId ||
+          current.activeTabId === current.tabs[tabIndex].id
+        ) {
           if (newTabs.length > 0) {
-            // Pick next or previous tab
             const nextIndex = Math.min(tabIndex, newTabs.length - 1)
             nextActiveId = newTabs[nextIndex].id
           } else {
@@ -76,90 +110,114 @@ export const useNoteTabsStore = create<NoteTabsState>()(
         }
 
         set({
-          tabs: newTabs,
-          activeTabId: nextActiveId,
+          folderTabsMap: {
+            ...folderTabsMap,
+            [folderId]: {
+              tabs: newTabs,
+              activeTabId: nextActiveId,
+            },
+          },
         })
+      },
 
-        if (onNextTab) {
-          onNextTab(nextActiveId)
+      setActiveNoteTab: (folderId: string, noteId: string | null) => {
+        const { folderTabsMap } = get()
+        const current = folderTabsMap[folderId] ?? {
+          tabs: [],
+          activeTabId: null,
+        }
+        set({
+          folderTabsMap: {
+            ...folderTabsMap,
+            [folderId]: {
+              ...current,
+              activeTabId: noteId,
+            },
+          },
+        })
+      },
+
+      togglePinNoteTab: (folderId: string, noteId: string) => {
+        const { folderTabsMap } = get()
+        const current = folderTabsMap[folderId] ?? {
+          tabs: [],
+          activeTabId: null,
+        }
+        const updatedTabs = current.tabs.map((t) =>
+          t.id === noteId || t.title === noteId
+            ? { ...t, isPinned: !t.isPinned }
+            : t
+        )
+
+        const sorted = [...updatedTabs].sort(
+          (a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0)
+        )
+
+        set({
+          folderTabsMap: {
+            ...folderTabsMap,
+            [folderId]: {
+              ...current,
+              tabs: sorted,
+            },
+          },
+        })
+      },
+
+      setFolderTabs: (folderId: string, data: FolderTabsData) => {
+        const { folderTabsMap } = get()
+        set({
+          folderTabsMap: {
+            ...folderTabsMap,
+            [folderId]: data,
+          },
+        })
+      },
+
+      // Backward compatibility implementations
+      openTab: (tab: NoteTabItem) => {
+        const { tabs } = get()
+        const existingIndex = tabs.findIndex((t) => t.id === tab.id)
+        if (existingIndex !== -1) {
+          const updatedTabs = [...tabs]
+          updatedTabs[existingIndex] = { ...updatedTabs[existingIndex], ...tab }
+          set({ tabs: updatedTabs, activeTabId: tab.id })
+        } else {
+          set({ tabs: [...tabs, tab], activeTabId: tab.id })
         }
       },
 
-      closeOtherTabs: (id: string) => {
-        const { tabs } = get()
-        const targetTab = tabs.find((t) => t.id === id)
-        if (!targetTab) return
-
-        // Keep pinned tabs + the target tab
-        const newTabs = tabs.filter((t) => t.isPinned || t.id === id)
-        set({
-          tabs: newTabs,
-          activeTabId: id,
-        })
-      },
-
-      closeAllTabs: (onClear) => {
-        const { tabs } = get()
-        // Keep pinned tabs if any
-        const pinnedTabs = tabs.filter((t) => t.isPinned)
-        const nextActiveId = pinnedTabs.length > 0 ? pinnedTabs[0].id : null
-
-        set({
-          tabs: pinnedTabs,
-          activeTabId: nextActiveId,
-        })
-
-        if (onClear) {
-          onClear()
+      closeTab: (id: string, onNextTab) => {
+        const { tabs, activeTabId } = get()
+        const tabIndex = tabs.findIndex((t) => t.id === id)
+        if (tabIndex === -1) return
+        const newTabs = tabs.filter((t) => t.id !== id)
+        let nextActiveId = activeTabId
+        if (activeTabId === id) {
+          nextActiveId =
+            newTabs.length > 0
+              ? newTabs[Math.min(tabIndex, newTabs.length - 1)].id
+              : null
         }
+        set({ tabs: newTabs, activeTabId: nextActiveId })
+        onNextTab?.(nextActiveId)
       },
 
-      setActiveTab: (id: string | null) => {
-        set({ activeTabId: id })
-      },
+      setActiveTab: (id: string | null) => set({ activeTabId: id }),
 
       togglePinTab: (id: string) => {
         const { tabs } = get()
-        const updatedTabs = tabs.map((t) =>
+        const updated = tabs.map((t) =>
           t.id === id ? { ...t, isPinned: !t.isPinned } : t
         )
-
-        // Sort so pinned tabs are placed first
-        const pinned = updatedTabs.filter((t) => t.isPinned)
-        const unpinned = updatedTabs.filter((t) => !t.isPinned)
-
-        set({
-          tabs: [...pinned, ...unpinned],
-        })
-      },
-
-      updateTabTitle: (id: string, title: string) => {
-        const { tabs } = get()
-        set({
-          tabs: tabs.map((t) => (t.id === id ? { ...t, title } : t)),
-        })
-      },
-
-      reorderTabs: (sourceIndex: number, destinationIndex: number) => {
-        const { tabs } = get()
-        if (
-          sourceIndex < 0 ||
-          sourceIndex >= tabs.length ||
-          destinationIndex < 0 ||
-          destinationIndex >= tabs.length
-        ) {
-          return
-        }
-
-        const result = Array.from(tabs)
-        const [removed] = result.splice(sourceIndex, 1)
-        result.splice(destinationIndex, 0, removed)
-
-        set({ tabs: result })
+        const sorted = [...updated].sort(
+          (a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0)
+        )
+        set({ tabs: sorted })
       },
     }),
     {
-      name: 'nodespace-workspace-tabs',
+      name: 'nodespace-note-tabs-storage',
       storage: createJSONStorage(() => localStorage),
     }
   )
