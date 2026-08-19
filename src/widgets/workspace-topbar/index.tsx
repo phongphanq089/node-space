@@ -58,10 +58,7 @@ export function WorkSpaceTopbar() {
         <IconBtn id="btn-settings" title="Settings" onClick={openDrawer}>
           <Settings
             size={16}
-            style={{
-              backgroundColor:
-                accent === 'custom' ? 'var(--ns-primary)' : undefined,
-            }}
+            color={accent === 'custom' ? 'var(--ns-primary)' : undefined}
           />
         </IconBtn>
       </div>
