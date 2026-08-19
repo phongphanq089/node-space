@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, primaryKey } from 'drizzle-orm/sqlite-core'
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
 
 export const SYSTEM_ROLES = ['user', 'lifetime', 'admin'] as const
 export type SystemRole = (typeof SYSTEM_ROLES)[number]
@@ -85,7 +85,9 @@ export const folder = sqliteTable('folder', {
   id: text('id')
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  workspace_id: text('workspace_id').references(() => workspace.id),
+  workspace_id: text('workspace_id').references(() => workspace.id, {
+    onDelete: 'cascade',
+  }),
   author_id: text('author_id')
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
@@ -109,14 +111,18 @@ export const note = sqliteTable('note', {
   id: text('id')
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  workspace_id: text('workspace_id').references(() => workspace.id),
-  folder_id: text('folder_id')
-    .notNull()
-    .references(() => folder.id, { onDelete: 'set null' }),
+  workspace_id: text('workspace_id').references(() => workspace.id, {
+    onDelete: 'cascade',
+  }),
+  folder_id: text('folder_id').references(() => folder.id, {
+    onDelete: 'cascade',
+  }),
   author_id: text('author_id')
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
+  content: text('content'),
+  tags: text('tags', { mode: 'json' }).$type<string[]>(),
   isPinned: integer('is_pinned', { mode: 'boolean' }).default(false).notNull(),
   isFavorite: integer('is_favorite', { mode: 'boolean' })
     .default(false)
@@ -142,21 +148,6 @@ export const tag = sqliteTable('tag', {
     onDelete: 'cascade',
   }),
 })
-
-export const noteTags = sqliteTable(
-  'note_tag',
-  {
-    noteId: text('note_id')
-      .notNull()
-      .references(() => note.id, { onDelete: 'cascade' }),
-    tagId: text('tag_id')
-      .notNull()
-      .references(() => tag.id, { onDelete: 'cascade' }),
-  },
-  (table) => ({
-    pk: primaryKey({ columns: [table.noteId, table.tagId] }),
-  })
-)
 
 export const noteShares = sqliteTable('note_share', {
   id: text('id').primaryKey(),

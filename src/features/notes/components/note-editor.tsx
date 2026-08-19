@@ -1,4 +1,4 @@
-﻿import type { NoteItem } from '@/shared/mocks/mock-data'
+import type { NoteItem } from '@/shared/mocks/mock-data'
 import type { ViewMode } from './use-note-editor'
 import { useNoteEditor } from './use-note-editor'
 import { NoteToolbar } from './note-toolbar'
@@ -6,13 +6,16 @@ import { NoteCanvas } from './note-canvas'
 import { NoteStatusBar } from './note-status-bar'
 
 interface NoteEditorProps {
-  note: NoteItem
+  note?: NoteItem | null
   content: string
   viewMode: ViewMode
   isFocusMode: boolean
   onContentChange: (value: string) => void
   onChangeViewMode: (mode: ViewMode) => void
   onToggleSidebar: () => void
+  onTitleChange?: (title: string) => void
+  onAddTag?: (tag: string) => void
+  onRemoveTag?: (tag: string) => void
 }
 
 export function NoteEditor({
@@ -22,6 +25,9 @@ export function NoteEditor({
   isFocusMode,
   onContentChange,
   onToggleSidebar,
+  onTitleChange,
+  onAddTag,
+  onRemoveTag,
 }: NoteEditorProps) {
   const {
     selectedBlockType,
@@ -52,6 +58,9 @@ export function NoteEditor({
         wordCount={wordCount}
         readingTime={readingTime}
         onContentChange={onContentChange}
+        onTitleChange={onTitleChange}
+        onAddTag={onAddTag}
+        onRemoveTag={onRemoveTag}
       />
 
       <NoteStatusBar

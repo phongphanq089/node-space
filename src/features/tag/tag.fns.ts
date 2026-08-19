@@ -8,7 +8,7 @@ export const getTagsInputSchema = z.object({
   search: z.string().optional(),
   workspaceId: z.string().optional(),
   page: z.number().default(0),
-  limit: z.number().default(20),
+  limit: z.number().default(50),
 })
 
 export type GetTagsInput = z.infer<typeof getTagsInputSchema>
@@ -37,7 +37,7 @@ const PRESET_TAG_COLORS = [
   { color: '#eab308', bg: 'rgba(234, 179, 8, 0.12)' },
 ]
 
-const DEFAULT_TAGS_DATA: TagRecord[] = [
+export const DEFAULT_TAGS_DATA: TagRecord[] = [
   {
     id: 't1',
     name: 'productivity',
@@ -124,15 +124,70 @@ const DEFAULT_TAGS_DATA: TagRecord[] = [
   },
 ]
 
+let isTagsSeeded = false
+
+export async function ensureTagsExist(
+  db: any,
+  tagNames: string[] = [],
+  workspaceId?: string | null
+) {
+  if (!tagNames || tagNames.length === 0) return
+  for (const rawName of tagNames) {
+    const cleanName = rawName.replace(/^#/, '').toLowerCase().trim()
+    if (!cleanName) continue
+    try {
+      const existing = await db
+        .select()
+        .from(tag)
+        .where(eq(tag.name, cleanName))
+        .limit(1)
+      if (existing.length === 0) {
+        await db.insert(tag).values({
+          id: crypto.randomUUID(),
+          name: cleanName,
+          workspace_id: workspaceId || null,
+        })
+      }
+    } catch {
+      // Ignore duplicate/conflict errors
+    }
+  }
+}
+
+async function autoSeedTagsIfEmpty(db: any, workspaceId?: string) {
+  if (isTagsSeeded) return
+  try {
+    const existing = await db.select().from(tag).limit(1)
+    if (existing.length === 0) {
+      for (const dt of DEFAULT_TAGS_DATA) {
+        try {
+          await db.insert(tag).values({
+            id: crypto.randomUUID(),
+            name: dt.name,
+            workspace_id: workspaceId || null,
+          })
+        } catch {
+          // ignore duplicate
+        }
+      }
+    }
+    isTagsSeeded = true
+  } catch {
+    // Database table might not be initialized
+  }
+}
+
 export const getTagsFn = createServerFn({ method: 'GET' })
   .validator((data?: GetTagsInput) => getTagsInputSchema.parse(data ?? {}))
   .handler(async ({ data }) => {
     const db = getDb()
-    const limit = data.limit ?? 20
+    const limit = data.limit ?? 50
     const page = data.page ?? 0
     const search = data.search?.trim().toLowerCase() ?? ''
 
     try {
+      await autoSeedTagsIfEmpty(db, data.workspaceId)
+
       const conditions = []
 
       if (search) {
@@ -150,38 +205,35 @@ export const getTagsFn = createServerFn({ method: 'GET' })
         .limit(limit + 1)
         .offset(page * limit)
 
-      if (rows.length > 0) {
-        const hasMore = rows.length > limit
-        const items = rows.slice(0, limit).map((t, index) => {
-          const colorObj = PRESET_TAG_COLORS[index % PRESET_TAG_COLORS.length]
-          return {
-            id: t.id,
-            name: t.name,
-            count: Math.floor(Math.random() * 5) + 1,
-            color: colorObj.color,
-            bg: colorObj.bg,
-            workspaceId: t.workspace_id,
-          }
-        })
+      const hasMore = rows.length > limit
+      const items = rows.slice(0, limit).map((t, index) => {
+        const colorObj = PRESET_TAG_COLORS[index % PRESET_TAG_COLORS.length]
+        return {
+          id: t.id,
+          name: t.name,
+          count: 1,
+          color: colorObj.color,
+          bg: colorObj.bg,
+          workspaceId: t.workspace_id,
+        }
+      })
 
-        return { items, hasMore }
-      }
+      return { items, hasMore }
     } catch {
-      // Fallback if DB is unavailable or empty
+      // Fallback if DB is unavailable
+      let filtered = DEFAULT_TAGS_DATA
+      if (search) {
+        filtered = DEFAULT_TAGS_DATA.filter((t) =>
+          t.name.toLowerCase().includes(search)
+        )
+      }
+
+      const offset = page * limit
+      const items = filtered.slice(offset, offset + limit)
+      const hasMore = offset + limit < filtered.length
+
+      return { items, hasMore }
     }
-
-    let filtered = DEFAULT_TAGS_DATA
-    if (search) {
-      filtered = DEFAULT_TAGS_DATA.filter((t) =>
-        t.name.toLowerCase().includes(search)
-      )
-    }
-
-    const offset = page * limit
-    const items = filtered.slice(offset, offset + limit)
-    const hasMore = offset + limit < filtered.length
-
-    return { items, hasMore }
   })
 
 export const createTagSchema = z.object({
@@ -199,9 +251,23 @@ export const createTagFn = createServerFn({ method: 'POST' })
   .validator((data: CreateTagInput) => createTagSchema.parse(data))
   .handler(async ({ data }) => {
     const db = getDb()
-    const newTagId = crypto.randomUUID()
     const cleanName = data.name.replace(/^#/, '').toLowerCase().trim()
 
+    // Check if tag already exists
+    const existing = await db
+      .select()
+      .from(tag)
+      .where(eq(tag.name, cleanName))
+      .limit(1)
+
+    if (existing.length > 0) {
+      return {
+        success: true,
+        tag: { id: existing[0].id, name: existing[0].name },
+      }
+    }
+
+    const newTagId = crypto.randomUUID()
     await db.insert(tag).values({
       id: newTagId,
       name: cleanName,

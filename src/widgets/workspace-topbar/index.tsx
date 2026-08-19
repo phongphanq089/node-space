@@ -1,5 +1,6 @@
 import { SidebarTrigger } from '@/shared/ui'
 import { SearchGlobal } from '@/widgets/search-global'
+import { useNewNoteDialogStore } from '@/features/notes/store/use-new-note-dialog-store'
 import { Plus, Bell, Settings } from 'lucide-react'
 
 type IconBtnProps = {
@@ -35,7 +36,11 @@ export function WorkSpaceTopbar() {
 
       {/* Right actions */}
       <div className="flex items-center gap-1.5">
-        <IconBtn id="btn-create-top" title="Create new">
+        <IconBtn
+          id="btn-create-top"
+          title="Create new note"
+          onClick={() => useNewNoteDialogStore.getState().open()}
+        >
           <Plus size={16} />
         </IconBtn>
 
