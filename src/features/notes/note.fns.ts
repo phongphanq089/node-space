@@ -3,21 +3,30 @@ import { z } from 'zod'
 import { getDb } from '@/db'
 import { note, folder, user, workspace } from '@/db/schema'
 import { eq, desc, and, like, sql, or } from 'drizzle-orm'
+import { ensureTagsExist } from '../tag'
 
 let isNoteColumnsChecked = false
 
 async function ensureNoteColumnsExist(db: any) {
   if (isNoteColumnsChecked) return
-  try {
-    await db.run(sql`ALTER TABLE note ADD COLUMN content TEXT`)
-  } catch {
-    // Column might already exist
+
+  const alters = [
+    sql`ALTER TABLE note ADD COLUMN content TEXT`,
+    sql`ALTER TABLE note ADD COLUMN tags TEXT`,
+    sql`ALTER TABLE note ADD COLUMN is_pinned INTEGER DEFAULT 0`,
+    sql`ALTER TABLE note ADD COLUMN is_favorite INTEGER DEFAULT 0`,
+    sql`ALTER TABLE note ADD COLUMN is_archived INTEGER DEFAULT 0`,
+    sql`ALTER TABLE note ADD COLUMN is_trash INTEGER DEFAULT 0`,
+  ]
+
+  for (const query of alters) {
+    try {
+      await db.run(query)
+    } catch {
+      // Column might already exist
+    }
   }
-  try {
-    await db.run(sql`ALTER TABLE note ADD COLUMN tags TEXT`)
-  } catch {
-    // Column might already exist
-  }
+
   isNoteColumnsChecked = true
 }
 
@@ -306,6 +315,10 @@ export const createNoteFn = createServerFn({ method: 'POST' })
 
     const noteId = crypto.randomUUID()
 
+    if (data.tags && data.tags.length > 0) {
+      await ensureTagsExist(db, data.tags, targetWorkspaceId)
+    }
+
     await db.insert(note).values({
       id: noteId,
       name: data.name,
@@ -347,7 +360,12 @@ export const updateNoteFn = createServerFn({ method: 'POST' })
 
     if (data.name !== undefined) updatePayload.name = data.name
     if (data.content !== undefined) updatePayload.content = data.content
-    if (data.tags !== undefined) updatePayload.tags = data.tags
+    if (data.tags !== undefined) {
+      updatePayload.tags = data.tags
+      if (data.tags.length > 0) {
+        await ensureTagsExist(db, data.tags, data.workspaceId)
+      }
+    }
     if (data.isPinned !== undefined) updatePayload.isPinned = data.isPinned
     if (data.isFavorite !== undefined)
       updatePayload.isFavorite = data.isFavorite

@@ -3,17 +3,29 @@ import { z } from 'zod'
 import { getDb } from '@/db'
 import { folder, user, workspace } from '@/db/schema'
 import { eq, or, desc, and, like, sql } from 'drizzle-orm'
+import { ensureTagsExist } from '../tag'
 
-let isTagsColumnChecked = false
+let isFolderColumnsChecked = false
 
-async function ensureTagsColumnExists(db: any) {
-  if (isTagsColumnChecked) return
-  try {
-    await db.run(sql`ALTER TABLE folder ADD COLUMN tags TEXT`)
-  } catch {
-    // Column already exists or alter table not needed
+async function ensureFolderColumnsExist(db: any) {
+  if (isFolderColumnsChecked) return
+
+  const alters = [
+    sql`ALTER TABLE folder ADD COLUMN tags TEXT`,
+    sql`ALTER TABLE folder ADD COLUMN color TEXT`,
+    sql`ALTER TABLE folder ADD COLUMN image TEXT`,
+    sql`ALTER TABLE folder ADD COLUMN is_favorite INTEGER DEFAULT 0`,
+  ]
+
+  for (const query of alters) {
+    try {
+      await db.run(query)
+    } catch {
+      // Column might already exist
+    }
   }
-  isTagsColumnChecked = true
+
+  isFolderColumnsChecked = true
 }
 
 export const createFolderSchema = z.object({
@@ -55,7 +67,7 @@ export const createFolderFn = createServerFn({ method: 'POST' })
     }
 
     const db = getDb()
-    await ensureTagsColumnExists(db)
+    await ensureFolderColumnsExist(db)
 
     // Fallback authorId if unauthenticated in dev
     if (!authorId) {
@@ -125,6 +137,10 @@ export const createFolderFn = createServerFn({ method: 'POST' })
       updatedAt: now,
     }
 
+    if (data.tags && data.tags.length > 0) {
+      await ensureTagsExist(db, data.tags, targetWorkspaceId)
+    }
+
     try {
       await db.insert(folder).values(newFolder)
     } catch {
@@ -165,7 +181,7 @@ export const getFoldersFn = createServerFn({ method: 'GET' })
     const limit = data?.limit ?? 10
     const offset = data?.offset ?? 0
     const db = getDb()
-    await ensureTagsColumnExists(db)
+    await ensureFolderColumnsExist(db)
 
     let authorId: string | null = null
     try {
@@ -336,7 +352,7 @@ export const updateFolderFn = createServerFn({ method: 'POST' })
   .validator((data: UpdateFolderInput) => updateFolderSchema.parse(data))
   .handler(async ({ data }) => {
     const db = getDb()
-    await ensureTagsColumnExists(db)
+    await ensureFolderColumnsExist(db)
 
     const updatePayload: Record<string, any> = {
       updatedAt: new Date(),
@@ -345,7 +361,12 @@ export const updateFolderFn = createServerFn({ method: 'POST' })
     if (data.name !== undefined) updatePayload.name = data.name
     if (data.color !== undefined) updatePayload.color = data.color
     if (data.image !== undefined) updatePayload.image = data.image
-    if (data.tags !== undefined) updatePayload.tags = data.tags
+    if (data.tags !== undefined) {
+      updatePayload.tags = data.tags
+      if (data.tags.length > 0) {
+        await ensureTagsExist(db, data.tags, data.workspaceId)
+      }
+    }
     if (data.parentId !== undefined)
       updatePayload.parentId = data.parentId || null
 

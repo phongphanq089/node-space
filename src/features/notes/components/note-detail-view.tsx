@@ -115,7 +115,10 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
           }).format(new Date(n.updatedAt))
         : 'Just now',
       starred: n.isPinned,
+      isPinned: n.isPinned,
+      isFavorite: n.isFavorite,
       content: n.content ?? undefined,
+      folderId: n.folderId ?? undefined,
     }))
   }, [serverNotes])
 

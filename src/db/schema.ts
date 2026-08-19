@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, primaryKey } from 'drizzle-orm/sqlite-core'
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
 
 export const SYSTEM_ROLES = ['user', 'lifetime', 'admin'] as const
 export type SystemRole = (typeof SYSTEM_ROLES)[number]
@@ -144,21 +144,6 @@ export const tag = sqliteTable('tag', {
     onDelete: 'cascade',
   }),
 })
-
-export const noteTags = sqliteTable(
-  'note_tag',
-  {
-    noteId: text('note_id')
-      .notNull()
-      .references(() => note.id, { onDelete: 'cascade' }),
-    tagId: text('tag_id')
-      .notNull()
-      .references(() => tag.id, { onDelete: 'cascade' }),
-  },
-  (table) => ({
-    pk: primaryKey({ columns: [table.noteId, table.tagId] }),
-  })
-)
 
 export const noteShares = sqliteTable('note_share', {
   id: text('id').primaryKey(),
