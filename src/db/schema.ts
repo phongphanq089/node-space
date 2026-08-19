@@ -85,7 +85,9 @@ export const folder = sqliteTable('folder', {
   id: text('id')
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  workspace_id: text('workspace_id').references(() => workspace.id),
+  workspace_id: text('workspace_id').references(() => workspace.id, {
+    onDelete: 'cascade',
+  }),
   author_id: text('author_id')
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
@@ -109,9 +111,11 @@ export const note = sqliteTable('note', {
   id: text('id')
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  workspace_id: text('workspace_id').references(() => workspace.id),
+  workspace_id: text('workspace_id').references(() => workspace.id, {
+    onDelete: 'cascade',
+  }),
   folder_id: text('folder_id').references(() => folder.id, {
-    onDelete: 'set null',
+    onDelete: 'cascade',
   }),
   author_id: text('author_id')
     .notNull()

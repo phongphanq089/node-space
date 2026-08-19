@@ -170,7 +170,7 @@ export function WorkspacesList() {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
         title="Delete Workspace"
-        description="Are you sure you want to delete this workspace? This action cannot be undone."
+        description="Are you sure you want to delete this workspace and all its folders and notes? This action cannot be undone."
         itemName={deletingWorkspace?.name}
         isPending={deleteWorkspaceMutation.isPending}
       />

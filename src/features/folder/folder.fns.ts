@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import { getDb } from '@/db'
-import { folder, user, workspace } from '@/db/schema'
+import { folder, note, user, workspace } from '@/db/schema'
 import { eq, or, desc, and, like, sql } from 'drizzle-orm'
 import { ensureTagsExist } from '../tag'
 
@@ -301,6 +301,22 @@ export const deleteFolderFn = createServerFn({ method: 'POST' })
   )
   .handler(async ({ data }) => {
     const db = getDb()
+
+    // 1. Find all child subfolders to also cascade delete their notes
+    const childFolders = await db
+      .select({ id: folder.id })
+      .from(folder)
+      .where(eq(folder.parentId, data.folderId))
+
+    for (const child of childFolders) {
+      await db.delete(note).where(eq(note.folder_id, child.id))
+      await db.delete(folder).where(eq(folder.id, child.id))
+    }
+
+    // 2. Cascade delete all notes directly inside this folder
+    await db.delete(note).where(eq(note.folder_id, data.folderId))
+
+    // 3. Delete the target folder itself
     await db.delete(folder).where(eq(folder.id, data.folderId))
 
     return { success: true, folderId: data.folderId }

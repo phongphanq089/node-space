@@ -313,7 +313,7 @@ export function FoldersList({
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
         title="Delete Folder"
-        description="Are you sure you want to delete this folder? This action cannot be undone."
+        description="Are you sure you want to delete this folder and all notes inside it? This action cannot be undone."
         itemName={deletingFolder?.name}
         isPending={deleteFolderMutation.isPending}
       />

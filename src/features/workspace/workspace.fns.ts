@@ -1,7 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import { getDb } from '@/db'
-import { workspace, user } from '@/db/schema'
+import { workspace, folder, note, tag, user } from '@/db/schema'
 import { eq, desc, and, like, sql } from 'drizzle-orm'
 
 let isWorkspaceTagsColumnChecked = false
@@ -223,6 +223,27 @@ export const deleteWorkspaceFn = createServerFn({ method: 'POST' })
   )
   .handler(async ({ data }) => {
     const db = getDb()
+
+    // 1. Find all folders in this workspace to delete all notes inside them
+    const workspaceFolders = await db
+      .select({ id: folder.id })
+      .from(folder)
+      .where(eq(folder.workspace_id, data.workspaceId))
+
+    for (const f of workspaceFolders) {
+      await db.delete(note).where(eq(note.folder_id, f.id))
+    }
+
+    // 2. Cascade delete notes belonging directly to this workspace
+    await db.delete(note).where(eq(note.workspace_id, data.workspaceId))
+
+    // 3. Cascade delete all folders in this workspace
+    await db.delete(folder).where(eq(folder.workspace_id, data.workspaceId))
+
+    // 4. Cascade delete all tags in this workspace
+    await db.delete(tag).where(eq(tag.workspace_id, data.workspaceId))
+
+    // 5. Delete the workspace itself
     await db.delete(workspace).where(eq(workspace.id, data.workspaceId))
 
     return { success: true, workspaceId: data.workspaceId }
