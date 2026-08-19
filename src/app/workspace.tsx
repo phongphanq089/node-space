@@ -3,6 +3,7 @@ import { YoutubePlayer, useMusicStore } from '@/features/music-player'
 import type { TrackItem } from '@/features/music-player'
 import { WorkSpaceSidebar } from '@/widgets/workspace-sidebar'
 import { GlobalMusicDrawer } from '@/widgets/global-music-drawer'
+import { AppearanceDrawer } from '@/widgets/appearance-drawer'
 
 import { useEffect, useRef } from 'react'
 import MainContentWorkspace from './layouts/main-content-workspace'
@@ -126,6 +127,9 @@ const Workspace = () => {
 
         {/* Global Standalone Music & Focus Drawer Widget */}
         <GlobalMusicDrawer />
+
+        {/* Global Appearance & Theme Settings Drawer */}
+        <AppearanceDrawer />
       </div>
     </SidebarProvider>
   )

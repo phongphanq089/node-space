@@ -15,21 +15,25 @@ import {
   useDeleteFolderMutation,
 } from '../hooks/use-folders'
 import { useDebounce } from '@/shared/hooks'
+import { useNoteTabsStore } from '@/features/notes'
 
 interface FoldersListProps {
   initialWorkspaceId?: string
   initialNoteId?: string
+  initialFolderId?: string
   initialTag?: string
 }
 
 export function FoldersList({
   initialWorkspaceId,
   initialNoteId: _initialNoteId,
+  initialFolderId,
   initialTag,
 }: FoldersListProps) {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 500)
+
   const [selectedWorkspaceId, setSelectedWorkspaceId] = useState<string | null>(
     initialWorkspaceId ?? null
   )
@@ -96,17 +100,35 @@ export function FoldersList({
     setDeletingFolder(folder)
   }, [])
 
+  const { openTab } = useNoteTabsStore()
+
+  const mapFolderToNode = useCallback(
+    (folder: FolderItemRecord) => ({
+      id: encodeURIComponent(folder.name),
+      title: folder.name,
+      folderId: folder.id,
+      folderName: folder.name,
+      thumbnail: folder.image ?? undefined,
+      updatedAt: folder.updatedAt
+        ? new Date(folder.updatedAt).toLocaleDateString(undefined, {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          })
+        : 'Recently',
+    }),
+    []
+  )
+
   const handleSelectFolder = useCallback(
     (folder: FolderItemRecord) => {
+      const tabData = mapFolderToNode(folder)
+      openTab(tabData)
       void navigate({
-        to: '/workspace/folder',
-        search: (prev) => ({
-          ...prev,
-          folderId: folder.id,
-        }),
+        to: `/workspace/folder/${tabData.id}` as any,
       })
     },
-    [navigate]
+    [navigate, openTab, mapFolderToNode]
   )
 
   const handleCloseFolderModal = useCallback(() => {
@@ -134,10 +156,19 @@ export function FoldersList({
     )
 
   // Flatten all fetched pages of folders into a single list
-  const dbFolders = data?.pages.flatMap((page) => page.items) ?? []
+  const dbFolders: FolderItemRecord[] =
+    data?.pages.flatMap((page) => page.items) ?? []
 
   // Hide Load More button if total items displayed is less than page limit (12)
   const showLoadMore = hasNextPage && dbFolders.length >= 12
+
+  useEffect(() => {
+    if (!initialFolderId || isLoading || dbFolders.length === 0) return
+    const matched = dbFolders.find((f) => f.id === initialFolderId)
+    if (matched) {
+      handleSelectFolder(matched)
+    }
+  }, [initialFolderId, isLoading, dbFolders, handleSelectFolder])
 
   const resetFilters = useCallback(() => {
     handleSelectWorkspace(null)
@@ -282,7 +313,7 @@ export function FoldersList({
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
         title="Delete Folder"
-        description="Are you sure you want to delete this folder? This action cannot be undone."
+        description="Are you sure you want to delete this folder and all notes inside it? This action cannot be undone."
         itemName={deletingFolder?.name}
         isPending={deleteFolderMutation.isPending}
       />

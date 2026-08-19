@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/shared/ui'
+import PowerOffSlide from '@/shared/ui/system/power-off-slide'
 
 export function Logout() {
   const navigate = useNavigate()
@@ -40,14 +41,19 @@ export function Logout() {
 
   return (
     <>
-      <Button
+      {/* <Button
         variant="destructive"
         onClick={() => setOpen(true)}
         className="flex w-full items-center justify-between gap-3 border border-red-500/20 bg-red-500/20 text-xs font-semibold text-red-600 transition-all hover:border-red-500/40 hover:text-red-500"
       >
         <span>Logout</span>
         <LogOut size={15} />
-      </Button>
+      </Button> */}
+      <PowerOffSlide
+        duration={0}
+        label="Slide to logout"
+        onPowerOff={() => setOpen(true)}
+      />
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="border-red-500/30 bg-ns-surface/95 shadow-2xl backdrop-blur-2xl sm:max-w-md">

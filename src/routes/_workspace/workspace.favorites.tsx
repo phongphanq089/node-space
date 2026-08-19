@@ -1,34 +1,70 @@
 import { useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import {
   Star,
   FileText,
   ArrowUpRight,
-  Heart,
   Folder,
-  Search,
   Bookmark,
+  Heart,
+  Search,
 } from 'lucide-react'
-import { NOTES } from '@/shared/mocks/mock-data'
 import { Button, Input, EmptyState } from '@/shared/ui'
 import {
   useFoldersQuery,
   useToggleFavoriteFolderMutation,
 } from '@/features/folder'
+import {
+  useNotesQuery,
+  useToggleFavoriteNoteMutation,
+  useNoteTabsStore,
+} from '@/features/notes'
 
 export const Route = createFileRoute('/_workspace/workspace/favorites')({
   component: FavoritesPage,
 })
 
 function FavoritesPage() {
+  const navigate = useNavigate()
+  const { openTab } = useNoteTabsStore()
   const [filter, setFilter] = useState<'all' | 'folders' | 'notes'>('all')
   const [search, setSearch] = useState('')
 
   const { data: dbFolders = [] } = useFoldersQuery()
-  const toggleFavoriteMutation = useToggleFavoriteFolderMutation()
+  const { data: dbNotes = [] } = useNotesQuery()
+  const toggleFavoriteFolderMutation = useToggleFavoriteFolderMutation()
+  const toggleFavoriteNoteMutation = useToggleFavoriteNoteMutation()
 
   const starredFolders = dbFolders.filter((f) => f.isFavorite)
-  const starredNotes = NOTES.filter((n) => n.starred)
+  const starredNotes = dbNotes
+    .filter((n) => n.isFavorite)
+    .map((n) => ({
+      id: n.id,
+      title: n.name,
+      tags: (n.tags as string[]) || [],
+      updated: n.updatedAt
+        ? new Intl.DateTimeFormat('en-US', {
+            month: 'short',
+            day: 'numeric',
+          }).format(new Date(n.updatedAt))
+        : 'Recently',
+      folderId: n.folderId,
+    }))
+
+  const handleOpenNote = (noteItem: {
+    id: string
+    title: string
+    updated?: string
+    folderId?: string | null
+  }) => {
+    openTab({
+      id: noteItem.id,
+      title: noteItem.title,
+      updatedAt: noteItem.updated,
+      isPinned: true,
+    })
+    navigate({ to: `/workspace/notes/${noteItem.id}` as any })
+  }
 
   const filteredFolders = starredFolders.filter((f) =>
     f.name.toLowerCase().includes(search.toLowerCase())
@@ -198,9 +234,10 @@ function FavoritesPage() {
                       <Button
                         variant="ghost"
                         size="icon-sm"
-                        onClick={() =>
-                          toggleFavoriteMutation.mutate(folderItem.id)
-                        }
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          toggleFavoriteFolderMutation.mutate(folderItem.id)
+                        }}
                         className="text-amber-400 hover:bg-ns-hover hover:text-amber-300"
                         title="Remove from favorites"
                       >
@@ -240,8 +277,9 @@ function FavoritesPage() {
               <div className="flex flex-col gap-3">
                 {filteredNotes.map((note) => (
                   <div
-                    key={note.title}
-                    className="group relative flex items-center justify-between gap-4 rounded-xl border border-ns-border-soft bg-ns-panel/70 p-4 transition-all hover:border-ns-primary/50 hover:bg-ns-panel hover:shadow-xl"
+                    key={note.id || note.title}
+                    onClick={() => handleOpenNote(note)}
+                    className="group relative flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-ns-border-soft bg-ns-panel/70 p-4 transition-all hover:border-ns-primary/50 hover:bg-ns-panel hover:shadow-xl"
                   >
                     <div className="flex min-w-0 items-center gap-3.5">
                       <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-ns-border-soft bg-ns-primary/20 text-ns-primary-lt shadow-inner">
@@ -268,14 +306,28 @@ function FavoritesPage() {
                       </div>
                     </div>
 
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      className="text-ns-ghost hover:bg-ns-hover hover:text-white"
-                      title="Read note"
-                    >
-                      <ArrowUpRight className="size-4" />
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          toggleFavoriteNoteMutation.mutate(note.id)
+                        }}
+                        className="text-amber-400 hover:bg-ns-hover hover:text-amber-300"
+                        title="Remove from favorites"
+                      >
+                        <Star className="size-4 fill-amber-400" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        className="text-ns-ghost hover:bg-ns-hover hover:text-white"
+                        title="Read note"
+                      >
+                        <ArrowUpRight className="size-4" />
+                      </Button>
+                    </div>
                   </div>
                 ))}
 

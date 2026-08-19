@@ -1,4 +1,4 @@
-﻿export interface WorkspaceItem {
+export interface WorkspaceItem {
   color: string
   name: string
 }
@@ -23,10 +23,13 @@ export interface NodeItem {
 }
 
 export interface NoteItem {
+  id?: string
   title: string
   tags: string[]
   updated: string
   starred?: boolean
+  content?: string
+  isFavorite?: boolean
 }
 
 export interface FeatureItem {

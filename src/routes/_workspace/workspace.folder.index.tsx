@@ -5,16 +5,17 @@ import { z } from 'zod'
 const folderSearchSchema = z.object({
   workspaceId: z.string().optional(),
   noteId: z.string().optional(),
+  folderId: z.string().optional(),
   tag: z.string().optional(),
 })
 
-export const Route = createFileRoute('/_workspace/workspace/folder')({
+export const Route = createFileRoute('/_workspace/workspace/folder/')({
   validateSearch: (search) => folderSearchSchema.parse(search),
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const { workspaceId, noteId, tag } = Route.useSearch()
+  const { workspaceId, noteId, folderId, tag } = Route.useSearch()
   return (
     <div className="relative flex flex-1 flex-col gap-5">
       <div className="flex flex-col gap-3">
@@ -24,6 +25,7 @@ function RouteComponent() {
         <FoldersList
           initialWorkspaceId={workspaceId}
           initialNoteId={noteId}
+          initialFolderId={folderId}
           initialTag={tag}
         />
       </div>
