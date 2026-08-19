@@ -260,12 +260,13 @@ export const createNoteFn = createServerFn({ method: 'POST' })
     const now = new Date()
 
     let targetFolderId: string | null = null
+    let inheritedWorkspaceId: string | null = null
 
     // Resolve target folder if passed
     if (data.folderId && data.folderId.trim() !== '') {
       const decodedFolderId = decodeURIComponent(data.folderId)
       const existingFolder = await db
-        .select({ id: folder.id })
+        .select({ id: folder.id, workspace_id: folder.workspace_id })
         .from(folder)
         .where(
           or(
@@ -279,12 +280,13 @@ export const createNoteFn = createServerFn({ method: 'POST' })
 
       if (existingFolder.length > 0) {
         targetFolderId = existingFolder[0].id
+        inheritedWorkspaceId = existingFolder[0].workspace_id ?? null
       } else {
         targetFolderId = data.folderId
       }
     }
 
-    let targetWorkspaceId: string | null = null
+    let targetWorkspaceId: string | null = inheritedWorkspaceId
     if (data.workspaceId && data.workspaceId.trim() !== '') {
       const existingWs = await db
         .select({ id: workspace.id })

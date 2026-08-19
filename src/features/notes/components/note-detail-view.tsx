@@ -1,23 +1,27 @@
 import { useEffect, useState, useMemo } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
 import { Minimize2, FileText, Plus } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { NODES } from '@/shared/mocks/mock-data'
 import { NoteDetailHeader } from './note-detail-header'
 import { NotesSidebar } from './notes-sidebar'
 import { NoteEditor } from './note-editor'
+import { NoteModal } from './note-modal'
 import { NewNotePanel } from './new-note-panel'
 import type { NoteTab } from './folder-note-tabs-bar'
 import { Button, EmptyState } from '@/shared/ui'
-import { useNewNoteDialogStore } from '../store/use-new-note-dialog-store'
+import { ConfirmDeleteModal } from '@/shared/ui/system'
 import { useNoteTabsStore } from '../store/use-note-tabs-store'
 import {
   useNotesQuery,
   useCreateNoteMutation,
   useUpdateNoteMutation,
+  useDeleteNoteMutation,
   useTogglePinNoteMutation,
 } from '../hooks/use-notes'
 import type { NoteItem } from '@/shared/mocks/mock-data'
 import type { NewNoteValues } from '../note.validate'
+import type { NoteModalValues } from './note-modal'
 
 const MOCK_CONTENT: Record<string, string> = {
   default: `# Untitled Note\n\nStart writing your note here...\n\nThis is a **rich text / Lexical-ready** editor layout with support for:\n- *italic text*\n- **bold text**\n- \`inline code\`\n- [links](https://example.com)\n\n## Heading Example\n\nYour content goes here. Type '/' to invoke Lexical slash commands...`,
@@ -29,7 +33,6 @@ interface NoteDetailViewProps {
 
 export function NoteDetailView({ noteId }: NoteDetailViewProps) {
   const navigate = useNavigate()
-  const { open: openNewNoteDialog } = useNewNoteDialogStore()
 
   // Find node/folder by id or title matching
   const node = useMemo(() => {
@@ -69,6 +72,8 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
     closeNoteTab,
     setActiveNoteTab,
     togglePinNoteTab,
+    updateNoteTabTitle,
+    updateNoteTabTags,
   } = useNoteTabsStore()
 
   const currentFolderTabsData = folderTabsMap[folderKey] ?? {
@@ -86,12 +91,16 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
 
   const createNoteMutation = useCreateNoteMutation()
   const updateNoteMutation = useUpdateNoteMutation()
+  const deleteNoteMutation = useDeleteNoteMutation()
   const togglePinNoteMutation = useTogglePinNoteMutation()
 
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [contents, setContents] = useState<Record<string, string>>({})
   const [isFocusMode, setIsFocusMode] = useState(false)
   const [viewMode, setViewMode] = useState<'edit' | 'preview' | 'split'>('edit')
+
+  const [editingNote, setEditingNote] = useState<NoteItem | null>(null)
+  const [deletingNote, setDeletingNote] = useState<NoteItem | null>(null)
 
   // Map server notes to NoteItem format
   const notesList: NoteItem[] = useMemo(() => {
@@ -189,6 +198,52 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
     togglePinNoteTab(folderKey, tabId)
   }
 
+  // Quick / Instant Note Creation without interrupting modal form
+  const handleQuickCreateNote = async () => {
+    try {
+      // Compute next available default title
+      const existingNames = new Set(
+        notesList.map((n) => n.title.trim().toLowerCase())
+      )
+      let candidateTitle = 'Untitled Note'
+      let counter = 1
+      while (existingNames.has(candidateTitle.toLowerCase())) {
+        candidateTitle = `Untitled Note (${counter})`
+        counter++
+      }
+
+      const defaultContent = `# ${candidateTitle}\n\nStart writing your note content...`
+
+      const created = await createNoteMutation.mutateAsync({
+        name: candidateTitle,
+        folderId: folderKey,
+        tags: [],
+        isPinned: false,
+        content: defaultContent,
+      })
+
+      if (created) {
+        openNoteTab(folderKey, {
+          id: created.id,
+          title: created.name,
+          tags: (created.tags as string[]) || [],
+          isPinned: created.isPinned,
+          updated: 'Just now',
+          content: created.content ?? defaultContent,
+        })
+
+        setActiveNoteTab(folderKey, created.id)
+
+        setContents((prev) => ({
+          ...prev,
+          [created.id]: created.content ?? defaultContent,
+        }))
+      }
+    } catch (err) {
+      console.error('Failed to quick-create note:', err)
+    }
+  }
+
   const handleCreateNote = async (values: NewNoteValues) => {
     try {
       const created = await createNoteMutation.mutateAsync({
@@ -209,6 +264,8 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
           content: created.content ?? undefined,
         })
 
+        setActiveNoteTab(folderKey, created.id)
+
         setContents((prev) => ({
           ...prev,
           [created.id]:
@@ -218,6 +275,52 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
       }
     } catch (err) {
       console.error('Failed to create note on server:', err)
+    }
+  }
+
+  const handleTitleChange = (newTitle: string) => {
+    if (!activeTabId) return
+
+    // Immediately update tab title in local zustand store
+    updateNoteTabTitle(folderKey, activeTabId, newTitle)
+
+    // Persist note name to server if ID is a valid persisted record
+    if (activeTabId && !activeTabId.includes(' ')) {
+      updateNoteMutation.mutate({
+        id: activeTabId,
+        name: newTitle,
+      })
+    }
+  }
+
+  const handleAddTag = (tag: string) => {
+    if (!activeTabId || !activeNoteItem) return
+    const currentTags = activeNoteItem.tags || []
+    if (currentTags.includes(tag)) return
+    const newTags = [...currentTags, tag]
+
+    updateNoteTabTags(folderKey, activeTabId, newTags)
+
+    if (activeTabId && !activeTabId.includes(' ')) {
+      updateNoteMutation.mutate({
+        id: activeTabId,
+        tags: newTags,
+      })
+    }
+  }
+
+  const handleRemoveTag = (tag: string) => {
+    if (!activeTabId || !activeNoteItem) return
+    const currentTags = activeNoteItem.tags || []
+    const newTags = currentTags.filter((t) => t !== tag)
+
+    updateNoteTabTags(folderKey, activeTabId, newTags)
+
+    if (activeTabId && !activeTabId.includes(' ')) {
+      updateNoteMutation.mutate({
+        id: activeTabId,
+        tags: newTags,
+      })
     }
   }
 
@@ -236,6 +339,50 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
         })
       }
     }
+  }
+
+  const handleEditActiveNote = () => {
+    if (activeNoteItem) {
+      setEditingNote(activeNoteItem)
+    }
+  }
+
+  const handleDeleteActiveNote = () => {
+    if (activeNoteItem) {
+      setDeletingNote(activeNoteItem)
+    }
+  }
+
+  const handleEditNote = (item: NoteItem) => {
+    setEditingNote(item)
+  }
+
+  const handleDeleteNote = (item: NoteItem) => {
+    setDeletingNote(item)
+  }
+
+  const handleConfirmDeleteNote = () => {
+    if (!deletingNote?.id) return
+    const targetId = deletingNote.id
+    deleteNoteMutation.mutate(
+      { noteId: targetId, permanent: false },
+      {
+        onSuccess: () => {
+          closeNoteTab(folderKey, targetId)
+          setDeletingNote(null)
+        },
+      }
+    )
+  }
+
+  const handleSavedNoteModal = (data: NoteModalValues & { id?: string }) => {
+    if (data.id) {
+      updateNoteTabTitle(folderKey, data.id, data.name)
+      if (data.tags) {
+        updateNoteTabTags(folderKey, data.id, data.tags)
+      }
+    }
+    setEditingNote(null)
   }
 
   const handleCloseFolder = () => {
@@ -266,6 +413,9 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
           onCloseTab={handleCloseNoteTab}
           onTogglePinTab={handleTogglePinTab}
           onClose={handleCloseFolder}
+          onNewNote={handleQuickCreateNote}
+          onEditActiveNote={handleEditActiveNote}
+          onDeleteActiveNote={handleDeleteActiveNote}
         />
       )}
 
@@ -301,55 +451,99 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
             selectedNote={activeNoteItem}
             onSelectNote={handleSelectNote}
             onCloseMobile={() => setSidebarOpen(false)}
+            onNewNote={handleQuickCreateNote}
+            onEditNote={handleEditNote}
+            onDeleteNote={handleDeleteNote}
           />
         )}
 
         {/* Right Editor Canvas Area */}
         <div className="flex flex-1 flex-col overflow-hidden">
-          {openNoteTabs.length > 0 && activeNoteItem ? (
-            <NoteEditor
-              note={activeNoteItem}
-              content={currentContent}
-              viewMode={viewMode}
-              isFocusMode={isFocusMode}
-              onContentChange={handleContentChange}
-              onChangeViewMode={setViewMode}
-              onToggleSidebar={() => setSidebarOpen((v) => !v)}
-            />
-          ) : (
-            <div className="flex flex-1 flex-col items-center justify-center p-6 text-center">
-              <EmptyState
-                icon={FileText}
-                title={
-                  isLoading
-                    ? 'Loading notes...'
-                    : 'No note opened in this folder'
-                }
-                description={
-                  isLoading
-                    ? 'Retrieving notes from server...'
-                    : `Choose a note from the left sidebar or create a new note in "${node.title}" to start editing.`
-                }
-                action={
-                  <Button
-                    onClick={() => openNewNoteDialog()}
-                    disabled={createNoteMutation.isPending}
-                    className="cursor-pointer gap-2 bg-ns-primary font-semibold text-white shadow-lg hover:bg-ns-primary/85"
-                  >
-                    <Plus size={15} />
-                    <span>
-                      {createNoteMutation.isPending
-                        ? 'Creating...'
-                        : 'Create Note'}
-                    </span>
-                  </Button>
-                }
-                className="max-w-md py-12"
-              />
-            </div>
-          )}
+          <AnimatePresence mode="wait" initial={false}>
+            {openNoteTabs.length > 0 && activeNoteItem ? (
+              <motion.div
+                key={activeTabId || activeNoteItem.id}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.16, ease: 'easeOut' }}
+                className="flex flex-1 flex-col overflow-hidden"
+              >
+                <NoteEditor
+                  note={activeNoteItem}
+                  content={currentContent}
+                  viewMode={viewMode}
+                  isFocusMode={isFocusMode}
+                  onContentChange={handleContentChange}
+                  onTitleChange={handleTitleChange}
+                  onAddTag={handleAddTag}
+                  onRemoveTag={handleRemoveTag}
+                  onChangeViewMode={setViewMode}
+                  onToggleSidebar={() => setSidebarOpen((v) => !v)}
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="empty-note-state"
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{ duration: 0.16 }}
+                className="flex flex-1 flex-col items-center justify-center p-6 text-center"
+              >
+                <EmptyState
+                  icon={FileText}
+                  title={
+                    isLoading
+                      ? 'Loading notes...'
+                      : 'No note opened in this folder'
+                  }
+                  description={
+                    isLoading
+                      ? 'Retrieving notes from server...'
+                      : `Choose a note from the left sidebar or create a new note in "${node.title}" to start editing.`
+                  }
+                  action={
+                    <Button
+                      onClick={handleQuickCreateNote}
+                      disabled={createNoteMutation.isPending}
+                      className="cursor-pointer gap-2 bg-ns-primary font-semibold text-white shadow-lg hover:bg-ns-primary/85"
+                    >
+                      <Plus size={15} />
+                      <span>
+                        {createNoteMutation.isPending
+                          ? 'Creating...'
+                          : 'Create Note'}
+                      </span>
+                    </Button>
+                  }
+                  className="max-w-md py-12"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
+
+      {/* Note Edit Modal */}
+      <NoteModal
+        isOpen={Boolean(editingNote)}
+        onClose={() => setEditingNote(null)}
+        note={editingNote}
+        defaultFolderId={node.folderId}
+        onSubmit={handleSavedNoteModal}
+      />
+
+      {/* Confirm Delete Note Modal */}
+      <ConfirmDeleteModal
+        isOpen={Boolean(deletingNote)}
+        onClose={() => setDeletingNote(null)}
+        onConfirm={handleConfirmDeleteNote}
+        title="Delete Note"
+        description="Are you sure you want to move this note to trash?"
+        itemName={deletingNote?.title}
+        isPending={deleteNoteMutation.isPending}
+      />
 
       {/* Slide-in New Note Panel */}
       <NewNotePanel

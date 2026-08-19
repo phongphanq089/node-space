@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
 import { FileText, X, Plus, Pin, SplitSquareVertical } from 'lucide-react'
 import { cn } from '@/shared/lib/utils'
 import {
@@ -26,6 +27,7 @@ interface FolderNoteTabsBarProps {
   onCloseTab: (tabId: string) => void
   onTogglePinTab: (tabId: string) => void
   onChangeViewMode?: (mode: 'edit' | 'preview' | 'split') => void
+  onNewNote?: () => void
 }
 
 export function FolderNoteTabsBar({
@@ -36,6 +38,7 @@ export function FolderNoteTabsBar({
   onCloseTab,
   onTogglePinTab,
   onChangeViewMode,
+  onNewNote,
 }: FolderNoteTabsBarProps) {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
   const { open: openNewNoteDialog } = useNewNoteDialogStore()
@@ -56,119 +59,149 @@ export function FolderNoteTabsBar({
   return (
     <TooltipProvider delayDuration={200}>
       <div className="flex h-9 w-full shrink-0 items-center justify-between border-b border-ns-border-soft bg-ns-panel/80 px-2.5 backdrop-blur-md select-none">
-        {/* Scrollable Tabs List */}
+        {/* Scrollable Tabs List with Motion */}
         <div
           ref={scrollContainerRef}
           onWheel={handleWheel}
           className="no-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto py-0.5"
         >
-          {tabs.map((tab) => {
-            const isActive = tab.id === activeTabId
+          <AnimatePresence initial={false}>
+            {tabs.map((tab) => {
+              const isActive = tab.id === activeTabId
 
-            return (
-              <div
-                key={tab.id}
-                onClick={() => onSelectTab(tab.id)}
-                onMouseDown={(e) => handleMiddleClick(e, tab.id)}
-                className={cn(
-                  'group relative flex h-7 max-w-[180px] min-w-[100px] cursor-pointer items-center justify-between gap-1.5 rounded-md px-2 text-xs transition-all',
-                  isActive
-                    ? 'border border-ns-border-md bg-ns-surface font-medium text-white shadow-xs'
-                    : 'text-ns-ghost hover:border-ns-border-soft hover:bg-ns-hover/40 hover:text-ns-text'
-                )}
-                title={tab.title}
-              >
-                {/* Note Icon & Title */}
-                <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden">
-                  {tab.isPinned ? (
-                    <Pin
-                      size={10}
-                      className="shrink-0 rotate-45 fill-ns-primary-lt text-ns-primary-lt"
-                    />
-                  ) : (
-                    <FileText
-                      size={11}
-                      className={cn(
-                        'shrink-0',
-                        isActive ? 'text-ns-primary-lt' : 'text-ns-ghost'
-                      )}
+              return (
+                <motion.div
+                  key={tab.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.92, y: 3 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.88, y: -3 }}
+                  transition={{ duration: 0.18, ease: 'easeOut' }}
+                  onClick={() => onSelectTab(tab.id)}
+                  onMouseDown={(e) => handleMiddleClick(e, tab.id)}
+                  className={cn(
+                    'group relative flex h-7 max-w-[180px] min-w-[100px] cursor-pointer items-center justify-between gap-1.5 rounded-md px-2 text-xs transition-all',
+                    !isActive &&
+                      'text-ns-ghost hover:border-ns-border-soft hover:bg-ns-hover/40 hover:text-ns-text',
+                    isActive && 'font-medium text-white'
+                  )}
+                  title={tab.title}
+                >
+                  {/* Animated Background Pill */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="subFolderActiveTabBg"
+                      className="absolute inset-0 rounded-md border border-ns-border-md bg-ns-surface/90 shadow-xs"
+                      transition={{
+                        type: 'spring',
+                        stiffness: 500,
+                        damping: 35,
+                      }}
                     />
                   )}
-                  <span className="truncate text-[0.72rem]">{tab.title}</span>
-                </div>
 
-                {/* Actions: Pin & Close */}
-                <div className="flex shrink-0 items-center gap-0.5">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          onTogglePinTab(tab.id)
-                        }}
+                  {/* Note Icon & Title */}
+                  <div className="relative z-10 flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden">
+                    {tab.isPinned ? (
+                      <Pin
+                        size={10}
+                        className="shrink-0 rotate-45 fill-ns-primary-lt text-ns-primary-lt"
+                      />
+                    ) : (
+                      <FileText
+                        size={11}
                         className={cn(
-                          'flex h-4 w-4 cursor-pointer items-center justify-center rounded transition-opacity',
-                          tab.isPinned
-                            ? 'opacity-90 hover:opacity-100'
-                            : 'opacity-0 group-hover:opacity-60 hover:opacity-100!'
+                          'shrink-0 transition-colors',
+                          isActive ? 'text-ns-primary-lt' : 'text-ns-ghost'
                         )}
-                        aria-label={
-                          tab.isPinned ? 'Unpin note tab' : 'Pin note tab'
-                        }
-                      >
-                        <Pin
-                          size={9}
-                          className={
-                            tab.isPinned
-                              ? 'fill-ns-primary-lt text-ns-primary-lt'
-                              : 'text-ns-ghost'
-                          }
-                        />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">
-                      <p>{tab.isPinned ? 'Unpin tab' : 'Pin tab'}</p>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      onCloseTab(tab.id)
-                    }}
-                    className={cn(
-                      'flex h-4 w-4 cursor-pointer items-center justify-center rounded text-ns-ghost transition-all hover:bg-ns-hover hover:text-white',
-                      isActive
-                        ? 'opacity-80 hover:opacity-100'
-                        : 'opacity-0 group-hover:opacity-80 hover:opacity-100!'
+                      />
                     )}
-                    aria-label="Close note tab"
-                  >
-                    <X size={10} />
-                  </button>
-                </div>
+                    <span className="truncate text-[0.72rem]">{tab.title}</span>
+                  </div>
 
-                {/* Active Indicator Underline */}
-                {isActive && (
-                  <span className="absolute right-1.5 bottom-0 left-1.5 h-0.5 rounded-full bg-ns-primary shadow-[0_0_6px_rgba(139,92,246,0.6)]" />
-                )}
-              </div>
-            )
-          })}
+                  {/* Actions: Pin & Close */}
+                  <div className="relative z-10 flex shrink-0 items-center gap-0.5">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onTogglePinTab(tab.id)
+                          }}
+                          className={cn(
+                            'flex h-4 w-4 cursor-pointer items-center justify-center rounded transition-opacity',
+                            tab.isPinned
+                              ? 'opacity-90 hover:opacity-100'
+                              : 'opacity-0 group-hover:opacity-60 hover:opacity-100!'
+                          )}
+                          aria-label={
+                            tab.isPinned ? 'Unpin note tab' : 'Pin note tab'
+                          }
+                        >
+                          <Pin
+                            size={9}
+                            className={
+                              tab.isPinned
+                                ? 'fill-ns-primary-lt text-ns-primary-lt'
+                                : 'text-ns-ghost'
+                            }
+                          />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">
+                        <p>{tab.isPinned ? 'Unpin tab' : 'Pin tab'}</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onCloseTab(tab.id)
+                      }}
+                      className={cn(
+                        'flex h-4 w-4 cursor-pointer items-center justify-center rounded text-ns-ghost transition-all hover:bg-ns-hover hover:text-white',
+                        isActive
+                          ? 'opacity-80 hover:opacity-100'
+                          : 'opacity-0 group-hover:opacity-80 hover:opacity-100!'
+                      )}
+                      aria-label="Close note tab"
+                    >
+                      <X size={10} />
+                    </button>
+                  </div>
+
+                  {/* Active Indicator Underline */}
+                  {isActive && (
+                    <motion.span
+                      layoutId="subFolderActiveTabUnderline"
+                      className="absolute right-1.5 bottom-0 left-1.5 h-0.5 rounded-full bg-ns-primary shadow-[0_0_6px_rgba(139,92,246,0.6)]"
+                      transition={{
+                        type: 'spring',
+                        stiffness: 500,
+                        damping: 35,
+                      }}
+                    />
+                  )}
+                </motion.div>
+              )
+            })}
+          </AnimatePresence>
 
           {/* Plus (+) New Note Button inside this Folder */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 type="button"
-                onClick={() => openNewNoteDialog()}
+                onClick={() => (onNewNote ? onNewNote() : openNewNoteDialog())}
                 className="flex h-6.5 w-6.5 shrink-0 cursor-pointer items-center justify-center rounded-md text-ns-ghost transition-all hover:bg-ns-hover hover:text-white"
                 aria-label="New Note in Folder"
               >
                 <Plus size={13} />
-              </button>
+              </motion.button>
             </TooltipTrigger>
             <TooltipContent side="bottom">
               <p>New Note in this folder</p>

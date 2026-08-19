@@ -33,6 +33,8 @@ interface NoteTabsState {
   closeNoteTab: (folderId: string, noteId: string) => void
   setActiveNoteTab: (folderId: string, noteId: string | null) => void
   togglePinNoteTab: (folderId: string, noteId: string) => void
+  updateNoteTabTitle: (folderId: string, noteId: string, title: string) => void
+  updateNoteTabTags: (folderId: string, noteId: string, tags: string[]) => void
   setFolderTabs: (folderId: string, data: FolderTabsData) => void
 
   // Backward compatibility actions
@@ -159,6 +161,46 @@ export const useNoteTabsStore = create<NoteTabsState>()(
             [folderId]: {
               ...current,
               tabs: sorted,
+            },
+          },
+        })
+      },
+
+      updateNoteTabTitle: (folderId: string, noteId: string, title: string) => {
+        const { folderTabsMap } = get()
+        const current = folderTabsMap[folderId] ?? {
+          tabs: [],
+          activeTabId: null,
+        }
+        const updatedTabs = current.tabs.map((t) =>
+          t.id === noteId || t.title === noteId ? { ...t, title } : t
+        )
+        set({
+          folderTabsMap: {
+            ...folderTabsMap,
+            [folderId]: {
+              ...current,
+              tabs: updatedTabs,
+            },
+          },
+        })
+      },
+
+      updateNoteTabTags: (folderId: string, noteId: string, tags: string[]) => {
+        const { folderTabsMap } = get()
+        const current = folderTabsMap[folderId] ?? {
+          tabs: [],
+          activeTabId: null,
+        }
+        const updatedTabs = current.tabs.map((t) =>
+          t.id === noteId || t.title === noteId ? { ...t, tags } : t
+        )
+        set({
+          folderTabsMap: {
+            ...folderTabsMap,
+            [folderId]: {
+              ...current,
+              tabs: updatedTabs,
             },
           },
         })

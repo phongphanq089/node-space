@@ -13,6 +13,9 @@ interface NoteEditorProps {
   onContentChange: (value: string) => void
   onChangeViewMode: (mode: ViewMode) => void
   onToggleSidebar: () => void
+  onTitleChange?: (title: string) => void
+  onAddTag?: (tag: string) => void
+  onRemoveTag?: (tag: string) => void
 }
 
 export function NoteEditor({
@@ -22,6 +25,9 @@ export function NoteEditor({
   isFocusMode,
   onContentChange,
   onToggleSidebar,
+  onTitleChange,
+  onAddTag,
+  onRemoveTag,
 }: NoteEditorProps) {
   const {
     selectedBlockType,
@@ -52,6 +58,9 @@ export function NoteEditor({
         wordCount={wordCount}
         readingTime={readingTime}
         onContentChange={onContentChange}
+        onTitleChange={onTitleChange}
+        onAddTag={onAddTag}
+        onRemoveTag={onRemoveTag}
       />
 
       <NoteStatusBar

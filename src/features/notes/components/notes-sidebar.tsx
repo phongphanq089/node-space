@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FileText, Plus, Search, Star, X } from 'lucide-react'
+import { FileText, Plus, Search, Star, X, Pencil, Trash2 } from 'lucide-react'
 import type { NoteItem } from '@/shared/mocks/mock-data'
 
 import { cn } from '@/shared/lib/utils'
@@ -12,6 +12,9 @@ interface NotesSidebarProps {
   selectedNote?: NoteItem | null
   onSelectNote: (note: NoteItem) => void
   onCloseMobile?: () => void
+  onNewNote?: () => void
+  onEditNote?: (note: NoteItem) => void
+  onDeleteNote?: (note: NoteItem) => void
 }
 
 export function NotesSidebar({
@@ -20,6 +23,9 @@ export function NotesSidebar({
   selectedNote,
   onSelectNote,
   onCloseMobile,
+  onNewNote,
+  onEditNote,
+  onDeleteNote,
 }: NotesSidebarProps) {
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -103,7 +109,11 @@ export function NotesSidebar({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => useNewNoteDialogStore.getState().open()}
+                onClick={() =>
+                  onNewNote
+                    ? onNewNote()
+                    : useNewNoteDialogStore.getState().open()
+                }
                 className="mt-3 cursor-pointer gap-1.5 border-ns-border text-[0.68rem] font-semibold text-ns-primary-lt hover:border-ns-primary/50 hover:bg-ns-primary/10"
               >
                 <Plus size={12} />
@@ -118,7 +128,7 @@ export function NotesSidebar({
               : false
             return (
               <Button
-                key={note.title}
+                key={note.id || note.title}
                 onClick={() => onSelectNote(note)}
                 variant="outline"
                 className={cn(
@@ -151,13 +161,46 @@ export function NotesSidebar({
                     >
                       {note.title}
                     </p>
-                    {note.starred && (
-                      <Star
-                        size={10}
-                        fill="#fbbf24"
-                        className="shrink-0 text-amber-400"
-                      />
-                    )}
+                    <div className="flex shrink-0 items-center gap-1">
+                      {note.starred && (
+                        <Star
+                          size={10}
+                          fill="#fbbf24"
+                          className="shrink-0 text-amber-400"
+                        />
+                      )}
+                      {/* Action buttons (Edit & Delete) */}
+                      {(onEditNote || onDeleteNote) && (
+                        <div className="flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
+                          {onEditNote && (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                onEditNote(note)
+                              }}
+                              className="flex h-5 w-5 cursor-pointer items-center justify-center rounded text-ns-ghost transition-colors hover:bg-ns-hover hover:text-white"
+                              title="Edit Note Properties"
+                            >
+                              <Pencil size={10} />
+                            </button>
+                          )}
+                          {onDeleteNote && (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                onDeleteNote(note)
+                              }}
+                              className="flex h-5 w-5 cursor-pointer items-center justify-center rounded text-ns-ghost transition-colors hover:bg-red-500/20 hover:text-red-400"
+                              title="Delete Note"
+                            >
+                              <Trash2 size={10} />
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <div className="mt-1 flex flex-wrap gap-1">
                     {note.tags.slice(0, 2).map((t) => (
@@ -182,7 +225,9 @@ export function NotesSidebar({
       {/* Action Footer */}
       <div className="border-t border-ns-border-soft bg-ns-panel/80 p-2">
         <Button
-          onClick={() => useNewNoteDialogStore.getState().open()}
+          onClick={() =>
+            onNewNote ? onNewNote() : useNewNoteDialogStore.getState().open()
+          }
           className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md bg-ns-primary py-2 text-xs font-bold text-white shadow-md transition-all hover:bg-ns-primary/80"
         >
           <Plus size={14} />

@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { Link, useLocation, useNavigate } from '@tanstack/react-router'
+import { motion, AnimatePresence } from 'motion/react'
 import { LayoutDashboard, Folder, FileText, X, Plus, Pin } from 'lucide-react'
 import { useNoteTabsStore } from '@/features/notes'
 import { useNewNoteDialogStore } from '@/features/notes/store/use-new-note-dialog-store'
@@ -87,7 +88,11 @@ export function WorkspaceTabsBar() {
             />
             <span className="truncate whitespace-nowrap">Dashboard</span>
             {isHomeActive && (
-              <span className="absolute right-2 bottom-0 left-2 h-0.5 rounded-full bg-ns-primary" />
+              <motion.span
+                layoutId="globalActiveTabIndicator"
+                className="absolute right-2 bottom-0 left-2 h-0.5 rounded-full bg-ns-primary shadow-[0_0_8px_rgba(139,92,246,0.8)]"
+                transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+              />
             )}
           </Link>
 
@@ -112,118 +117,152 @@ export function WorkspaceTabsBar() {
             />
             <span className="truncate whitespace-nowrap">Folders</span>
             {isFoldersActive && (
-              <span className="absolute right-2 bottom-0 left-2 h-0.5 rounded-full bg-ns-primary" />
+              <motion.span
+                layoutId="globalActiveTabIndicator"
+                className="absolute right-2 bottom-0 left-2 h-0.5 rounded-full bg-ns-primary shadow-[0_0_8px_rgba(139,92,246,0.8)]"
+                transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+              />
             )}
           </Link>
 
           <div className="mx-1 h-3.5 w-px shrink-0 bg-ns-border/60" />
 
-          {/* Dynamic Note Tabs */}
-          {tabs.map((tab) => {
-            const isTabActive =
-              !isHomeActive &&
-              (location.pathname === `/workspace/notes/${tab.id}` ||
-                activeTabId === tab.id)
+          {/* Dynamic Note Tabs with Motion */}
+          <AnimatePresence initial={false}>
+            {tabs.map((tab) => {
+              const isTabActive =
+                !isHomeActive &&
+                (location.pathname === `/workspace/notes/${tab.id}` ||
+                  activeTabId === tab.id)
 
-            return (
-              <div
-                key={tab.id}
-                onClick={() => handleTabClick(tab.id)}
-                onMouseDown={(e) => handleMiddleClick(e, tab.id)}
-                className={cn(
-                  'group relative flex h-7.5 max-w-[200px] min-w-[110px] cursor-pointer items-center justify-between gap-1.5 rounded-lg px-2.5 text-xs transition-all',
-                  isTabActive
-                    ? 'border border-ns-border-md bg-ns-surface font-medium text-white shadow-xs'
-                    : 'text-ns-ghost hover:border-ns-border-soft hover:bg-ns-hover/40 hover:text-ns-text'
-                )}
-                title={tab.title}
-              >
-                {/* Left icon + Title */}
-                <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden">
-                  {tab.isPinned ? (
-                    <Pin
-                      size={11}
-                      className="shrink-0 rotate-45 fill-ns-primary-lt text-ns-primary-lt"
-                    />
-                  ) : (
-                    <FileText
-                      size={12}
-                      className={cn(
-                        'shrink-0',
-                        isTabActive ? 'text-ns-primary-lt' : 'text-ns-ghost'
-                      )}
+              return (
+                <motion.div
+                  key={tab.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.92, y: 3 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.88, y: -3 }}
+                  transition={{ duration: 0.18, ease: 'easeOut' }}
+                  onClick={() => handleTabClick(tab.id)}
+                  onMouseDown={(e) => handleMiddleClick(e, tab.id)}
+                  className={cn(
+                    'group relative flex h-7.5 max-w-[200px] min-w-[110px] cursor-pointer items-center justify-between gap-1.5 rounded-lg px-2.5 text-xs transition-all',
+                    !isTabActive &&
+                      'text-ns-ghost hover:border-ns-border-soft hover:bg-ns-hover/40 hover:text-ns-text',
+                    isTabActive && 'font-medium text-white'
+                  )}
+                  title={tab.title}
+                >
+                  {/* Active Background Pill */}
+                  {isTabActive && (
+                    <motion.div
+                      layoutId="globalActiveTabBg"
+                      className="absolute inset-0 rounded-lg border border-ns-border-md bg-ns-surface/90 shadow-xs"
+                      transition={{
+                        type: 'spring',
+                        stiffness: 500,
+                        damping: 35,
+                      }}
                     />
                   )}
-                  <span className="truncate text-xs">{tab.title}</span>
-                </div>
 
-                {/* Right Tab Actions: Pin toggle & Close */}
-                <div className="flex shrink-0 items-center gap-0.5">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          togglePinTab(tab.id)
-                        }}
+                  {/* Left icon + Title */}
+                  <div className="relative z-10 flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden">
+                    {tab.isPinned ? (
+                      <Pin
+                        size={11}
+                        className="shrink-0 rotate-45 fill-ns-primary-lt text-ns-primary-lt"
+                      />
+                    ) : (
+                      <FileText
+                        size={12}
                         className={cn(
-                          'flex h-4.5 w-4.5 cursor-pointer items-center justify-center rounded transition-opacity',
-                          tab.isPinned
-                            ? 'opacity-80 hover:opacity-100'
-                            : 'opacity-0 group-hover:opacity-60 hover:opacity-100!'
+                          'shrink-0 transition-colors',
+                          isTabActive ? 'text-ns-primary-lt' : 'text-ns-ghost'
                         )}
-                        aria-label={tab.isPinned ? 'Unpin tab' : 'Pin tab'}
-                      >
-                        <Pin
-                          size={10}
-                          className={
-                            tab.isPinned
-                              ? 'fill-ns-primary-lt text-ns-primary-lt'
-                              : 'text-ns-ghost'
-                          }
-                        />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">
-                      <p>{tab.isPinned ? 'Unpin tab' : 'Pin tab'}</p>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <button
-                    type="button"
-                    onClick={(e) => handleCloseTab(e, tab.id)}
-                    className={cn(
-                      'flex h-4.5 w-4.5 cursor-pointer items-center justify-center rounded text-ns-ghost transition-all hover:bg-ns-hover hover:text-white',
-                      isTabActive
-                        ? 'opacity-80 hover:opacity-100'
-                        : 'opacity-0 group-hover:opacity-80 hover:opacity-100!'
+                      />
                     )}
-                    aria-label="Close tab"
-                  >
-                    <X size={11} />
-                  </button>
-                </div>
+                    <span className="truncate text-xs">{tab.title}</span>
+                  </div>
 
-                {/* Active Underline indicator */}
-                {isTabActive && (
-                  <span className="absolute right-2 bottom-0 left-2 h-0.5 rounded-full bg-ns-primary shadow-[0_0_8px_rgba(139,92,246,0.6)]" />
-                )}
-              </div>
-            )
-          })}
+                  {/* Right Tab Actions: Pin toggle & Close */}
+                  <div className="relative z-10 flex shrink-0 items-center gap-0.5">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            togglePinTab(tab.id)
+                          }}
+                          className={cn(
+                            'flex h-4.5 w-4.5 cursor-pointer items-center justify-center rounded transition-opacity',
+                            tab.isPinned
+                              ? 'opacity-80 hover:opacity-100'
+                              : 'opacity-0 group-hover:opacity-60 hover:opacity-100!'
+                          )}
+                          aria-label={tab.isPinned ? 'Unpin tab' : 'Pin tab'}
+                        >
+                          <Pin
+                            size={10}
+                            className={
+                              tab.isPinned
+                                ? 'fill-ns-primary-lt text-ns-primary-lt'
+                                : 'text-ns-ghost'
+                            }
+                          />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">
+                        <p>{tab.isPinned ? 'Unpin tab' : 'Pin tab'}</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <button
+                      type="button"
+                      onClick={(e) => handleCloseTab(e, tab.id)}
+                      className={cn(
+                        'flex h-4.5 w-4.5 cursor-pointer items-center justify-center rounded text-ns-ghost transition-all hover:bg-ns-hover hover:text-white',
+                        isTabActive
+                          ? 'opacity-80 hover:opacity-100'
+                          : 'opacity-0 group-hover:opacity-80 hover:opacity-100!'
+                      )}
+                      aria-label="Close tab"
+                    >
+                      <X size={11} />
+                    </button>
+                  </div>
+
+                  {/* Active Underline indicator */}
+                  {isTabActive && (
+                    <motion.span
+                      layoutId="globalActiveTabIndicator"
+                      className="absolute right-2 bottom-0 left-2 h-0.5 rounded-full bg-ns-primary shadow-[0_0_8px_rgba(139,92,246,0.8)]"
+                      transition={{
+                        type: 'spring',
+                        stiffness: 500,
+                        damping: 35,
+                      }}
+                    />
+                  )}
+                </motion.div>
+              )
+            })}
+          </AnimatePresence>
 
           {/* Plus (+) New Note Button */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 type="button"
                 onClick={() => useNewNoteDialogStore.getState().open()}
-                className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-ns-ghost transition-all hover:bg-ns-hover hover:text-white"
+                className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-ns-ghost transition-colors hover:bg-ns-hover hover:text-white"
                 aria-label="New Note"
               >
                 <Plus size={14} />
-              </button>
+              </motion.button>
             </TooltipTrigger>
             <TooltipContent side="bottom">
               <p>New Note</p>
