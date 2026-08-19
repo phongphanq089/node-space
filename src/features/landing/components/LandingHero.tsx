@@ -45,7 +45,7 @@ export default function LandingHero() {
               <Link to="/login">Login</Link>
             </Button>
             <Button asChild size="lg" className="cursor-pointer">
-              <Link to="/register">Get started free</Link>
+              <Link to="/design-system">Get Design system</Link>
             </Button>
           </div>
         </div>

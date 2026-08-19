@@ -162,6 +162,14 @@ export {
   TooltipProvider,
   TooltipTrigger,
 } from './tooltip'
+export {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverAnchor,
+  PopoverClose,
+  PopoverPortal,
+} from './popover'
 export { Toaster } from './sonner'
 
 // ─── Layout / Scroll ──────────────────────────────────────────
