@@ -10,8 +10,6 @@ import { toast } from 'sonner'
 import {
   Avatar,
   AvatarFallback,
-  AvatarGroup,
-  AvatarGroupCount,
   AvatarImage,
   Breadcrumb,
   BreadcrumbItem,

@@ -9,8 +9,41 @@ import { DefaultCatchBoundary } from '@/shared/ui/system/default-catch-boundary'
 import { Toaster } from '@/shared/ui/core/sonner'
 import { seo } from '@/shared/lib/utils'
 
-// Inline theme init — runs before React hydration to prevent flash
-const THEME_INIT_SCRIPT = `(function(){try{var root=document.documentElement;root.classList.remove('light');root.classList.add('dark');root.setAttribute('data-theme','dark');root.style.colorScheme='dark';}catch(e){}})();`
+import { useEffect } from 'react'
+import { useThemeStore } from '@/shared/stores/use-theme-store'
+
+// Inline theme init — runs synchronously before React hydration to completely prevent flash (FOUC)
+const THEME_INIT_SCRIPT = `(function(){
+  try {
+    var raw = localStorage.getItem('nodespace-theme');
+    var theme = raw ? JSON.parse(raw) : null;
+    var state = theme && theme.state ? theme.state : {};
+    var mode = state.mode || 'dark';
+    var accent = state.accent || 'violet';
+    var customColor = state.customColor || '';
+
+    var isDark = mode === 'dark' || (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    var root = document.documentElement;
+
+    if (isDark) {
+      root.classList.add('dark');
+      root.classList.remove('light');
+      root.setAttribute('data-theme', 'dark');
+      root.style.colorScheme = 'dark';
+    } else {
+      root.classList.add('light');
+      root.classList.remove('dark');
+      root.setAttribute('data-theme', 'light');
+      root.style.colorScheme = 'light';
+    }
+
+    root.setAttribute('data-accent', accent);
+    if (accent === 'custom' && customColor) {
+      root.style.setProperty('--ns-primary', customColor);
+      root.style.setProperty('--ns-primary-lt', customColor);
+    }
+  } catch (e) {}
+})();`
 
 const SITE_URL = 'https://nodespace.com'
 
@@ -107,21 +140,22 @@ export const Route = createRootRoute({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    const cleanup = useThemeStore.getState().initThemeListener()
+    return () => cleanup()
+  }, [])
+
   return (
     <html
       lang="en"
       className="dark"
       data-theme="dark"
-      style={{ colorScheme: 'dark' }}
+      data-accent="violet"
       suppressHydrationWarning
     >
       <head suppressHydrationWarning>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
-        {/* <script
-          crossOrigin="anonymous"
-          src="//unpkg.com/react-scan/dist/auto.global.js"
-        ></script> */}
       </head>
       <body
         className="font-sans wrap-anywhere antialiased"

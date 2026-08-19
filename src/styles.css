@@ -8,13 +8,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ─────────────────────────────────────────────────────────────
-   @theme — Single Source of Truth
-   All design tokens live here. One block, no duplicates.
-
-   Palette intent:
-     primary  : #7c3aed  (violet-700)
-     secondary: #6366f1  (indigo-500)
-     accent-lt: #a78bfa  (violet-400) — lighter tint / highlight
+  @theme — Dynamic Token Bridge (Tailwind CSS v4)
+  All utilities read from CSS variables to support dynamic themes.
    ───────────────────────────────────────────────────────────── */
 @theme {
   /* ── Typography ────────────────────────────────────────────── */
@@ -31,16 +26,15 @@
   --breakpoint-3xl: 1800px;
 
   /* ── Z-index scale ─────────────────────────────────────────── */
-  /* Named layers — never use z-[N] directly in components       */
-  --z-base: 1; /* in-flow stacking, e.g. card glow layer    */
-  --z-raised: 2; /* element above its sibling, e.g. card body */
-  --z-float: 40; /* floating elements: PiP video, FAB buttons */
-  --z-sticky: 50; /* sticky headers, topbar                    */
-  --z-dropdown: 150; /* dropdowns, tooltips, popovers             */
-  --z-overlay: 100; /* fullscreen overlays, modal backdrops       */
-  --z-modal: 101; /* modal / dialog panels above overlay        */
-  --z-immersive: 999; /* immersive fullscreen (music player, etc.)  */
-  --z-supreme: 1000; /* topmost — expanded media, critical alerts  */
+  --z-base: 1;
+  --z-raised: 2;
+  --z-float: 40;
+  --z-sticky: 50;
+  --z-dropdown: 150;
+  --z-overlay: 100;
+  --z-modal: 101;
+  --z-immersive: 999;
+  --z-supreme: 1000;
 
   /* Tailwind bridge (z-ns-* utility classes) */
   --z-index-ns-base: var(--z-base);
@@ -54,45 +48,45 @@
   --z-index-ns-supreme: var(--z-supreme);
 
   /* ── Backgrounds ───────────────────────────────────────────── */
-  --color-ns-bg: #09070f; /* deepest background */
-  --color-ns-surface: #0e0c1b; /* card / panel surface */
-  --color-ns-surface-alt: #0a0813; /* alternate surface (slightly darker) */
-  --color-ns-panel: #0d0b18; /* popover / dropdown panel */
-  --color-ns-topbar: #09070f; /* topbar matches bg */
-  --color-ns-input: rgba(255, 255, 255, 0.03);
+  --color-ns-bg: var(--ns-bg);
+  --color-ns-surface: var(--ns-surface);
+  --color-ns-surface-alt: var(--ns-surface-alt);
+  --color-ns-panel: var(--ns-panel);
+  --color-ns-topbar: var(--ns-topbar);
+  --color-ns-input: var(--ns-input);
 
   /* ── Interactive states ────────────────────────────────────── */
-  --color-ns-hover: rgba(124, 58, 237, 0.08);
-  --color-ns-hover-md: rgba(124, 58, 237, 0.15);
-  --color-ns-active: rgba(124, 58, 237, 0.22);
+  --color-ns-hover: var(--ns-hover);
+  --color-ns-hover-md: var(--ns-hover-md);
+  --color-ns-active: var(--ns-active);
 
   /* ── Borders ───────────────────────────────────────────────── */
-  --color-ns-border: rgba(124, 58, 237, 0.4); /* standard */
-  --color-ns-border-soft: rgba(124, 58, 237, 0.08); /* subtle dividers */
-  --color-ns-border-md: rgba(124, 58, 237, 0.2); /* medium emphasis */
-  --color-ns-border-em: rgba(124, 58, 237, 0.35); /* high emphasis */
-  --color-ns-input-focus: rgba(124, 58, 237, 0.5);
+  --color-ns-border: var(--ns-border);
+  --color-ns-border-soft: var(--ns-border-soft);
+  --color-ns-border-md: var(--ns-border-md);
+  --color-ns-border-em: var(--ns-border-em);
+  --color-ns-input-focus: var(--ns-input-focus);
 
   /* ── Brand colors ──────────────────────────────────────────── */
-  --color-ns-primary: #7c3aed; /* violet-700 */
-  --color-ns-primary-lt: #a78bfa; /* violet-400, lighter tint */
-  --color-ns-secondary: #6366f1; /* indigo-500 */
-  --color-ns-purple: #6366f1; /* alias → secondary */
-  --color-ns-pink: #e05c9a;
-  --color-ns-amber: #f59e0b;
+  --color-ns-primary: var(--ns-primary);
+  --color-ns-primary-lt: var(--ns-primary-lt);
+  --color-ns-secondary: var(--ns-secondary);
+  --color-ns-purple: var(--ns-secondary);
+  --color-ns-pink: var(--ns-pink);
+  --color-ns-amber: var(--ns-amber);
 
   /* ── Text scale ────────────────────────────────────────────── */
-  --color-ns-text: #f5f3ff; /* primary text */
-  --color-ns-text-2: #ddd6fe; /* secondary text */
-  --color-ns-muted: rgb(221 214 254 / 0.65);
-  --color-ns-muted-md: rgb(221 214 254 / 0.55);
-  --color-ns-muted-sm: rgb(221 214 254 / 0.45);
-  --color-ns-faint: rgb(221 214 254 / 0.35);
-  --color-ns-ghost: rgb(221 214 254 / 0.4);
-  --color-ns-placeholder: rgb(221 214 254 / 0.3);
+  --color-ns-text: var(--ns-text);
+  --color-ns-text-2: var(--ns-text-2);
+  --color-ns-muted: var(--ns-muted);
+  --color-ns-muted-md: var(--ns-muted-md);
+  --color-ns-muted-sm: var(--ns-muted-sm);
+  --color-ns-faint: var(--ns-faint);
+  --color-ns-ghost: var(--ns-ghost);
+  --color-ns-placeholder: var(--ns-placeholder);
 
   /* ── On-color ──────────────────────────────────────────────── */
-  --color-ns-on-accent: #ffffff;
+  --color-ns-on-accent: var(--ns-on-accent);
 
   /* ── Radius scale (relative to shadcn --radius) ───────────── */
   --radius-sm: calc(var(--radius) * 0.6);
@@ -142,56 +136,220 @@
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Semantic Token Layer (shadcn aliases → ns-* source of truth)
-   App is dark-only. .dark is always active on <html>.
-   These vars are read by Tailwind via the @theme bridge above.
+   Light Mode — Default Theme Variables (:root)
    ───────────────────────────────────────────────────────────── */
 :root {
-  /* ── Base ──────────────────────────────────────────────────── */
   --radius: 0.625rem;
 
-  /* ── Backgrounds → ns-* ────────────────────────────────────── */
-  --background: var(--color-ns-bg);
-  --card: var(--color-ns-surface);
-  --card-foreground: var(--color-ns-text);
-  --popover: var(--color-ns-panel);
-  --popover-foreground: var(--color-ns-text);
-  --muted: var(--color-ns-surface-alt);
-  --input: var(--color-ns-input);
+  /* ── Backgrounds ── */
+  --ns-bg: #f8f9fc;
+  --ns-surface: #ffffff;
+  --ns-surface-alt: #f1f3f9;
+  --ns-panel: #ffffff;
+  --ns-topbar: #ffffff;
+  --ns-input: rgba(0, 0, 0, 0.04);
 
-  /* ── Brand → ns-* ──────────────────────────────────────────── */
-  --primary: var(--color-ns-primary);
-  --primary-foreground: var(--color-ns-on-accent);
-  --secondary: var(--color-ns-surface-alt);
-  --secondary-foreground: var(--color-ns-text);
-  --accent: var(--color-ns-hover-md);
-  --accent-foreground: var(--color-ns-text);
+  /* ── Interactive states ── */
+  --ns-hover: color-mix(in srgb, var(--ns-primary) 8%, transparent);
+  --ns-hover-md: color-mix(in srgb, var(--ns-primary) 14%, transparent);
+  --ns-active: color-mix(in srgb, var(--ns-primary) 20%, transparent);
+
+  /* ── Borders ── */
+  --ns-border: rgba(0, 0, 0, 0.14);
+  --ns-border-soft: rgba(0, 0, 0, 0.06);
+  --ns-border-md: rgba(0, 0, 0, 0.12);
+  --ns-border-em: rgba(0, 0, 0, 0.22);
+  --ns-input-focus: color-mix(in srgb, var(--ns-primary) 50%, transparent);
+
+  /* ── Text scale ── */
+  --ns-text: #09090b;
+  --ns-text-2: #27272a;
+  --ns-muted: rgb(100 116 139 / 0.8);
+  --ns-muted-md: rgb(100 116 139 / 0.65);
+  --ns-muted-sm: rgb(100 116 139 / 0.5);
+  --ns-faint: rgb(100 116 139 / 0.35);
+  --ns-ghost: rgb(100 116 139 / 0.3);
+  --ns-placeholder: rgb(100 116 139 / 0.45);
+  --ns-on-accent: #ffffff;
+
+  /* ── Default Accent (Violet) ── */
+  --ns-primary: #7c3aed;
+  --ns-primary-lt: #8b5cf6;
+  --ns-secondary: #6366f1;
+  --ns-pink: #ec4899;
+  --ns-amber: #f59e0b;
+
+  /* ── Semantic Token Bridge (shadcn) ── */
+  --background: var(--ns-bg);
+  --foreground: var(--ns-text);
+  --card: var(--ns-surface);
+  --card-foreground: var(--ns-text);
+  --popover: var(--ns-panel);
+  --popover-foreground: var(--ns-text);
+  --primary: var(--ns-primary);
+  --primary-foreground: var(--ns-on-accent);
+  --secondary: var(--ns-surface-alt);
+  --secondary-foreground: var(--ns-text);
+  --muted: var(--ns-surface-alt);
+  --muted-foreground: var(--ns-muted);
+  --accent: var(--ns-hover-md);
+  --accent-foreground: var(--ns-text);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: var(--ns-border-soft);
+  --input: var(--ns-input);
+  --ring: var(--ns-primary);
+
+  /* ── Sidebar ── */
+  --sidebar: var(--ns-bg);
+  --sidebar-foreground: var(--ns-text-2);
+  --sidebar-primary: var(--ns-primary);
+  --sidebar-primary-foreground: var(--ns-on-accent);
+  --sidebar-accent: var(--ns-surface-alt);
+  --sidebar-accent-foreground: var(--ns-text);
+  --sidebar-border: var(--ns-border-soft);
+  --sidebar-ring: var(--ns-primary);
+
+  /* ── Charts ── */
+  --chart-1: var(--ns-primary);
+  --chart-2: var(--ns-secondary);
+  --chart-3: var(--ns-pink);
+  --chart-4: var(--ns-amber);
+  --chart-5: var(--ns-primary-lt);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Dark Mode — Overrides (.dark)
+   ───────────────────────────────────────────────────────────── */
+.dark {
+  /* ── Backgrounds ── */
+  --ns-bg: #09070f;
+  --ns-surface: #0e0c1b;
+  --ns-surface-alt: #0a0813;
+  --ns-panel: #0d0b18;
+  --ns-topbar: #09070f;
+  --ns-input: rgba(255, 255, 255, 0.03);
+
+  /* ── Interactive states ── */
+  --ns-hover: color-mix(in srgb, var(--ns-primary) 12%, transparent);
+  --ns-hover-md: color-mix(in srgb, var(--ns-primary) 20%, transparent);
+  --ns-active: color-mix(in srgb, var(--ns-primary) 30%, transparent);
+
+  /* ── Borders ── */
+  --ns-border: color-mix(
+    in srgb,
+    var(--ns-primary) 40%,
+    rgba(255, 255, 255, 0.08)
+  );
+  --ns-border-soft: color-mix(
+    in srgb,
+    var(--ns-primary) 12%,
+    rgba(255, 255, 255, 0.06)
+  );
+  --ns-border-md: color-mix(
+    in srgb,
+    var(--ns-primary) 22%,
+    rgba(255, 255, 255, 0.08)
+  );
+  --ns-border-em: color-mix(
+    in srgb,
+    var(--ns-primary) 38%,
+    rgba(255, 255, 255, 0.12)
+  );
+  --ns-input-focus: color-mix(in srgb, var(--ns-primary) 50%, transparent);
+
+  /* ── Text scale ── */
+  --ns-text: #f5f3ff;
+  --ns-text-2: #ddd6fe;
+  --ns-muted: rgb(221 214 254 / 0.65);
+  --ns-muted-md: rgb(221 214 254 / 0.55);
+  --ns-muted-sm: rgb(221 214 254 / 0.45);
+  --ns-faint: rgb(221 214 254 / 0.35);
+  --ns-ghost: rgb(221 214 254 / 0.4);
+  --ns-placeholder: rgb(221 214 254 / 0.3);
+  --ns-on-accent: #ffffff;
+
+  /* ── Default Accent (Violet) ── */
+  --ns-primary: #7c3aed;
+  --ns-primary-lt: #a78bfa;
+  --ns-secondary: #6366f1;
+  --ns-pink: #e05c9a;
+  --ns-amber: #f59e0b;
+
+  /* ── Semantic Token Bridge (shadcn) ── */
+  --background: var(--ns-bg);
+  --foreground: var(--ns-text);
+  --card: var(--ns-surface);
+  --card-foreground: var(--ns-text);
+  --popover: var(--ns-panel);
+  --popover-foreground: var(--ns-text);
+  --primary: var(--ns-primary);
+  --primary-foreground: var(--ns-on-accent);
+  --secondary: var(--ns-surface-alt);
+  --secondary-foreground: var(--ns-text);
+  --muted: var(--ns-surface-alt);
+  --muted-foreground: var(--ns-muted);
+  --accent: var(--ns-hover-md);
+  --accent-foreground: var(--ns-text);
   --destructive: oklch(0.704 0.191 22.216);
+  --border: var(--ns-border-soft);
+  --input: var(--ns-input);
+  --ring: var(--ns-primary);
 
-  /* ── Text → ns-* ───────────────────────────────────────────── */
-  --foreground: var(--color-ns-text);
-  --muted-foreground: var(--color-ns-muted);
+  /* ── Sidebar ── */
+  --sidebar: var(--ns-bg);
+  --sidebar-foreground: var(--ns-text-2);
+  --sidebar-primary: var(--ns-primary);
+  --sidebar-primary-foreground: var(--ns-on-accent);
+  --sidebar-accent: var(--ns-surface);
+  --sidebar-accent-foreground: var(--ns-text);
+  --sidebar-border: var(--ns-border-soft);
+  --sidebar-ring: var(--ns-primary);
 
-  /* ── Borders → ns-* ────────────────────────────────────────── */
-  --border: var(--color-ns-border-soft);
-  --ring: var(--color-ns-primary);
+  /* ── Charts ── */
+  --chart-1: var(--ns-primary);
+  --chart-2: var(--ns-secondary);
+  --chart-3: var(--ns-pink);
+  --chart-4: var(--ns-amber);
+  --chart-5: var(--ns-primary-lt);
+}
 
-  /* ── Charts ────────────────────────────────────────────────── */
-  --chart-1: var(--color-ns-primary);
-  --chart-2: var(--color-ns-secondary);
-  --chart-3: var(--color-ns-pink);
-  --chart-4: var(--color-ns-amber);
-  --chart-5: var(--color-ns-primary-lt);
+/* ─────────────────────────────────────────────────────────────
+   Accent Color Presets ([data-accent="..."])
+   ───────────────────────────────────────────────────────────── */
+[data-accent='violet'] {
+  --ns-primary: #7c3aed;
+  --ns-primary-lt: #a78bfa;
+  --ns-secondary: #6366f1;
+}
 
-  /* ── Sidebar → ns-* ────────────────────────────────────────── */
-  --sidebar: var(--color-ns-bg);
-  --sidebar-foreground: var(--color-ns-text-2);
-  --sidebar-primary: var(--color-ns-primary);
-  --sidebar-primary-foreground: var(--color-ns-on-accent);
-  --sidebar-accent: var(--color-ns-surface);
-  --sidebar-accent-foreground: var(--color-ns-text);
-  --sidebar-border: var(--color-ns-border-soft);
-  --sidebar-ring: var(--color-ns-primary);
+[data-accent='emerald'] {
+  --ns-primary: #059669;
+  --ns-primary-lt: #34d399;
+  --ns-secondary: #0d9488;
+}
+
+[data-accent='ocean'] {
+  --ns-primary: #0284c7;
+  --ns-primary-lt: #38bdf8;
+  --ns-secondary: #2563eb;
+}
+
+[data-accent='amber'] {
+  --ns-primary: #d97706;
+  --ns-primary-lt: #fbbf24;
+  --ns-secondary: #ea580c;
+}
+
+[data-accent='rose'] {
+  --ns-primary: #e11d48;
+  --ns-primary-lt: #fb7185;
+  --ns-secondary: #db2777;
+}
+
+[data-accent='cyberpunk'] {
+  --ns-primary: #06b6d4;
+  --ns-primary-lt: #67e8f9;
+  --ns-secondary: #ec4899;
 }
 
 /* ── Global Reset ─────────────────────────────────────────── */
@@ -210,12 +368,15 @@ body,
 
 body {
   margin: 0;
-  background-color: var(--color-ns-bg);
-  color: var(--color-ns-text-2);
+  background-color: var(--ns-bg);
+  color: var(--ns-text);
   font-family: var(--font-sans);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 button {
@@ -224,8 +385,8 @@ button {
 
 /* ── Scrollbar — WebKit/Blink ─────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 4px !important;
-  height: 4px !important;
+  width: 5px !important;
+  height: 5px !important;
 }
 
 ::-webkit-scrollbar-track {
@@ -233,14 +394,14 @@ button {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(124, 58, 237, 0.15) !important;
+  background: color-mix(in srgb, var(--ns-primary) 20%, transparent) !important;
   border-radius: 9999px !important;
   border: none !important;
   transition: background-color 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(124, 58, 237, 0.3) !important;
+  background: color-mix(in srgb, var(--ns-primary) 40%, transparent) !important;
 }
 
 ::-webkit-scrollbar-button {
@@ -314,60 +475,7 @@ button {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Utility Classes
-   ───────────────────────────────────────────────────────────── */
-
-/* Countdown card — glassmorphism panel (LandingCountdown) */
-.ns-countdown-card {
-  background: rgb(10 6 22 / 0.65);
-  border: 1px solid var(--color-ns-border-md);
-  box-shadow:
-    0 8px 32px 0 rgb(0 0 0 / 0.37),
-    inset 0 0 12px rgb(124 58 237 / 0.1);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-/* Ambient orb glows — auth page background accents */
-.ns-orb-accent-20-blur {
-  background: radial-gradient(
-    circle,
-    var(--color-ns-primary) 0%,
-    transparent 70%
-  );
-  filter: blur(80px);
-}
-
-.ns-orb-purple-20-blur {
-  background: radial-gradient(
-    circle,
-    var(--color-ns-purple) 0%,
-    transparent 70%
-  );
-  filter: blur(80px);
-}
-
-/* Dashboard hero blur orbs */
-.ns-hero-blur-accent-30 {
-  background: radial-gradient(
-    circle,
-    var(--color-ns-primary) 0%,
-    transparent 70%
-  );
-  filter: blur(60px);
-}
-
-.ns-hero-blur-purple-25 {
-  background: radial-gradient(
-    circle,
-    var(--color-ns-purple) 0%,
-    transparent 70%
-  );
-  filter: blur(60px);
-}
-
-/* ─────────────────────────────────────────────────────────────
-   Third-party overrides — FilePond
+  Third-party overrides — FilePond
    ───────────────────────────────────────────────────────────── */
 .filepond--root {
   font-family: var(--font-sans);

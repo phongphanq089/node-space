@@ -18,6 +18,7 @@ import {
   FolderClosed,
   MoreHorizontal,
   Layers,
+  Settings,
 } from 'lucide-react'
 import { cn } from '@/shared/lib/utils'
 
@@ -74,6 +75,7 @@ const defaultIconMap: Record<string, ReactNode> = {
   tag: <Tag size={15} />,
   trash: <Trash2 size={15} />,
   music: <Music size={15} />,
+  settings: <Settings size={15} />,
 }
 
 export function SidebarGroupLayout<T = SidebarGroupItemData>({

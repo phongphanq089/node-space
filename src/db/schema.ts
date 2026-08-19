@@ -11,6 +11,9 @@ export const user = sqliteTable('user', {
   emailVerified: integer('emailVerified', { mode: 'boolean' }).notNull(),
   image: text('image'),
   role: text('role', { enum: SYSTEM_ROLES }).default('user').notNull(),
+  themeMode: text('theme_mode').default('dark'),
+  themeAccent: text('theme_accent').default('violet'),
+  themeCustomColor: text('theme_custom_color'),
   createdAt: integer('createdAt', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull(),
 })

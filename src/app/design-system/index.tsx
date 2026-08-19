@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { Separator } from '@/shared/ui/core'
+import { ThemeSwitcher } from '@/shared/ui/system'
 
 import { TokensSection } from './sections/tokens-section'
 import { ButtonsSection } from './sections/buttons-section'
@@ -67,9 +68,7 @@ export default function DesignSystemPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden items-center gap-2 rounded-lg bg-ns-primary px-5 py-1 md:flex">
-              <span className="text-xs text-white">Source: src/shared/ui</span>
-            </div>
+            <ThemeSwitcher variant="compact" />
           </div>
         </div>
 

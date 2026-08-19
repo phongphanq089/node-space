@@ -2,6 +2,7 @@ import { SidebarTrigger } from '@/shared/ui'
 import { SearchGlobal } from '@/widgets/search-global'
 import { useNewNoteDialogStore } from '@/features/notes/store/use-new-note-dialog-store'
 import { Plus, Bell, Settings } from 'lucide-react'
+import { useThemeStore } from '@/shared/stores/use-theme-store'
 
 type IconBtnProps = {
   id?: string
@@ -24,6 +25,9 @@ function IconBtn({ id, title, onClick, children }: IconBtnProps) {
 }
 
 export function WorkSpaceTopbar() {
+  const openDrawer = useThemeStore((s) => s.openDrawer)
+  // const mode = useThemeStore((s) => s.mode)
+  const accent = useThemeStore((s) => s.accent)
   return (
     <header className="flex h-[60px] flex-shrink-0 items-center justify-between gap-4 border-b border-ns-border/80 bg-ns-topbar px-6 backdrop-blur-xl">
       <div className="flex max-w-[420px] flex-1 items-center gap-3">
@@ -51,8 +55,14 @@ export function WorkSpaceTopbar() {
           </span>
         </IconBtn>
 
-        <IconBtn id="btn-settings" title="Settings">
-          <Settings size={16} />
+        <IconBtn id="btn-settings" title="Settings" onClick={openDrawer}>
+          <Settings
+            size={16}
+            style={{
+              backgroundColor:
+                accent === 'custom' ? 'var(--ns-primary)' : undefined,
+            }}
+          />
         </IconBtn>
       </div>
     </header>

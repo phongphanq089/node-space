@@ -9,6 +9,7 @@ import {
   GlowCard,
   GlowCardGrid,
   PixelCard,
+  ThemeSwitcher,
 } from '@/shared/ui/system'
 import { GoogleIcon } from '@/shared/ui/icons'
 import { Button } from '@/shared/ui/core'
@@ -246,6 +247,32 @@ export function SystemBrandSection() {
               Includes backdrop blur, warning badge icon, and delete mutation
               pending state.
             </span>
+          </div>
+        </ShowcaseCard>
+
+        {/* Theme Switcher Component */}
+        <ShowcaseCard
+          title="Theme Switcher (Mode & Accent Colors)"
+          description="Interactive controller for Light/Dark/System appearance and Accent Palettes"
+          codeBadge="<ThemeSwitcher variant='compact | popover' />"
+          className="md:col-span-2"
+        >
+          <div className="flex w-full flex-col items-center gap-6 py-2 sm:flex-row sm:justify-around">
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-xs font-semibold tracking-wider text-ns-muted uppercase">
+                Compact Bar
+              </span>
+              <ThemeSwitcher variant="compact" showLabels />
+            </div>
+
+            <div className="hidden h-10 w-px bg-ns-border-soft sm:block" />
+
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-xs font-semibold tracking-wider text-ns-muted uppercase">
+                Popover Menu
+              </span>
+              <ThemeSwitcher variant="popover" />
+            </div>
           </div>
         </ShowcaseCard>
       </div>

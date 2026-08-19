@@ -41,6 +41,29 @@ export const getAuth = () => {
       provider: 'sqlite',
       schema: dbSchema,
     }),
+    user: {
+      additionalFields: {
+        role: {
+          type: 'string',
+          defaultValue: 'user',
+        },
+        themeMode: {
+          type: 'string',
+          fieldName: 'theme_mode',
+          defaultValue: 'dark',
+        },
+        themeAccent: {
+          type: 'string',
+          fieldName: 'theme_accent',
+          defaultValue: 'violet',
+        },
+        themeCustomColor: {
+          type: 'string',
+          fieldName: 'theme_custom_color',
+          required: false,
+        },
+      },
+    },
     emailAndPassword: {
       enabled: true,
     },
@@ -57,6 +80,29 @@ export const auth = betterAuth({
     provider: 'sqlite',
     schema: dbSchema,
   }),
+  user: {
+    additionalFields: {
+      role: {
+        type: 'string',
+        defaultValue: 'user',
+      },
+      themeMode: {
+        type: 'string',
+        fieldName: 'theme_mode',
+        defaultValue: 'dark',
+      },
+      themeAccent: {
+        type: 'string',
+        fieldName: 'theme_accent',
+        defaultValue: 'violet',
+      },
+      themeCustomColor: {
+        type: 'string',
+        fieldName: 'theme_custom_color',
+        required: false,
+      },
+    },
+  },
   emailAndPassword: {
     enabled: true,
   },
