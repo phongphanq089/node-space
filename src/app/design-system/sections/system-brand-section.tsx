@@ -203,20 +203,12 @@ export function SystemBrandSection() {
           className="md:col-span-2"
         >
           <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="rounded-xl border border-ns-border-soft bg-ns-surface/40 p-4">
-              <EmptyState
-                variant="folder"
-                compact
-                action={
-                  <Button size="xs" variant="outline">
-                    Create New Folder
-                  </Button>
-                }
-              />
-            </div>
-            <div className="rounded-xl border border-ns-border-soft bg-ns-surface/40 p-4">
-              <EmptyState variant="search" compact />
-            </div>
+            <EmptyState variant="search" compact />
+            <EmptyState
+              variant="folder"
+              compact
+              action={<Button variant="outline">Create New Folder</Button>}
+            />
           </div>
         </ShowcaseCard>
 

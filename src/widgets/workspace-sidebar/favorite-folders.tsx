@@ -38,12 +38,13 @@ const FavoriteFolders = () => {
   } | null>(null)
 
   const favoriteFolders = dbFolders.filter((f) => f.isFavorite)
+
   return (
     <>
-      <div className="mt-2 flex flex-col gap-2 px-4">
+      <div className="mt-2 flex flex-col gap-2 px-2">
         {favoriteFolders.length !== 0 ? (
-          <div className="flex items-center justify-between px-3 text-[0.65rem] font-bold tracking-wider text-white/70 uppercase">
-            <span className="flex items-center gap-1.5">
+          <div className="flex items-center justify-between rounded-lg border border-ns-primary/50 p-3 text-xs font-bold tracking-wider uppercase">
+            <span className="flex items-center gap-1.5 dark:text-white">
               <div className="flex size-5 shrink-0 items-center justify-center rounded-xl border border-amber-400/10 bg-amber-400/10">
                 <Star
                   size={10}
@@ -51,10 +52,10 @@ const FavoriteFolders = () => {
                   className="text-amber-400/80"
                 />
               </div>
-              <span>Favorites</span>
+              <span>Favorites </span>
             </span>
             {favoriteFolders.length > 0 && (
-              <span className="py-0.2 rounded-full bg-ns-active px-1.5 text-[10px] font-semibold text-ns-muted">
+              <span className="rounded-full bg-ns-active p-1 px-1.5 text-[10px] font-bold text-ns-primary">
                 {favoriteFolders.length}
               </span>
             )}
@@ -72,14 +73,13 @@ const FavoriteFolders = () => {
             className="p-0"
             items={favoriteFolders}
             mapItem={(folder: any) => {
-              const targetWorkspaceId =
-                folder.workspace_id || folder.workspaceId || ''
+              const targetWorkspaceId = folder.id || ''
               return {
                 id: `fav-${folder.id}`,
                 label: folder.name,
                 color: folder.color || '#3b82f6',
                 to: targetWorkspaceId
-                  ? `/workspace/folder?workspaceId=${targetWorkspaceId}`
+                  ? `/workspace/folder/${targetWorkspaceId}`
                   : '/workspace/folder',
               }
             }}
@@ -88,7 +88,7 @@ const FavoriteFolders = () => {
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuAction
                     showOnHover
-                    className="text-ns-ghost transition-colors hover:text-white"
+                    className="translate-y-[4px] text-ns-ghost transition-colors hover:text-white"
                   >
                     <MoreHorizontal size={14} />
                     <span className="sr-only">Actions</span>
@@ -115,10 +115,9 @@ const FavoriteFolders = () => {
                   <DropdownMenuItem
                     onClick={(e) => {
                       e.stopPropagation()
-                      const targetWs =
-                        rawItem.workspace_id || rawItem.workspaceId || ''
+                      const targetWs = rawItem.id || ''
                       const targetUrl = targetWs
-                        ? `${window.location.origin}/workspace/folder?workspaceId=${targetWs}`
+                        ? `${window.location.origin}/workspace/folder/${targetWs}`
                         : `${window.location.origin}/workspace/folder`
                       void navigator.clipboard.writeText(targetUrl)
                       toast.success('Folder link copied to clipboard!')
@@ -132,10 +131,9 @@ const FavoriteFolders = () => {
                   <DropdownMenuItem
                     onClick={(e) => {
                       e.stopPropagation()
-                      const targetWs =
-                        rawItem.workspace_id || rawItem.workspaceId || ''
+                      const targetWs = rawItem.id || ''
                       const targetUrl = targetWs
-                        ? `/workspace/folder?workspaceId=${targetWs}`
+                        ? `/workspace/folder/${targetWs}`
                         : '/workspace/folder'
                       window.open(targetUrl, '_blank')
                     }}

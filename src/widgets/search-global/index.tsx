@@ -216,7 +216,7 @@ export function SearchGlobal({
         <span className="flex-1 truncate text-xs text-ns-muted sm:text-sm">
           {triggerPlaceholder}
         </span>
-        <kbd className="hidden shrink-0 items-center gap-1 rounded-md border border-ns-border-soft bg-ns-bg/60 px-2 py-0.5 font-mono text-[0.65rem] font-bold text-ns-faint shadow-inner sm:inline-flex">
+        <kbd className="hidden shrink-0 items-center gap-1 rounded-sm border border-ns-border-soft bg-ns-primary px-2 py-0.5 text-[0.65rem] font-bold text-white shadow-inner sm:inline-flex">
           ⌘K
         </kbd>
       </button>

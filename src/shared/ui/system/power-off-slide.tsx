@@ -79,7 +79,7 @@ export default function PowerOffSlide({
           </div>
         ) : (
           <div
-            className="relative h-14 overflow-hidden rounded-xl border bg-ns-primary/20"
+            className="relative h-14 overflow-hidden rounded-lg border bg-ns-primary/20"
             ref={constraintsRef}
           >
             <div className="absolute inset-0 left-8 z-0 flex items-center justify-center overflow-hidden">

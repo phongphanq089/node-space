@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { Link, useLocation, useNavigate } from '@tanstack/react-router'
 import { motion, AnimatePresence } from 'motion/react'
-import { LayoutDashboard, Folder, FileText, X, Plus, Pin } from 'lucide-react'
+import { Folder, FileText, X, Plus, Pin } from 'lucide-react'
 import { useNoteTabsStore } from '@/features/notes'
 import { useNewNoteDialogStore } from '@/features/notes/store/use-new-note-dialog-store'
 import { cn } from '@/shared/lib/utils'
@@ -19,9 +19,11 @@ export function WorkspaceTabsBar() {
 
   const { tabs, activeTabId, closeTab, togglePinTab } = useNoteTabsStore()
 
-  const isHomeActive =
-    location.pathname === '/workspace' || location.pathname === '/workspace/'
-  const isFoldersActive = location.pathname.startsWith('/workspace/folder')
+  const isFoldersActive =
+    location.pathname === '/workspace/folder' ||
+    location.pathname === '/workspace/folder/' ||
+    location.pathname === '/workspace' ||
+    location.pathname === '/workspace/'
 
   const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     if (scrollContainerRef.current) {
@@ -30,7 +32,7 @@ export function WorkspaceTabsBar() {
   }
 
   const handleTabClick = (tabId: string) => {
-    navigate({ to: `/workspace/notes/${tabId}` as any })
+    navigate({ to: `/workspace/folder/${tabId}` as any })
   }
 
   const handleCloseTab = (e: React.MouseEvent, tabId: string) => {
@@ -38,7 +40,7 @@ export function WorkspaceTabsBar() {
     e.preventDefault()
     closeTab(tabId, (nextTabId) => {
       if (nextTabId) {
-        navigate({ to: `/workspace/notes/${nextTabId}` as any })
+        navigate({ to: `/workspace/folder/${nextTabId}` as any })
       } else {
         navigate({ to: '/workspace/folder' })
       }
@@ -50,7 +52,7 @@ export function WorkspaceTabsBar() {
       e.preventDefault()
       closeTab(tabId, (nextTabId) => {
         if (nextTabId) {
-          navigate({ to: `/workspace/notes/${nextTabId}` as any })
+          navigate({ to: `/workspace/folder/${nextTabId}` as any })
         } else {
           navigate({ to: '/workspace/folder' })
         }
@@ -67,35 +69,6 @@ export function WorkspaceTabsBar() {
           onWheel={handleWheel}
           className="no-scrollbar flex min-w-0 flex-1 items-center gap-1 overflow-x-auto py-1"
         >
-          {/* Permanent Home / Dashboard Tab */}
-          <Link
-            to="/workspace"
-            className={cn(
-              'group relative flex h-7.5 items-center gap-1.5 rounded-lg px-2.5 text-xs font-medium transition-all',
-              isHomeActive
-                ? 'bg-ns-primary/15 font-semibold text-ns-primary-lt shadow-xs'
-                : 'text-ns-ghost hover:bg-ns-hover/50 hover:text-ns-text'
-            )}
-          >
-            <LayoutDashboard
-              size={13}
-              className={cn(
-                'shrink-0 transition-colors',
-                isHomeActive
-                  ? 'text-ns-primary-lt'
-                  : 'text-ns-ghost group-hover:text-white'
-              )}
-            />
-            <span className="truncate whitespace-nowrap">Dashboard</span>
-            {isHomeActive && (
-              <motion.span
-                layoutId="globalActiveTabIndicator"
-                className="absolute right-2 bottom-0 left-2 h-0.5 rounded-full bg-ns-primary shadow-[0_0_8px_rgba(139,92,246,0.8)]"
-                transition={{ type: 'spring', stiffness: 500, damping: 35 }}
-              />
-            )}
-          </Link>
-
           {/* Permanent Folders Tab */}
           <Link
             to="/workspace/folder"
@@ -131,9 +104,8 @@ export function WorkspaceTabsBar() {
           <AnimatePresence initial={false}>
             {tabs.map((tab) => {
               const isTabActive =
-                !isHomeActive &&
-                (location.pathname === `/workspace/notes/${tab.id}` ||
-                  activeTabId === tab.id)
+                location.pathname === `/workspace/folder/${tab.id}` ||
+                activeTabId === tab.id
 
               return (
                 <motion.div

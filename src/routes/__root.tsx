@@ -1,9 +1,9 @@
 import '@/styles.css'
 
-import { TanStackDevtools } from '@tanstack/react-devtools'
+// import { TanStackDevtools } from '@tanstack/react-devtools'
 import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+// import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import { DefaultCatchBoundary } from '@/shared/ui/system/default-catch-boundary'
 import { Toaster } from '@/shared/ui/core/sonner'
@@ -163,7 +163,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       >
         <Toaster richColors />
         {children}
-        <TanStackDevtools
+        {/* <TanStackDevtools
           config={{ position: 'bottom-right' }}
           plugins={[
             {
@@ -175,7 +175,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               render: <ReactQueryDevtools />,
             },
           ]}
-        />
+        /> */}
         <Scripts />
       </body>
     </html>

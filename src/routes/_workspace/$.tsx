@@ -37,8 +37,8 @@ function NotFoundPage() {
 
         {/* CTA Button */}
         <Button asChild className="group cursor-pointer px-6 py-2 font-bold">
-          <Link to="/workspace">
-            <span>Return to Home</span>
+          <Link to="/workspace/folder">
+            <span>Return to Workspace</span>
             <ArrowRight
               size={14}
               className="ml-1.5 transition-transform group-hover:translate-x-1"

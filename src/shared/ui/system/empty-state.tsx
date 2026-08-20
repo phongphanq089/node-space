@@ -71,7 +71,7 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        'group relative mx-auto flex min-h-[400px] w-full max-w-xl flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed border-ns-border-soft/80 bg-gradient-to-b from-ns-panel/60 to-ns-panel/20 p-8 text-center backdrop-blur-md transition-all hover:border-ns-border-md/60 hover:bg-ns-panel/50',
+        'group relative mx-auto flex min-h-[400px] w-full max-w-xl flex-col items-center justify-center overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-b from-ns-panel/60 to-ns-panel/20 p-8 text-center backdrop-blur-md transition-all hover:border-ns-border-md/60 hover:bg-ns-panel/50 dark:border-ns-border-soft',
         compact && 'p-5',
         className
       )}
@@ -80,14 +80,14 @@ export function EmptyState({
 
       <div className="relative mb-3 flex items-center justify-center">
         <div className="absolute inset-0 rounded-sm bg-ns-primary/20 blur-md transition-all group-hover:blur-lg" />
-        <div className="relative flex h-12 w-12 items-center justify-center rounded-sm border border-ns-border-em/60 bg-ns-active/80 text-ns-primary-lt shadow-lg shadow-ns-primary/10 transition-all group-hover:scale-105 group-hover:text-white">
+        <div className="relative flex h-12 w-12 items-center justify-center rounded-sm border border-ns-border-em/60 bg-ns-active/80 text-ns-primary-lt shadow-lg shadow-ns-primary/10 transition-all group-hover:scale-105">
           <Icon className={cn('h-6 w-6', compact && 'h-5 w-5')} />
         </div>
       </div>
 
       <h3
         className={cn(
-          'text-lg font-extrabold text-ns-text transition-colors group-hover:text-white',
+          'text-lg font-extrabold text-ns-text transition-colors',
           compact && 'text-xs'
         )}
       >
@@ -97,7 +97,7 @@ export function EmptyState({
       {displayDesc && (
         <p
           className={cn(
-            'mt-1 max-w-sm text-sm leading-relaxed text-white/70',
+            'mt-1 max-w-sm text-sm leading-relaxed',
             compact && 'text-[0.68rem]'
           )}
         >
