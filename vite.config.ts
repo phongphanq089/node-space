@@ -11,6 +11,11 @@ export default defineConfig(() => ({
   server: {
     port: 3000,
   },
+  esbuild: isDev
+    ? undefined
+    : {
+        drop: ['debugger'] as ('console' | 'debugger')[],
+      },
   resolve: {
     tsconfigPaths: true,
   },

@@ -1,4 +1,5 @@
 import { env } from 'cloudflare:workers'
+import { logger } from './logger'
 
 export interface SendEmailParams {
   to: string
@@ -19,7 +20,7 @@ export async function sendEmail({ to, subject, htmlContent }: SendEmailParams) {
     'phongphan.developer.q089@gmail.com'
   const senderName = rawSenderName?.replace(/^["']|["']$/g, '') || 'NodeSpace'
 
-  console.log('🔍 [DEBUG] Brevo Config:', {
+  logger.debug('EMAIL', 'Brevo Config:', {
     hasRawKey: !!rawApiKey,
     rawKeyLength: rawApiKey?.length,
     apiKeyLength: apiKey?.length,
@@ -31,8 +32,8 @@ export async function sendEmail({ to, subject, htmlContent }: SendEmailParams) {
   })
 
   if (!apiKey) {
-    console.warn('⚠️ BREVO_API_KEY is not set. Simulated email sending:')
-    console.log(`To: ${to}\nSubject: ${subject}\nContent:\n${htmlContent}`)
+    logger.warn('EMAIL', 'BREVO_API_KEY is not set. Simulated email sending:')
+    logger.info('EMAIL', `To: ${to}\nSubject: ${subject}`)
     return { success: true, simulated: true }
   }
 
