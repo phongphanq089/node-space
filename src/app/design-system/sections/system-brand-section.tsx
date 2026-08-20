@@ -9,6 +9,7 @@ import {
   GlowCard,
   GlowCardGrid,
   PixelCard,
+  ShowcaseEmptyState,
   ThemeSwitcher,
 } from '@/shared/ui/system'
 import { GoogleIcon } from '@/shared/ui/icons'
@@ -208,6 +209,28 @@ export function SystemBrandSection() {
               variant="folder"
               compact
               action={<Button variant="outline">Create New Folder</Button>}
+            />
+
+            <ShowcaseEmptyState
+              badgeText="Starred Collection"
+              title={
+                <>
+                  Nothing starred yet —{' '}
+                  <span className="font-extrabold text-ns-text">
+                    star your favorites
+                  </span>{' '}
+                  to keep them here.
+                </>
+              }
+              description="You haven't starred any folders or notes yet. Click the star icon on any project or document to pin your essential items here."
+              primaryAction={{
+                label: 'Browse Folders',
+
+                icon: <FolderOpen size={15} />,
+              }}
+              secondaryAction={{
+                label: 'Go to Workspace Home',
+              }}
             />
           </div>
         </ShowcaseCard>

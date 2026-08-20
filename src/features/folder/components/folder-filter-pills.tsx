@@ -19,11 +19,9 @@ export function FolderFilterPills({
 
   return (
     <div className="flex items-center gap-2 overflow-x-auto py-2">
-      <div className="flex flex-shrink-0 items-center gap-1.5 border-r border-ns-border-soft pr-2">
-        <Filter size={11} className="text-ns-ghost" />
-        <span className="text-xs font-bold text-white/70 uppercase">
-          WORKSPACES:
-        </span>
+      <div className="flex flex-shrink-0 items-center gap-1.5 border-r border-ns-border-soft pr-2 text-ns-primary! uppercase dark:text-white/70">
+        <Filter size={11} className="" />
+        <span className="text-xs font-bold">WORKSPACES:</span>
       </div>
       <button
         onClick={() => onSelectWorkspace(null)}
@@ -50,7 +48,7 @@ export function FolderFilterPills({
                 className={`flex flex-shrink-0 cursor-pointer items-center gap-1.5 rounded-sm border px-2.5 py-1 text-sm font-medium transition-all ${
                   isSelected
                     ? 'border-ns-border-em bg-ns-active/80 text-ns-primary-lt shadow-sm'
-                    : 'border-white/10 bg-ns-panel/40 text-ns-muted hover:border-ns-border hover:bg-ns-hover/40 hover:text-ns-text'
+                    : 'border-gray-200 bg-ns-panel text-ns-muted hover:border-ns-border hover:bg-ns-hover/40 hover:text-ns-text dark:border-white/10'
                 }`}
               >
                 <span

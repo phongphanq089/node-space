@@ -1,11 +1,9 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { X, FolderPlus, ChevronDown, Loader2 } from 'lucide-react'
-import { GlowCardGrid } from '@/shared/ui/system/glow-card-grid'
 import { EmptyState } from '@/shared/ui/system/empty-state'
 import { ConfirmDeleteModal } from '@/shared/ui/system'
 import { FolderModal } from './folder-modal'
-import { NodeSearchBar } from './node-search-bar'
 import { FolderFilterPills } from './folder-filter-pills'
 import { FolderCard } from './folder-card'
 import type { FolderItemRecord } from './folder-card'
@@ -16,6 +14,7 @@ import {
 } from '../hooks/use-folders'
 import { useDebounce } from '@/shared/hooks'
 import { useNoteTabsStore } from '@/features/notes'
+import { FolderSearchBar } from './folder-search-bar'
 
 interface FoldersListProps {
   initialWorkspaceId?: string
@@ -179,7 +178,7 @@ export function FoldersList({
   return (
     <>
       <div className="flex flex-col gap-3">
-        <NodeSearchBar
+        <FolderSearchBar
           search={search}
           onSearchChange={setSearch}
           onCreateFolder={() => setIsCreateFolderOpen(true)}
@@ -193,15 +192,15 @@ export function FoldersList({
 
           {selectedTag && (
             <div className="flex items-center gap-2 px-1 pt-1">
-              <span className="text-xs font-bold whitespace-nowrap text-white/60 uppercase">
+              <span className="text-xs font-bold whitespace-nowrap text-ns-muted uppercase dark:text-white/60">
                 Filtered by Tag:
               </span>
-              <span className="inline-flex items-center gap-1.5 rounded-sm border border-purple-500/50 bg-purple-500/20 px-2.5 py-1 text-xs font-bold text-purple-300">
+              <span className="inline-flex items-center gap-1.5 rounded-sm border border-purple-200 bg-purple-50 px-2.5 py-1 text-xs font-bold text-purple-700 dark:border-purple-500/50 dark:bg-purple-500/20 dark:text-purple-300">
                 <span>#{selectedTag}</span>
                 <button
                   type="button"
                   onClick={() => handleSelectTag(null)}
-                  className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-purple-500/40 hover:text-white"
+                  className="cursor-pointer rounded-full p-0.5 transition-colors hover:bg-purple-200 hover:text-purple-900 dark:hover:bg-purple-500/40 dark:hover:text-white"
                   title="Clear tag filter"
                 >
                   <X size={12} />
@@ -253,7 +252,7 @@ export function FoldersList({
         />
       ) : (
         <div className="flex flex-col gap-6">
-          <GlowCardGrid className="grid grid-cols-1 gap-4 xl:grid-cols-2 3xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3">
             {dbFolders.map((folder) => (
               <FolderCard
                 key={folder.id}
@@ -268,7 +267,7 @@ export function FoldersList({
                 }
               />
             ))}
-          </GlowCardGrid>
+          </div>
 
           {showLoadMore && (
             <div className="flex justify-center pt-2">

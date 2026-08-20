@@ -30,15 +30,13 @@ export function WorkSpaceTopbar() {
   const accent = useThemeStore((s) => s.accent)
   return (
     <header className="flex h-[60px] flex-shrink-0 items-center justify-between gap-4 border-b border-ns-border/80 bg-ns-topbar px-6 backdrop-blur-xl">
-      <div className="flex max-w-[420px] flex-1 items-center gap-3">
-        {/* Sidebar toggle */}
-        <SidebarTrigger className="h-9.5 w-9.5 rounded-md border border-ns-border bg-ns-primary/10 text-white hover:bg-ns-hover" />
-
-        {/* Search */}
+      <div className="w-fit">
+        <SidebarTrigger className="h-9.5 w-9.5 rounded-md border border-ns-border bg-ns-primary text-white hover:bg-ns-hover dark:bg-ns-primary/10" />
+      </div>
+      <div className="w-full max-w-[600px] flex-1">
         <SearchGlobal triggerPlaceholder="Search nodes, notes, tags..." />
       </div>
 
-      {/* Right actions */}
       <div className="flex items-center gap-1.5">
         <IconBtn
           id="btn-create-top"

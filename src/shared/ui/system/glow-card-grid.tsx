@@ -116,14 +116,14 @@ export function GlowCard({
     <div
       data-slot="glow-card"
       className={cn(
-        '@container relative w-full overflow-hidden rounded-(--card-radius) border border-ns-border bg-ns-panel transition-[translate,scale]',
+        '@container relative w-full overflow-hidden rounded-(--card-radius) border border-ns-border bg-ns-primary/10 transition-[translate,scale] dark:bg-ns-panel',
         className
       )}
     >
       {/* Background glow effect */}
       <div
         className={cn(
-          'pointer-events-none absolute inset-0 flex items-center justify-center',
+          'pointer-events-none absolute inset-0 flex aspect-square items-center justify-center',
           'translate-x-[calc(var(--pointer-x,-10)*50cqi)] translate-y-[calc(var(--pointer-y,-10)*50cqh)] translate-z-0 scale-(--card-icon-scale)',
           'blur-(--card-icon-blur) brightness-(--card-icon-brightness) saturate-(--card-icon-saturate)',
           'opacity-(--card-icon-opacity) will-change-[transform,filter]'
@@ -152,7 +152,6 @@ export function GlowCard({
           </div>
         )}
       </div>
-
       {/* Glowing border overlay */}
       <div
         className={cn(

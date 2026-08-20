@@ -1,20 +1,20 @@
 import { Search, Plus } from 'lucide-react'
 import { Button, Input } from '@/shared/ui'
 
-interface NodeSearchBarProps {
+interface FolderSearchBarProps {
   search: string
   onSearchChange: (value: string) => void
   onCreateFolder: () => void
 }
 
-export function NodeSearchBar({
+export function FolderSearchBar({
   search,
   onSearchChange,
   onCreateFolder,
-}: NodeSearchBarProps) {
+}: FolderSearchBarProps) {
   return (
-    <div className="flex items-center gap-3">
-      <div className="flex flex-1 items-center">
+    <div className="flex w-full items-center justify-between gap-3 pb-5">
+      <div className="flex w-full flex-1 items-center">
         <Input
           placeholder="Search folders..."
           value={search}
@@ -24,7 +24,7 @@ export function NodeSearchBar({
           suffix={<Search size={13} className="flex-shrink-0 text-ns-ghost" />}
         />
       </div>
-      <Button onClick={onCreateFolder}>
+      <Button onClick={onCreateFolder} className="flex px-6">
         <Plus size={13} />
         <span className="hidden sm:inline">New Folder</span>
       </Button>

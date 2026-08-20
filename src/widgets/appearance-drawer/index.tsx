@@ -176,7 +176,7 @@ export function AppearanceDrawer() {
 
                       <div className="flex items-center gap-1.5">
                         <Icon className="size-3.5 text-ns-primary-lt" />
-                        <span className="text-xs font-semibold text-ns-text">
+                        <span className="text-[9px] font-semibold whitespace-nowrap text-ns-text">
                           {item.title}
                         </span>
                       </div>

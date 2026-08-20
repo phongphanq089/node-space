@@ -14,7 +14,7 @@ export {
   EditFolderModal,
 } from './components/folder-modal'
 export { FolderFilterPills } from './components/folder-filter-pills'
-export { NodeSearchBar } from './components/node-search-bar'
+export { FolderSearchBar } from './components/folder-search-bar'
 export {
   FolderCardSkeleton,
   FolderGridSkeleton,
