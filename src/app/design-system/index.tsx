@@ -62,7 +62,7 @@ export default function DesignSystemPage() {
                 Design System v1.0
               </span>
               <h1 className="text-sm font-bold tracking-tight text-ns-text sm:text-base">
-                Node Space Component Showcase
+                Note Flow Component Showcase
               </h1>
             </div>
           </div>
@@ -108,7 +108,7 @@ export default function DesignSystemPage() {
               Single Source of Truth
             </div>
             <h2 className="text-2xl font-extrabold tracking-tight text-ns-text sm:text-3xl">
-              Node Space UI Library & Token Registry
+              Note Flow UI Library & Token Registry
             </h2>
             <p className="text-sm leading-relaxed text-ns-muted">
               Interactive showcase and reference catalog for all UI components

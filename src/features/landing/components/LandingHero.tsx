@@ -183,7 +183,7 @@ export default function LandingHero() {
             as="img"
             timelineRef={timelineRef}
             src={'/hero-banner.png'}
-            alt="Node Space Workspace Dashboard Preview"
+            alt="Note Flow Workspace Dashboard Preview"
             className="relative z-4 w-full rounded-2xl border border-white/10 shadow-2xl"
           />
         </TimelineAnimation>

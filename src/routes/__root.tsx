@@ -45,7 +45,7 @@ const THEME_INIT_SCRIPT = `(function(){
   } catch (e) {}
 })();`
 
-const SITE_URL = 'https://nodespace.com'
+const SITE_URL = 'https://noteFlow.com'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -59,14 +59,14 @@ export const Route = createRootRoute({
       },
       {
         name: 'application-name',
-        content: 'Node Space',
+        content: 'Note Flow',
       },
       ...seo({
-        title: 'Node Space — Smart Workspace for Notes & Ideas',
+        title: 'Note Flow — Smart Workspace for Notes & Ideas',
         description:
-          'Node Space is a powerful note-taking workspace. Organize your thoughts with notebooks, folders, tags, and a clean distraction-free editor. Built for writers, developers, and thinkers.',
+          'Note Flow is a powerful note-taking workspace. Organize your thoughts with notebooks, folders, tags, and a clean distraction-free editor. Built for writers, developers, and thinkers.',
         keywords:
-          'note taking app, workspace, notebooks, knowledge management, productivity app, notes organizer, folders, tags, ideas, writing tool, Node Space',
+          'note taking app, workspace, notebooks, knowledge management, productivity app, notes organizer, folders, tags, ideas, writing tool, Note Flow',
         image: `${SITE_URL}/hero-banner.png`,
         url: SITE_URL,
       }),
@@ -102,7 +102,7 @@ export const Route = createRootRoute({
         children: JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'WebApplication',
-          name: 'Node Space',
+          name: 'Note Flow',
           url: SITE_URL,
           description:
             'A powerful note-taking workspace to organize your thoughts with notebooks, folders, tags, and a clean distraction-free editor.',

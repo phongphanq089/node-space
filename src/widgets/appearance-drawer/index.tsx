@@ -91,7 +91,7 @@ export function AppearanceDrawer() {
     setMode('dark')
     setAccent('violet')
     setCustomColor('#7c3aed')
-    toast.info('Theme reset to Node Space defaults.')
+    toast.info('Theme reset to Note Flow defaults.')
   }
 
   return (

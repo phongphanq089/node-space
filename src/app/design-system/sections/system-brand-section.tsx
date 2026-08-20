@@ -49,7 +49,7 @@ export function SystemBrandSection() {
         {/* Brand Logo & OAuth Icons */}
         <ShowcaseCard
           title="Brand Logo & Icons"
-          description="Node Space official branding logo and Google OAuth icon"
+          description="Note Flow official branding logo and Google OAuth icon"
           codeBadge="<BrandLogo /> / <GoogleIcon />"
         >
           <div className="flex flex-wrap items-center justify-center gap-6">

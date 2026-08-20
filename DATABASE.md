@@ -1,6 +1,6 @@
 # Database Architecture & Integration Guide
 
-This document details the database architecture, configurations, schemas, and workflows for **Node Space**, utilizing **Cloudflare D1**, **Drizzle ORM**, and **Better Auth** in a **TanStack Start** environment.
+This document details the database architecture, configurations, schemas, and workflows for **Note Flow**, utilizing **Cloudflare D1**, **Drizzle ORM**, and **Better Auth** in a **TanStack Start** environment.
 
 ---
 

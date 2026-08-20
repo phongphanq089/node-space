@@ -5,11 +5,11 @@ import { LoginPage } from '@/features/auth/components/LoginPage'
 export const Route = createFileRoute('/login')({
   head: () => ({
     meta: [
-      { title: 'Sign In | Node Space' },
+      { title: 'Sign In | Note Flow' },
       {
         name: 'description',
         content:
-          'Sign in to Node Space and access your personal workspace, notebooks, and notes.',
+          'Sign in to Note Flow and access your personal workspace, notebooks, and notes.',
       },
       { name: 'robots', content: 'noindex, nofollow' },
     ],

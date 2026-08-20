@@ -4,7 +4,7 @@ import { AdminDashboardView } from '@/features/admin'
 export const Route = createFileRoute('/admin')({
   head: () => ({
     meta: [
-      { title: 'Admin Analytics & Operations Dashboard | Node Space' },
+      { title: 'Admin Analytics & Operations Dashboard | Note Flow' },
       {
         name: 'description',
         content:

@@ -76,7 +76,7 @@ export function AppearanceSettings() {
     setMode('dark')
     setAccent('violet')
     setCustomColor('#7c3aed')
-    toast.info('Theme reset to Node Space defaults.')
+    toast.info('Theme reset to Note Flow defaults.')
   }
 
   return (
@@ -92,7 +92,7 @@ export function AppearanceSettings() {
               Appearance & Theme Settings
             </h2>
             <p className="text-xs text-ns-muted">
-              Customize how Node Space looks on your device and save preferences
+              Customize how Note Flow looks on your device and save preferences
               to your cloud profile.
             </p>
           </div>
@@ -315,7 +315,7 @@ export function AppearanceSettings() {
               </div>
               <div>
                 <h4 className="text-base font-bold text-ns-text">
-                  Node Space Dashboard
+                  Note Flow Dashboard
                 </h4>
                 <p className="text-xs text-ns-muted">
                   Theme preview: <span className="capitalize">{mode}</span> mode
