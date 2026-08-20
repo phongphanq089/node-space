@@ -8,6 +8,13 @@ import {
   CornerDownLeft,
 } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/ui'
 import { useCreateNoteMutation, useNoteTabsStore } from '@/features/notes'
 import { useFoldersQuery } from '@/features/folder'
 import { toast } from 'sonner'
@@ -165,30 +172,30 @@ export function QuickScratchpadWidget() {
         <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
           {/* Left: Folder Picker */}
           <div className="flex items-center gap-1.5">
-            <div className="relative flex items-center">
-              <FolderIcon
-                size={13}
-                className="pointer-events-none absolute left-2.5 text-ns-ghost"
-              />
-              <select
-                value={selectedFolderId}
-                onChange={(e) => setSelectedFolderId(e.target.value)}
-                className="h-7.5 cursor-pointer appearance-none rounded-lg border border-white/10 bg-black/40 pr-3 pl-7 text-[0.7rem] font-semibold text-ns-text-2 transition-colors outline-none hover:border-white/20 focus:border-violet-500/40"
+            <Select
+              value={selectedFolderId || 'uncategorized'}
+              onValueChange={(val) =>
+                setSelectedFolderId(val === 'uncategorized' ? '' : val)
+              }
+            >
+              <SelectTrigger className="h-7.5 rounded-lg border-white/10 bg-black/40 px-2.5 text-[0.7rem] font-semibold text-ns-text-2 shadow-xs transition-colors hover:border-white/20 focus:border-violet-500/40">
+                <div className="flex items-center gap-1.5">
+                  <FolderIcon size={12} className="text-ns-ghost" />
+                  <SelectValue placeholder="Folder" />
+                </div>
+              </SelectTrigger>
+              <SelectContent
+                position="popper"
+                className="border-white/15 bg-[#120f24] text-white shadow-xl"
               >
-                <option value="" className="bg-[#120f24] text-white">
-                  📁 Uncategorized
-                </option>
+                <SelectItem value="uncategorized">📁 Uncategorized</SelectItem>
                 {folders.map((f) => (
-                  <option
-                    key={f.id}
-                    value={f.id}
-                    className="bg-[#120f24] text-white"
-                  >
+                  <SelectItem key={f.id} value={f.id}>
                     📂 {f.name}
-                  </option>
+                  </SelectItem>
                 ))}
-              </select>
-            </div>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Right: Save Buttons */}

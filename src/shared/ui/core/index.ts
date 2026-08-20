@@ -211,6 +211,17 @@ export {
   EmptyTitle,
 } from './empty'
 
+// ─── Data Display / Charts ────────────────────────────────────
+export {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+  ChartStyle,
+} from './chart'
+export type { ChartConfig } from './chart'
+
 // ─── Custom / Extended ────────────────────────────────────────
 export { DotmCircular } from '../system/dotm-circular'
 export type { DotmCircular3Props } from '../system/dotm-circular'
