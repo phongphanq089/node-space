@@ -414,6 +414,18 @@ button {
   background: transparent !important;
 }
 
+/* ── No Scrollbar utility ──────────────────────────────────── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* ── Base layer ───────────────────────────────────────────── */
 @layer base {
   * {
@@ -428,7 +440,7 @@ button {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Animations
+  Animations
    ───────────────────────────────────────────────────────────── */
 
 /* Float — 3D hero icon */

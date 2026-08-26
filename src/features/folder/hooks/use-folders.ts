@@ -24,8 +24,12 @@ export function useInfiniteFoldersQuery(
   pageSize = 10,
   search = '',
   workspaceId: string | null = null,
-  tag: string | null = null
+  tags: string[] | string | null = null
 ) {
+  const normalizedTags = Array.isArray(tags)
+    ? tags.filter(Boolean).join(',')
+    : tags || ''
+
   return useInfiniteQuery({
     queryKey: [
       ...FOLDERS_QUERY_KEY,
@@ -33,7 +37,7 @@ export function useInfiniteFoldersQuery(
       pageSize,
       search,
       workspaceId,
-      tag,
+      normalizedTags,
     ],
     queryFn: async ({ pageParam = 0 }) => {
       const res = await getFoldersFn({
@@ -42,7 +46,7 @@ export function useInfiniteFoldersQuery(
           offset: pageParam,
           search,
           workspaceId,
-          tag,
+          tags: Array.isArray(tags) ? tags : tags || undefined,
         },
       })
       return res
@@ -155,6 +159,42 @@ export function useUpdateFolderMutation() {
     onError: (error: Error) => {
       console.error('Failed to update folder:', error)
       toast.error(error.message || 'Failed to update folder.')
+    },
+  })
+}
+
+export const HERO_BANNER_QUERY_KEY = ['hero-banner'] as const
+
+export function useHeroBannerQuery() {
+  return useQuery({
+    queryKey: HERO_BANNER_QUERY_KEY,
+    queryFn: async () => {
+      const { getHeroBannerFn } = await import('../folder.fns')
+      return await getHeroBannerFn()
+    },
+    staleTime: 1000 * 60 * 5,
+  })
+}
+
+export function useUpdateHeroBannerMutation() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (data: {
+      bannerUrl: string
+      presetId?: string | null
+    }) => {
+      const { updateHeroBannerFn } = await import('../folder.fns')
+      return await updateHeroBannerFn({ data })
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(HERO_BANNER_QUERY_KEY, data)
+      void queryClient.invalidateQueries({
+        queryKey: HERO_BANNER_QUERY_KEY,
+      })
+    },
+    onError: (error: Error) => {
+      console.error('Failed to save banner to database:', error)
     },
   })
 }

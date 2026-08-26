@@ -47,7 +47,7 @@ export default function LandingHero() {
       />
       {/* Navigation */}
       {!isMobile && (
-        <header className="relative z-10 mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-6">
+        <header className="relative z-10 mx-auto flex w-full max-w-[1400px] items-center justify-between px-6 py-6">
           <nav className="flex items-center gap-8 rounded-full border border-white/20 bg-black/50 px-6 py-3 shadow-xs backdrop-blur-xl">
             <div className="text-2xl font-extrabold">
               <img
@@ -94,46 +94,26 @@ export default function LandingHero() {
 
       {/* Hero Body */}
       <div className="relative z-10 px-4 pt-14 pb-10 text-center">
-        <TimelineAnimation
-          as="h1"
-          animationNum={3}
-          timelineRef={timelineRef}
-          className="mb-6 text-4xl leading-[1.1] font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl"
-        >
+        <h1 className="mb-6 text-4xl leading-[1.1] font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl">
           Capture Ideas & Notes <br className="hidden sm:inline-block" />
           With{' '}
-          <TimelineAnimation
-            as="span"
-            animationNum={4}
-            timelineRef={timelineRef}
-            className="relative inline-block rounded-md border border-ns-primary/60 bg-ns-primary/15 px-4 py-1 text-white shadow-[0_0_25px_rgba(124,58,237,0.3)]"
-          >
+          <span className="relative inline-block rounded-md border border-ns-primary/60 bg-ns-primary/15 px-4 py-1 text-white shadow-[0_0_25px_rgba(124,58,237,0.3)]">
             Smart Workspaces
             <div className="absolute -top-1.5 -left-1.5 h-2 w-2 border border-ns-primary bg-white"></div>
             <div className="absolute -top-1.5 -right-1.5 h-2 w-2 border border-ns-primary bg-white"></div>
             <div className="absolute -bottom-1.5 -left-1.5 h-2 w-2 border border-ns-primary bg-white"></div>
             <div className="absolute -right-1.5 -bottom-1.5 h-2 w-2 border border-ns-primary bg-white"></div>
-          </TimelineAnimation>
-        </TimelineAnimation>
+          </span>
+        </h1>
 
-        <TimelineAnimation
-          as="p"
-          animationNum={5}
-          timelineRef={timelineRef}
-          className="mx-auto mb-8 max-w-2xl text-base leading-relaxed font-normal text-ns-muted sm:text-lg md:text-xl"
-        >
+        <p className="mx-auto mb-8 max-w-2xl text-base leading-relaxed font-normal text-ns-muted sm:text-lg md:text-xl">
           A fast, distraction-free thinking environment. Organize complex
           knowledge with nested folders, smart tagging, ambient focus
           soundscapes, and personalized dark themes.
-        </TimelineAnimation>
+        </p>
 
         <div className="flex flex-col items-center gap-5">
-          <TimelineAnimation
-            as="div"
-            animationNum={6}
-            timelineRef={timelineRef}
-            className="flex flex-wrap items-center justify-center gap-4"
-          >
+          <div className="flex flex-wrap items-center justify-center gap-4">
             <Button asChild size="lg" className="h-13 rounded-xl px-10">
               <Link to="/register">
                 Start Writing for Free
@@ -149,7 +129,7 @@ export default function LandingHero() {
             >
               <Link to="/design-system">Explore Component System</Link>
             </Button>
-          </TimelineAnimation>
+          </div>
 
           <TimelineAnimation
             as="div"
@@ -172,7 +152,7 @@ export default function LandingHero() {
       </div>
 
       {/* Dashboard Preview */}
-      <div className="relative mx-auto mt-6 w-full max-w-[1200px] px-4 pb-16">
+      <div className="relative mx-auto mt-6 w-full max-w-[1400px] px-4 pb-16">
         <TimelineAnimation
           animationNum={7}
           timelineRef={timelineRef}

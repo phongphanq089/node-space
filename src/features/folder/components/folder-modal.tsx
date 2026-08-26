@@ -216,16 +216,16 @@ function FolderModalComponent({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="flex max-h-[85vh] w-full flex-col overflow-hidden border-ns-border-em bg-ns-panel/95 p-6 text-ns-text shadow-2xl backdrop-blur-2xl sm:max-h-[90vh] sm:max-w-xl">
         <div className="pointer-events-none absolute -top-12 left-1/2 -z-10 h-32 w-48 -translate-x-1/2 rounded-full bg-ns-primary/20 blur-3xl" />
-        <DialogHeader className="shrink-0 gap-1 border-b border-ns-border-soft pb-3">
+        <DialogHeader className="shrink-0 gap-1">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-sm border border-ns-border bg-ns-active/80 text-ns-primary-lt shadow-inner">
-              {isEdit ? <Pencil size={19} /> : <FolderPlus size={19} />}
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-ns-border bg-ns-active/80 text-ns-primary-lt shadow-inner">
+              {isEdit ? <Pencil size={24} /> : <FolderPlus size={24} />}
             </div>
             <div className="flex flex-col text-left">
-              <DialogTitle className="text-base font-extrabold text-white">
+              <DialogTitle className="text-lg font-extrabold text-ns-primary dark:text-white">
                 {isEdit ? 'Edit Folder' : 'Create New Folder'}
               </DialogTitle>
-              <DialogDescription className="text-xs text-ns-faint">
+              <DialogDescription className="text-sm text-slate-700 dark:text-ns-faint">
                 {isEdit
                   ? 'Update your folder settings & properties'
                   : 'Organize your notes into dedicated folders'}
@@ -265,7 +265,10 @@ function FolderModalComponent({
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel className="flex items-center gap-1.5">
-                    <Layers size={14} className="text-white" />
+                    <Layers
+                      size={14}
+                      className="text-ns-primary dark:text-white"
+                    />
                     Workspace
                   </FieldLabel>
                   <div className="grid grid-cols-2 gap-2 pt-1">
@@ -274,7 +277,7 @@ function FolderModalComponent({
                       type="button"
                       onClick={() => field.onChange('')}
                       className={cn(
-                        'group relative flex cursor-pointer items-center justify-between rounded-sm border p-2.5 text-left transition-all outline-none',
+                        'group relative flex cursor-pointer items-center justify-between rounded-lg border p-2.5 text-left transition-all outline-none',
                         !field.value
                           ? 'border-ns-primary bg-ns-primary/10 shadow-[0_0_15px_rgba(59,130,246,0.15)] ring-1 ring-ns-primary/50'
                           : 'border-ns-border/70 bg-ns-panel/40 hover:border-ns-border-md hover:bg-ns-hover/50'
@@ -288,8 +291,8 @@ function FolderModalComponent({
                           className={cn(
                             'truncate text-xs transition-colors',
                             !field.value
-                              ? 'font-bold text-white'
-                              : 'font-medium text-ns-text/80 group-hover:text-white'
+                              ? 'font-bold text-ns-primary dark:text-white'
+                              : 'font-medium text-ns-text/80'
                           )}
                         >
                           General / All
@@ -320,7 +323,7 @@ function FolderModalComponent({
                           type="button"
                           onClick={() => field.onChange(wsId)}
                           className={cn(
-                            'group relative flex cursor-pointer items-center justify-between rounded-sm border p-2.5 text-left transition-all outline-none',
+                            'group relative flex cursor-pointer items-center justify-between rounded-lg border p-2.5 text-left transition-all outline-none',
                             isSelected
                               ? 'border-ns-primary bg-ns-primary/10 shadow-[0_0_15px_rgba(59,130,246,0.15)] ring-1 ring-ns-primary/50'
                               : 'border-ns-border/70 bg-ns-panel/40 hover:border-ns-border-md hover:bg-ns-hover/50'
@@ -343,8 +346,8 @@ function FolderModalComponent({
                               className={cn(
                                 'truncate text-xs transition-colors',
                                 isSelected
-                                  ? 'font-bold text-white'
-                                  : 'font-medium text-ns-text/80 group-hover:text-white'
+                                  ? 'font-bold text-ns-primary dark:text-white'
+                                  : 'font-medium text-ns-text/80'
                               )}
                             >
                               {wsName}
@@ -379,7 +382,10 @@ function FolderModalComponent({
               render={({ field }) => (
                 <Field>
                   <FieldLabel className="flex items-center gap-1.5">
-                    <Palette size={14} className="text-white" />
+                    <Palette
+                      size={14}
+                      className="text-ns-primary dark:text-white"
+                    />
                     Theme Accent Color
                   </FieldLabel>
                   <ColorPicker
@@ -409,7 +415,10 @@ function FolderModalComponent({
                 return (
                   <Field>
                     <FieldLabel className="flex items-center gap-1.5">
-                      <Tag size={14} className="text-white" />
+                      <Tag
+                        size={14}
+                        className="text-ns-primary dark:text-white"
+                      />
                       Topic Tags / Keywords
                     </FieldLabel>
                     <div className="flex flex-wrap gap-1.5 pt-1">
@@ -423,8 +432,8 @@ function FolderModalComponent({
                             className={cn(
                               'flex cursor-pointer items-center gap-1 rounded border px-2.5 py-1 text-xs font-semibold transition-all outline-none',
                               isSelected
-                                ? 'border-purple-500/60 bg-purple-500/20 text-white shadow-sm ring-1 ring-purple-500/40'
-                                : 'border-ns-border/60 bg-ns-panel/40 text-ns-muted hover:border-ns-border-md hover:bg-ns-hover/50 hover:text-white'
+                                ? 'border-purple-500/60 bg-purple-500/20 text-ns-primary shadow-sm ring-1 ring-purple-500/40 dark:text-white'
+                                : 'border-ns-border/60 bg-ns-panel/40 hover:border-ns-border-md hover:bg-ns-hover/50 dark:text-ns-muted hover:dark:text-white'
                             )}
                           >
                             <span className="font-mono text-purple-400">#</span>
@@ -448,11 +457,8 @@ function FolderModalComponent({
             {/* Folder Cover Image Upload with FilePond & Cloudflare R2 */}
             <div className="flex flex-col gap-1.5">
               <FieldLabel className="flex items-center gap-1.5">
-                <Upload size={14} className="text-white" />
-                Folder Cover Image{' '}
-                <span className="text-[0.6rem] font-normal text-ns-faint">
-                  (Upload to Cloudflare R2)
-                </span>
+                <Upload size={14} className="text-ns-primary dark:text-white" />
+                Folder Cover Image
               </FieldLabel>
               <FilePond
                 files={files}

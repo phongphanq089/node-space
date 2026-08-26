@@ -18,11 +18,11 @@ const MainContentWorkspace = () => {
       <div
         className={
           isDetailView
-            ? 'flex w-full flex-1 flex-col overflow-hidden bg-transparent p-2 sm:p-4'
-            : 'flex w-full flex-1 flex-col gap-4 overflow-y-auto bg-transparent p-4 sm:p-6'
+            ? 'flex w-full min-w-0 flex-1 flex-col overflow-hidden bg-transparent p-2 sm:p-4'
+            : 'flex w-full min-w-0 flex-1 flex-col gap-4 overflow-y-auto bg-transparent p-4 sm:p-6'
         }
       >
-        <div className="mx-auto flex w-full 3xl:w-[90%]! 2xl:w-[95%]">
+        <div className="mx-auto flex w-full min-w-0 3xl:w-[90%]! 2xl:w-[95%]">
           <Outlet />
         </div>
       </div>

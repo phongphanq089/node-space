@@ -14,6 +14,8 @@ export const user = sqliteTable('user', {
   themeMode: text('theme_mode').default('dark'),
   themeAccent: text('theme_accent').default('violet'),
   themeCustomColor: text('theme_custom_color'),
+  heroBanner: text('hero_banner').default('/hero-banner.png'),
+  heroBannerPreset: text('hero_banner_preset').default('default'),
   createdAt: integer('createdAt', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updatedAt', { mode: 'timestamp' }).notNull(),
 })

@@ -174,3 +174,11 @@ When ready to push updates to production:
    ```bash
    pnpm wrangler deploy
    ```
+
+# 1. Tạo D1 Database riêng cho Staging
+
+npx wrangler d1 create note-space-db-staging
+
+# 2. (Tùy chọn) Tạo R2 Bucket riêng cho Staging media
+
+npx wrangler r2 bucket create node-space-media-staging

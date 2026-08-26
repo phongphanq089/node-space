@@ -1,7 +1,8 @@
 import React from 'react'
-import { Star, Trash2, Pencil } from 'lucide-react'
+import { Star, Trash2, Pencil, Check } from 'lucide-react'
 import { useToggleFavoriteFolderMutation } from '../hooks/use-folders'
 import { Button } from '@/shared/ui/core/button'
+import { cn } from '@/shared/lib/utils'
 
 export interface FolderItemRecord {
   id: string
@@ -21,6 +22,9 @@ interface FolderCardProps {
   onEdit?: (folder: FolderItemRecord) => void
   onDelete?: (folder: FolderItemRecord) => void
   isDeleting?: boolean
+  isSelectMode?: boolean
+  isSelected?: boolean
+  onToggleSelect?: (folderId: string) => void
 }
 
 function FolderCardComponent({
@@ -30,6 +34,9 @@ function FolderCardComponent({
   onEdit,
   onDelete,
   isDeleting = false,
+  isSelectMode = false,
+  isSelected = false,
+  onToggleSelect,
 }: FolderCardProps) {
   const favoriteMutation = useToggleFavoriteFolderMutation()
 
@@ -56,11 +63,19 @@ function FolderCardComponent({
     favoriteMutation.mutate(folder.id)
   }
 
+  const handleCardClick = () => {
+    if (isSelectMode) {
+      onToggleSelect?.(folder.id)
+    } else {
+      onSelect?.(folder)
+    }
+  }
+
   const folderColor = folder.color || '#6366f1'
 
   return (
     <div
-      onClick={() => onSelect?.(folder)}
+      onClick={handleCardClick}
       style={
         {
           '--folder-accent': folderColor,
@@ -68,9 +83,31 @@ function FolderCardComponent({
           '--folder-accent-glow': `${folderColor}4d`,
         } as React.CSSProperties
       }
-      className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-ns-border bg-gray-100 p-3.5 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-[var(--folder-accent)] hover:shadow-[var(--folder-accent-shadow)] hover:ring-1 hover:ring-[var(--folder-accent)]/40 dark:border-white/10 dark:bg-ns-primary/10! dark:hover:border-[var(--folder-accent)] dark:hover:shadow-[0_0_30px_var(--folder-accent-glow)] dark:hover:ring-1 dark:hover:ring-[var(--folder-accent)]/70"
+      className={cn(
+        'group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border bg-gray-100 p-3.5 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-[var(--folder-accent)] hover:shadow-[var(--folder-accent-shadow)] hover:ring-1 hover:ring-[var(--folder-accent)]/40 dark:border-white/10 dark:bg-ns-primary/10! dark:hover:border-[var(--folder-accent)] dark:hover:shadow-[0_0_30px_var(--folder-accent-glow)] dark:hover:ring-1 dark:hover:ring-[var(--folder-accent)]/70',
+        isSelected &&
+          'border-ns-primary! shadow-[0_0_20px_rgba(59,130,246,0.3)] ring-2 ring-ns-primary!'
+      )}
     >
       <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-ns-surface-alt transition-colors duration-300">
+        {/* Selection Checkbox */}
+        {isSelectMode && (
+          <div
+            onClick={(e) => {
+              e.stopPropagation()
+              onToggleSelect?.(folder.id)
+            }}
+            className={cn(
+              'absolute top-2.5 left-2.5 z-20 flex h-6 w-6 cursor-pointer items-center justify-center rounded-lg border backdrop-blur-md transition-all',
+              isSelected
+                ? 'border-ns-primary bg-ns-primary text-white shadow-md'
+                : 'border-white/30 bg-black/50 hover:border-white/70'
+            )}
+          >
+            {isSelected && <Check size={14} strokeWidth={3} />}
+          </div>
+        )}
+
         {folder.image ? (
           <img
             src={folder.image}

@@ -8,9 +8,9 @@
   },
   "scripts": {
     "dev": "vite dev --port 5731",
+    "dev:staging": "wrangler dev --remote --env staging --port 5731",
     "build": "tsc -b && node --max-old-space-size=4096 node_modules/vite/bin/vite.js build",
-    "preview:cloudflare": "wrangler dev",
-    "start": "node .output/server/index.mjs",
+    "preview:cloudflare": "wrangler dev --port 5732",
     "preview": "vite preview --port 5732",
     "test": "vitest run",
     "lint": "eslint",
@@ -26,6 +26,10 @@
     "db:studio": "drizzle-kit studio",
     "db:drop": "drizzle-kit drop",
     "db:pull": "drizzle-kit pull",
+    "db:migrate:staging": "wrangler d1 migrations apply note-space-db-staging --remote --env staging",
+    "deploy:staging": "wrangler deploy --env staging",
+    "deploy:prod": "wrangler deploy",
+    "db:migrate:prod": "wrangler d1 migrations apply note-space-db --remote",
     "email:dev": "email dev --dir src/features/auth/emails"
   },
   "dependencies": {
