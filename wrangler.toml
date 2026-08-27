@@ -30,7 +30,9 @@ database_name = "note-space-db-staging"
 database_id = "0bbfe7ed-1ecd-4b4e-a197-2fb061370ad2"
 migrations_dir = "drizzle"
 migrations_pattern = "drizzle/*/migration.sql"
+remote = true # <── Bật kết nối trực tiếp lên Cloud D1
 
 [[env.staging.r2_buckets]]
 binding = "MEDIA_BUCKET"
 bucket_name = "node-space-media-staging"
+remote = true # <── Bật kết nối trực tiếp lên Cloud R2

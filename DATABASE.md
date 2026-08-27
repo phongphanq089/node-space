@@ -128,57 +128,53 @@ We maintain our primary schemas alongside Better Auth's required tables. All tim
 
 ---
 
-## 💻 Commands & Scripts
+## 💻 Database Commands & Scripts
 
 The following scripts are configured in `package.json` for database operations:
 
-| Command                  | Command Line                                          | Description                                                                 |
-| :----------------------- | :---------------------------------------------------- | :-------------------------------------------------------------------------- |
-| `pnpm db:generate`       | `drizzle-kit generate`                                | Compares `schema.ts` against existing migrations and generates SQL scripts. |
-| `pnpm db:migrate:local`  | `wrangler d1 migrations apply note-space-db --local`  | Executes SQL migrations on your local sqlite database file.                 |
-| `pnpm db:migrate:remote` | `wrangler d1 migrations apply note-space-db --remote` | Executes SQL migrations on the live production Cloudflare D1.               |
-| `pnpm db:studio`         | `drizzle-kit studio`                                  | Starts a web GUI on `localhost` to view/edit local database tables.         |
-| `pnpm db:drop`           | `drizzle-kit drop`                                    | Discards a generated migration script.                                      |
-| `pnpm db:pull`           | `drizzle-kit pull`                                    | Introspects the database and generates schema code from existing tables.    |
+| Command                   | Command Line                                                                | Description                                                                   |
+| :------------------------ | :-------------------------------------------------------------------------- | :---------------------------------------------------------------------------- |
+| `pnpm db:generate`        | `drizzle-kit generate`                                                      | So sánh `schema.ts` với migrations hiện tại và tạo ra file SQL migration mới. |
+| `pnpm db:migrate:local`   | `wrangler d1 migrations apply note-space-db --local`                        | Áp dụng file migration vào SQLite local (`.wrangler/state/`).                 |
+| `pnpm db:migrate:staging` | `wrangler d1 migrations apply note-space-db-staging --remote --env staging` | Áp dụng file migration vào Cloudflare D1 Staging trên Cloud.                  |
+| `pnpm db:migrate:prod`    | `wrangler d1 migrations apply note-space-db --remote`                       | Áp dụng file migration vào Cloudflare D1 Production chính thức trên Cloud.    |
+| `pnpm db:studio`          | `drizzle-kit studio`                                                        | Mở giao diện Web GUI Drizzle Studio để xem & sửa data database local.         |
+| `pnpm db:reset:local`     | `fs.rmSync D1 + apply local migration`                                      | Xóa sạch database local và chạy lại toàn bộ migration từ đầu.                 |
+| `pnpm db:wipe:local`      | `fs.rmSync .wrangler/state`                                                 | Xóa toàn bộ dữ liệu giả lập local của Wrangler (D1, R2, KV).                  |
+| `pnpm db:drop`            | `drizzle-kit drop`                                                          | Hủy bỏ / xóa file migration vừa tạo nếu có lỗi.                               |
+| `pnpm db:pull`            | `drizzle-kit pull`                                                          | Kéo schema từ database có sẵn về code TypeScript.                             |
 
 ---
 
 ## 🔄 Standard Workflows
 
-### 1. Schema Change Flow (Local Development)
+### 1. Quy trình thay đổi Schema (Local Development)
 
-When you modify database tables in `src/db/schema.ts`:
+Khi bạn sửa đổi / thêm bảng trong `src/db/schema.ts`:
 
-1. Generate the migration file:
+1. Tạo file migration:
    ```bash
    pnpm db:generate
    ```
-2. Apply the migration to your local dev D1 database:
+2. Chạy migration vào database local:
    ```bash
    pnpm db:migrate:local
    ```
-3. Run Drizzle Studio to inspect and populate tables:
+3. Xem dữ liệu trên giao diện:
    ```bash
    pnpm db:studio
    ```
 
-### 2. Deployment Flow (Production Release)
+### 2. Quy trình Release Staging (Kiểm thử thực tế)
 
-When ready to push updates to production:
-
-1. Apply the migrations to the remote D1 instance:
+1. Triển khai cả migration + build + deploy:
    ```bash
-   pnpm db:migrate:remote
-   ```
-2. Deploy the application worker (usually handled via CI/CD or wrangler deploy):
-   ```bash
-   pnpm wrangler deploy
+   pnpm release:staging
    ```
 
-# 1. Tạo D1 Database riêng cho Staging
+### 3. Quy trình Release Production (Chạy chính thức)
 
-npx wrangler d1 create note-space-db-staging
-
-# 2. (Tùy chọn) Tạo R2 Bucket riêng cho Staging media
-
-npx wrangler r2 bucket create node-space-media-staging
+1. Triển khai cả migration + build + deploy:
+   ```bash
+   pnpm release:prod
+   ```
