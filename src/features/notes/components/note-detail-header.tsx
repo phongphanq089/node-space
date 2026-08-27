@@ -1,4 +1,4 @@
-﻿import { Link } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { motion, AnimatePresence } from 'motion/react'
 import {
   Columns,
@@ -17,7 +17,7 @@ import {
   Trash2,
   MoreHorizontal,
 } from 'lucide-react'
-import type { NODES } from '@/shared/mocks/mock-data'
+import type { FolderDetailNode } from '../types'
 import { cn } from '@/shared/lib/utils'
 import { useDragScroll } from '@/shared/lib/use-drag-scroll'
 import { Button } from '@/shared/ui/core/button'
@@ -38,10 +38,8 @@ import {
 import { useNewNoteDialogStore } from '../store/use-new-note-dialog-store'
 import type { NoteTab } from './folder-note-tabs-bar'
 
-type NodeWithThumbnail = (typeof NODES)[number] & { thumbnail?: string }
-
 interface NoteDetailHeaderProps {
-  node: NodeWithThumbnail
+  node: FolderDetailNode
   tabs: NoteTab[]
   activeTabId: string | null
   sidebarOpen: boolean

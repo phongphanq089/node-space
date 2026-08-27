@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useCallback, useState } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import { z } from 'zod'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -14,7 +14,6 @@ import {
   Upload,
 } from 'lucide-react'
 import { cn } from '@/shared/lib/utils'
-import { WORKSPACES } from '@/shared/mocks/mock-data'
 import {
   useCreateFolderMutation,
   useUpdateFolderMutation,
@@ -85,12 +84,10 @@ function FolderModalComponent({
   const updateFolderMutation = useUpdateFolderMutation()
   const uploadMediaMutation = useUploadMediaMutation()
 
-  const { data: dbWorkspaces } = useWorkspacesQuery()
+  const { data: dbWorkspaces = [] } = useWorkspacesQuery()
   const { data: dbTags = [] } = useTagsQuery()
 
-  const displayWorkspaces = useMemo(() => {
-    return dbWorkspaces && dbWorkspaces.length > 0 ? dbWorkspaces : WORKSPACES
-  }, [dbWorkspaces])
+  const displayWorkspaces = dbWorkspaces
 
   const form = useForm<FolderSchemaValues>({
     resolver: zodResolver(folderSchema as any),

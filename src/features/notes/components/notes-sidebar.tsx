@@ -1,6 +1,6 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { FileText, Plus, Search, X } from 'lucide-react'
-import type { NoteItem as NoteItemType } from '@/shared/mocks/mock-data'
+import type { NoteItem as NoteItemType } from '../types'
 
 import { cn } from '@/shared/lib/utils'
 import { Button, Input } from '@/shared/ui'

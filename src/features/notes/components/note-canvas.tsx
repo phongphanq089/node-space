@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Plus, X } from 'lucide-react'
 import { cn } from '@/shared/lib/utils'
-import type { NoteItem } from '@/shared/mocks/mock-data'
+import type { NoteItem } from '../types'
 import type { ViewMode } from './use-note-editor'
 
 interface NoteCanvasProps {

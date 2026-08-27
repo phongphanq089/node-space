@@ -78,7 +78,7 @@ export function FoldersList({
 
   const mapFolderToNode = useCallback(
     (folder: FolderItemRecord) => ({
-      id: encodeURIComponent(folder.name),
+      id: folder.id,
       title: folder.name,
       folderId: folder.id,
       folderName: folder.name,
@@ -249,7 +249,6 @@ export function FoldersList({
         />
       ) : (
         <div className="flex flex-col gap-6">
-          {/* Grid View Mode */}
           {filters.viewMode === 'grid' && (
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3">
               {sortedFolders.map((folder) => (
@@ -272,7 +271,6 @@ export function FoldersList({
             </div>
           )}
 
-          {/* List View Mode */}
           {filters.viewMode === 'list' && (
             <div className="flex flex-col gap-2.5">
               {sortedFolders.map((folder) => (

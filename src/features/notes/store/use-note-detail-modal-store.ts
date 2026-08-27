@@ -1,7 +1,7 @@
-﻿import { create } from 'zustand'
-import type { NodeItem } from '@/shared/mocks/mock-data'
+import { create } from 'zustand'
+import type { FolderDetailNode } from '../types'
 
-export type NoteDetailNode = NodeItem & { thumbnail?: string }
+export type NoteDetailNode = FolderDetailNode
 
 interface NoteDetailModalState {
   node: NoteDetailNode | null

@@ -2,7 +2,6 @@ import { useEffect, useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import { Minimize2, FileText, Plus } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
-import { NODES } from '@/shared/mocks/mock-data'
 import { NoteDetailHeader } from './note-detail-header'
 import { NotesSidebar } from './notes-sidebar'
 import { NoteEditor } from './note-editor'
@@ -12,6 +11,7 @@ import type { NoteTab } from './folder-note-tabs-bar'
 import { Button, EmptyState } from '@/shared/ui'
 import { ConfirmDeleteModal } from '@/shared/ui/system'
 import { useNoteTabsStore } from '../store/use-note-tabs-store'
+import { useFoldersQuery } from '@/features/folder/hooks/use-folders'
 import {
   useNotesQuery,
   useCreateNoteMutation,
@@ -19,13 +19,11 @@ import {
   useDeleteNoteMutation,
   useTogglePinNoteMutation,
 } from '../hooks/use-notes'
-import type { NoteItem } from '@/shared/mocks/mock-data'
+import type { NoteItem, FolderDetailNode } from '../types'
 import type { NewNoteValues } from '../note.validate'
 import type { NoteModalValues } from './note-modal'
 
-const MOCK_CONTENT: Record<string, string> = {
-  default: `# Untitled Note\n\nStart writing your note here...\n\nThis is a **rich text / Lexical-ready** editor layout with support for:\n- *italic text*\n- **bold text**\n- \`inline code\`\n- [links](https://example.com)\n\n## Heading Example\n\nYour content goes here. Type '/' to invoke Lexical slash commands...`,
-}
+const DEFAULT_NOTE_CONTENT = `# Untitled Note\n\nStart writing your note here...\n\nThis is a rich text / Markdown-ready editor layout with support for:\n- *italic text*\n- **bold text**\n- \`inline code\`\n- [links](https://example.com)\n\n## Heading Example\n\nYour content goes here.`
 
 interface NoteDetailViewProps {
   noteId: string
@@ -33,35 +31,54 @@ interface NoteDetailViewProps {
 
 export function NoteDetailView({ noteId }: NoteDetailViewProps) {
   const navigate = useNavigate()
+  const { data: dbFolders = [] } = useFoldersQuery()
 
-  // Find node/folder by id or title matching
-  const node = useMemo(() => {
+  // Find node/folder by id or name matching from real database
+  const node: FolderDetailNode = useMemo(() => {
     const decodedId = decodeURIComponent(noteId)
-    const found = NODES.find(
-      (n) =>
-        n.title.toLowerCase().replace(/\s+/g, '-') ===
-          decodedId.toLowerCase() ||
-        n.title.toLowerCase() === decodedId.toLowerCase()
+    const found = dbFolders.find(
+      (f) =>
+        f.id === decodedId ||
+        f.id === noteId ||
+        f.name.toLowerCase().replace(/\s+/g, '-') === decodedId.toLowerCase() ||
+        f.name.toLowerCase() === decodedId.toLowerCase()
     )
 
     if (found) {
       return {
-        ...found,
+        id: found.id,
+        title: found.name,
+        name: found.name,
+        count: found.count ?? 0,
+        updated: found.updatedAt
+          ? new Intl.DateTimeFormat('en-US', {
+              month: 'short',
+              day: 'numeric',
+            }).format(new Date(found.updatedAt))
+          : 'Recently',
+        tag: found.tags?.[0] ? `#${found.tags[0]}` : undefined,
+        tagColor: found.color ?? undefined,
+        folderId: found.id,
+        folderName: found.name,
+        color: found.color,
+        image: found.image,
         thumbnail:
-          found.thumbnail ??
+          found.image ||
           'https://images.unsplash.com/photo-1517842645767-c639042777db?w=150&auto=format&fit=crop&q=60',
       }
     }
 
     return {
+      id: decodedId,
       title: decodedId,
+      name: decodedId,
       count: 0,
       updated: 'Recently',
       folderId: decodedId,
       folderName: decodedId,
       thumbnail: undefined,
     }
-  }, [noteId])
+  }, [noteId, dbFolders])
 
   const folderKey = node.folderId || node.title
 
@@ -144,12 +161,11 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
   }, [activeTab, notesList])
 
   const currentContent = useMemo(() => {
-    if (!activeTabId) return MOCK_CONTENT.default
+    if (!activeTabId) return DEFAULT_NOTE_CONTENT
     return (
       contents[activeTabId] ??
       activeNoteItem?.content ??
       activeTab?.content ??
-      MOCK_CONTENT[activeTabId] ??
       `# ${activeTab?.title || activeTabId}\n\nStart writing your note content...`
     )
   }, [activeTabId, contents, activeNoteItem, activeTab])

@@ -1,6 +1,6 @@
-﻿import React from 'react'
+import React from 'react'
 import { FileText, Star, Pencil, Trash2 } from 'lucide-react'
-import type { NoteItem as NoteItemType } from '@/shared/mocks/mock-data'
+import type { NoteItem as NoteItemType } from '../types'
 import { cn } from '@/shared/lib/utils'
 import {
   Tooltip,

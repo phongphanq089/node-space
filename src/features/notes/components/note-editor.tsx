@@ -1,4 +1,4 @@
-import type { NoteItem } from '@/shared/mocks/mock-data'
+import type { NoteItem } from '../types'
 import type { ViewMode } from './use-note-editor'
 import { useNoteEditor } from './use-note-editor'
 import { NoteToolbar } from './note-toolbar'

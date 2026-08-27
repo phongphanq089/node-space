@@ -20,7 +20,7 @@ import {
   useCreateNoteMutation,
   useUpdateNoteMutation,
 } from '../hooks/use-notes'
-import type { NoteItem } from '@/shared/mocks/mock-data'
+import type { NoteItem } from '../types'
 import {
   Dialog,
   DialogContent,
@@ -196,7 +196,7 @@ function NoteModalComponent({
                     <Folder size={14} className="text-white" />
                     Folder Destination
                   </FieldLabel>
-                  <div className="no-scrollbar grid max-h-36 grid-cols-2 gap-2 overflow-y-auto pt-1">
+                  <div className="grid grid-cols-2 gap-2 pt-1">
                     {dbFolders.map((f) => {
                       const isSelected =
                         field.value === f.id || field.value === f.name

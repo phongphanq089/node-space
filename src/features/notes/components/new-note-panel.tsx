@@ -13,7 +13,8 @@ import {
   Layers,
 } from 'lucide-react'
 
-import { NOTEBOOKS, POPULAR_TAGS } from '@/shared/mocks/mock-data'
+import { useWorkspacesQuery } from '@/features/workspace/hooks/use-workspaces'
+import { useTagsQuery } from '@/features/tag'
 import { newNoteSchema } from '../note.validate'
 import type { NewNoteValues } from '../note.validate'
 import { useNewNoteDialogStore } from '../store/use-new-note-dialog-store'
@@ -273,15 +274,19 @@ export function NewNotePanel({ onSubmit, defaultFolderId }: NewNotePanelProps) {
     }
   }, [isOpen, currentFolderId, form])
 
-  const tagOptions = useMemo(() => POPULAR_TAGS.map((t) => t.name), [])
+  const { data: dbTags = [] } = useTagsQuery()
+  const { data: dbWorkspaces = [] } = useWorkspacesQuery()
+
+  const tagOptions = useMemo(() => dbTags.map((t) => t.name), [dbTags])
 
   const workspaceOptions = useMemo(
     () =>
-      NOTEBOOKS.map((nb) => ({
-        id: nb.id,
-        name: nb.name,
+      dbWorkspaces.map((ws) => ({
+        id: ws.id,
+        name: ws.name,
+        color: ws.color,
       })),
-    []
+    [dbWorkspaces]
   )
 
   const handleClose = () => {
