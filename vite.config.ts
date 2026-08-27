@@ -8,6 +8,10 @@ import { defineConfig } from 'vite'
 const isDev = process.env.NODE_ENV !== 'production'
 
 export default defineConfig(() => ({
+  test: {
+    environment: 'jsdom',
+    globals: true,
+  },
   server: {
     port: 3000,
   },
