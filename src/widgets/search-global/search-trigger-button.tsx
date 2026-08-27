@@ -17,7 +17,7 @@ export function SearchTriggerButton({
       onClick={onClick}
       className={
         className ||
-        'group relative flex w-full max-w-xl items-center gap-3 rounded-md border border-border bg-background/80 px-3.5 py-2 text-left shadow-md backdrop-blur-xl transition-all hover:border-primary/50 hover:bg-muted/40 focus:outline-none dark:border-ns-border dark:bg-ns-input/50 dark:hover:border-ns-primary/60 dark:hover:bg-ns-hover/30'
+        'group relative flex w-full max-w-xl items-center gap-3 rounded-lg border border-border bg-background/80 px-3.5 py-2 text-left shadow-md backdrop-blur-xl transition-all hover:border-primary/50 hover:bg-muted/40 focus:outline-none dark:border-ns-border dark:bg-ns-input/50 dark:hover:border-ns-primary/60 dark:hover:bg-ns-hover/30'
       }
     >
       <Search className="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary dark:text-ns-ghost dark:group-hover:text-ns-primary-lt" />
