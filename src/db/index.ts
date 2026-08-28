@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { drizzle } from 'drizzle-orm/d1'
 import { env } from 'cloudflare:workers'
 

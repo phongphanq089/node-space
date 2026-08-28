@@ -1,13 +1,8 @@
 import { useState } from 'react'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid } from 'recharts'
 import { Globe, Eye, Users, MousePointerClick } from 'lucide-react'
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent
-  
-} from '@/shared/ui'
-import type {ChartConfig} from '@/shared/ui';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/shared/ui'
+import type { ChartConfig } from '@/shared/ui'
 import type { AnalyticsTrafficPoint } from '../types'
 
 interface AdminAnalyticsChartProps {

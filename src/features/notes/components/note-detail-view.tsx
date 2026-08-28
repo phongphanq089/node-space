@@ -33,9 +33,10 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
   const navigate = useNavigate()
   const { data: dbFolders = [] } = useFoldersQuery()
 
-  // Find node/folder by id or name matching from real database
-  const node: FolderDetailNode = useMemo(() => {
+  // Find folder by id or name matching from real database
+  const folder: FolderDetailNode = useMemo(() => {
     const decodedId = decodeURIComponent(noteId)
+
     const found = dbFolders.find(
       (f) =>
         f.id === decodedId ||
@@ -80,7 +81,7 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
     }
   }, [noteId, dbFolders])
 
-  const folderKey = node.folderId || node.title
+  const folderKey = folder.folderId || folder.title
 
   // Folder-scoped tabs persisted in localStorage via Zustand store
   const {
@@ -419,7 +420,7 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
       {/* Folder Detail Header Bar with Integrated Note Tabs */}
       {!isFocusMode && (
         <NoteDetailHeader
-          node={node}
+          node={folder}
           tabs={openNoteTabs}
           activeTabId={activeTabId}
           sidebarOpen={sidebarOpen}
@@ -520,7 +521,7 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
                   description={
                     isLoading
                       ? 'Retrieving notes from server...'
-                      : `Choose a note from the left sidebar or create a new note in "${node.title}" to start editing.`
+                      : `Choose a note from the left sidebar or create a new note in "${folder.title}" to start editing.`
                   }
                   action={
                     <Button
@@ -549,7 +550,7 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
         isOpen={Boolean(editingNote)}
         onClose={() => setEditingNote(null)}
         note={editingNote}
-        defaultFolderId={node.folderId}
+        defaultFolderId={folder.folderId}
         onSubmit={handleSavedNoteModal}
       />
 
@@ -567,7 +568,7 @@ export function NoteDetailView({ noteId }: NoteDetailViewProps) {
       {/* Slide-in New Note Panel */}
       <NewNotePanel
         onSubmit={handleCreateNote}
-        defaultFolderId={node.folderId}
+        defaultFolderId={folder.folderId}
       />
     </div>
   )

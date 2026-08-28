@@ -1,12 +1,7 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
 import { DollarSign, Zap, TrendingUp, CreditCard } from 'lucide-react'
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent
-  
-} from '@/shared/ui'
-import type {ChartConfig} from '@/shared/ui';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/shared/ui'
+import type { ChartConfig } from '@/shared/ui'
 import type { RevenueGrowthPoint } from '../types'
 
 interface AdminRevenueChartProps {

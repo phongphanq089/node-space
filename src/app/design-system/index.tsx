@@ -4,6 +4,7 @@ import {
   Boxes,
   Code2,
   Component,
+  FileText,
   Layers,
   Palette,
   Sparkles,
@@ -19,8 +20,10 @@ import { FormsSection } from './sections/forms-section'
 import { OverlaysSection } from './sections/overlays-section'
 import { FeedbackSection } from './sections/feedback-section'
 import { SystemBrandSection } from './sections/system-brand-section'
+import { EditorSection } from './sections/editor-section'
 
 const SECTIONS = [
+  { id: 'editor', label: 'Rich Text Editor', icon: FileText },
   { id: 'tokens', label: 'Tokens & Colors', icon: Palette },
   { id: 'buttons', label: 'Buttons', icon: Component },
   { id: 'forms', label: 'Form Controls', icon: Sliders },
@@ -122,6 +125,8 @@ export default function DesignSystemPage() {
         </div>
 
         {/* Sections */}
+        <EditorSection />
+        <Separator className="bg-ns-border-soft" />
         <TokensSection />
         <Separator className="bg-ns-border-soft" />
         <ButtonsSection />
