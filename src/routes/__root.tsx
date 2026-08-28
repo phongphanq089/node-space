@@ -1,18 +1,51 @@
 import '@/styles.css'
 
-import { TanStackDevtools } from '@tanstack/react-devtools'
+// import { TanStackDevtools } from '@tanstack/react-devtools'
 import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+// import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import { DefaultCatchBoundary } from '@/shared/ui/system/default-catch-boundary'
 import { Toaster } from '@/shared/ui/core/sonner'
 import { seo } from '@/shared/lib/utils'
 
-// Inline theme init — runs before React hydration to prevent flash
-const THEME_INIT_SCRIPT = `(function(){try{var root=document.documentElement;root.classList.remove('light');root.classList.add('dark');root.setAttribute('data-theme','dark');root.style.colorScheme='dark';}catch(e){}})();`
+import { useEffect } from 'react'
+import { useThemeStore } from '@/shared/stores/use-theme-store'
 
-const SITE_URL = 'https://nodespace.com'
+// Inline theme init — runs synchronously before React hydration to completely prevent flash (FOUC)
+const THEME_INIT_SCRIPT = `(function(){
+  try {
+    var raw = localStorage.getItem('nodespace-theme');
+    var theme = raw ? JSON.parse(raw) : null;
+    var state = theme && theme.state ? theme.state : {};
+    var mode = state.mode || 'dark';
+    var accent = state.accent || 'violet';
+    var customColor = state.customColor || '';
+
+    var isDark = mode === 'dark' || (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    var root = document.documentElement;
+
+    if (isDark) {
+      root.classList.add('dark');
+      root.classList.remove('light');
+      root.setAttribute('data-theme', 'dark');
+      root.style.colorScheme = 'dark';
+    } else {
+      root.classList.add('light');
+      root.classList.remove('dark');
+      root.setAttribute('data-theme', 'light');
+      root.style.colorScheme = 'light';
+    }
+
+    root.setAttribute('data-accent', accent);
+    if (accent === 'custom' && customColor) {
+      root.style.setProperty('--ns-primary', customColor);
+      root.style.setProperty('--ns-primary-lt', customColor);
+    }
+  } catch (e) {}
+})();`
+
+const SITE_URL = 'https://noteFlow.com'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -26,14 +59,14 @@ export const Route = createRootRoute({
       },
       {
         name: 'application-name',
-        content: 'Node Space',
+        content: 'Note Flow',
       },
       ...seo({
-        title: 'Node Space — Smart Workspace for Notes & Ideas',
+        title: 'Note Flow — Smart Workspace for Notes & Ideas',
         description:
-          'Node Space is a powerful note-taking workspace. Organize your thoughts with notebooks, folders, tags, and a clean distraction-free editor. Built for writers, developers, and thinkers.',
+          'Note Flow is a powerful note-taking workspace. Organize your thoughts with notebooks, folders, tags, and a clean distraction-free editor. Built for writers, developers, and thinkers.',
         keywords:
-          'note taking app, workspace, notebooks, knowledge management, productivity app, notes organizer, folders, tags, ideas, writing tool, Node Space',
+          'note taking app, workspace, notebooks, knowledge management, productivity app, notes organizer, folders, tags, ideas, writing tool, Note Flow',
         image: `${SITE_URL}/hero-banner.png`,
         url: SITE_URL,
       }),
@@ -69,7 +102,7 @@ export const Route = createRootRoute({
         children: JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'WebApplication',
-          name: 'Node Space',
+          name: 'Note Flow',
           url: SITE_URL,
           description:
             'A powerful note-taking workspace to organize your thoughts with notebooks, folders, tags, and a clean distraction-free editor.',
@@ -107,21 +140,22 @@ export const Route = createRootRoute({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    const cleanup = useThemeStore.getState().initThemeListener()
+    return () => cleanup()
+  }, [])
+
   return (
     <html
       lang="en"
       className="dark"
       data-theme="dark"
-      style={{ colorScheme: 'dark' }}
+      data-accent="violet"
       suppressHydrationWarning
     >
       <head suppressHydrationWarning>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
-        {/* <script
-          crossOrigin="anonymous"
-          src="//unpkg.com/react-scan/dist/auto.global.js"
-        ></script> */}
       </head>
       <body
         className="font-sans wrap-anywhere antialiased"
@@ -129,7 +163,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       >
         <Toaster richColors />
         {children}
-        <TanStackDevtools
+        {/* <TanStackDevtools
           config={{ position: 'bottom-right' }}
           plugins={[
             {
@@ -141,7 +175,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               render: <ReactQueryDevtools />,
             },
           ]}
-        />
+        /> */}
+        {/* <TanStackRouterDevtools position="bottom-right" />
+        <ReactQueryDevtools buttonPosition="bottom-left" /> */}
         <Scripts />
       </body>
     </html>

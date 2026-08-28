@@ -5,11 +5,9 @@ import {
   SidebarHeader,
   BrandLogo,
 } from '@/shared/ui'
-
 import { Logout } from './logout'
 import { SidebarGroupLayout } from './sidebar-group-layout'
 import { NAVIGATION_LIST } from './navigation-list'
-
 import FavoriteFolders from './favorite-folders'
 
 const WorkSpaceSidebar = () => {
@@ -21,7 +19,7 @@ const WorkSpaceSidebar = () => {
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroupLayout
-            className="px-4 pb-4"
+            className="px-2 pb-4"
             items={NAVIGATION_LIST}
             mapItem={(item) => ({
               label: item.label,
@@ -33,7 +31,19 @@ const WorkSpaceSidebar = () => {
 
           <FavoriteFolders />
         </SidebarContent>
-        <SidebarFooter className="gap-3 border-t border-white/5 bg-ns-bg/30 px-0 py-2">
+        <SidebarFooter className="flex flex-col gap-2 border-t border-white/5 bg-ns-bg/30 px-3 py-3">
+          {/* <Link
+            to="/admin"
+            className="flex items-center justify-between rounded-lg border border-ns-primary px-3 py-2 text-xs font-bold text-ns-primary uppercase no-underline shadow-xs transition-all hover:border-ns-primary/60 hover:bg-ns-primary/40 hover:text-white active:scale-98 dark:text-white/90"
+          >
+            <div className="flex items-center gap-2">
+              <ShieldAlert size={14} />
+              <span>Admin Portal</span>
+            </div>
+            <span className="py-0.2 rounded bg-ns-primary/20 px-1.5 text-[0.55rem] font-extrabold text-ns-primary uppercase dark:text-white/80">
+              Live
+            </span>
+          </Link> */}
           <Logout />
         </SidebarFooter>
       </Sidebar>

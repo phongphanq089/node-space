@@ -18,11 +18,13 @@ import { toast } from 'sonner'
 
 export const WORKSPACES_QUERY_KEY = ['workspaces'] as const
 
-export function useWorkspacesQuery() {
+export function useWorkspacesQuery(search?: string) {
   return useQuery({
-    queryKey: WORKSPACES_QUERY_KEY,
+    queryKey: search
+      ? [...WORKSPACES_QUERY_KEY, { search }]
+      : WORKSPACES_QUERY_KEY,
     queryFn: async () => {
-      const res = await getWorkspacesFn({ data: { limit: 100 } })
+      const res = await getWorkspacesFn({ data: { limit: 100, search } })
       return res.items
     },
   })

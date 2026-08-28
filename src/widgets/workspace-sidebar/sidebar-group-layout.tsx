@@ -18,6 +18,7 @@ import {
   FolderClosed,
   MoreHorizontal,
   Layers,
+  Settings,
 } from 'lucide-react'
 import { cn } from '@/shared/lib/utils'
 
@@ -74,6 +75,7 @@ const defaultIconMap: Record<string, ReactNode> = {
   tag: <Tag size={15} />,
   trash: <Trash2 size={15} />,
   music: <Music size={15} />,
+  settings: <Settings size={15} />,
 }
 
 export function SidebarGroupLayout<T = SidebarGroupItemData>({
@@ -169,10 +171,10 @@ export function SidebarGroupLayout<T = SidebarGroupItemData>({
           )
 
           const baseItemClasses = cn(
-            'flex w-full cursor-pointer items-center gap-2.5 rounded-sm px-3 py-2 text-xs font-medium no-underline transition-all',
+            'flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-3 py-5 text-sm font-medium no-underline transition-all',
             isActive
-              ? 'bg-ns-primary! text-ns-primary-lt shadow-[inset_0_0_0_1px_var(--color-ns-border-em)]'
-              : 'text-ns-muted hover:bg-ns-hover hover:text-ns-text-2'
+              ? 'bg-ns-primary! text-ns-primary-lt text-white! shadow-[inset_0_0_0_1px_var(--color-ns-border-em)]'
+              : 'hover:bg-ns-hover'
           )
 
           return (

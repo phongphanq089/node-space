@@ -1,0 +1,155 @@
+/**
+ * Universal Lexical Editor - Core & Component Styles
+ * Minimal, scoped CSS for features that cannot be done purely with Tailwind utilities
+ */
+
+/* ContentEditable root container */
+.universal-editor-input {
+  min-height: 200px;
+  position: relative;
+  outline: none;
+  tab-size: 2;
+}
+
+/* Placeholder */
+.universal-editor-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  user-select: none;
+  display: inline-block;
+  color: var(--muted-foreground, #71717a);
+}
+
+/* Checklist Item Interactive Checkbox */
+.editor-checklist-item {
+  position: relative;
+  list-style-type: none;
+  outline: none;
+  min-height: 1.5em;
+  padding-left: 1.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.editor-checklist-item::before {
+  content: '';
+  position: absolute;
+  left: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  border: 1.5px solid var(--muted-foreground, #a1a1aa);
+  background-color: var(--background, #ffffff);
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+}
+
+.editor-checklist-item:hover::before {
+  border-color: var(--primary, #0ea5e9);
+}
+
+.editor-checklist-item-checked {
+  position: relative;
+  list-style-type: none;
+  outline: none;
+  min-height: 1.5em;
+  padding-left: 1.75rem;
+  text-decoration: line-through;
+  color: var(--muted-foreground, #71717a);
+  cursor: pointer;
+  user-select: none;
+}
+
+.editor-checklist-item-checked::before {
+  content: '';
+  position: absolute;
+  left: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  border: 1.5px solid var(--primary, #0ea5e9);
+  background-color: var(--primary, #0ea5e9);
+  cursor: pointer;
+}
+
+.editor-checklist-item-checked::after {
+  content: '';
+  position: absolute;
+  left: 0.55rem;
+  top: calc(50% - 1px);
+  width: 0.35rem;
+  height: 0.6rem;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: translateY(-50%) rotate(45deg);
+  cursor: pointer;
+}
+
+/* Code Block Gutter / Line Numbers */
+.editor-code-block {
+  position: relative;
+}
+
+.editor-code-block[data-gutter]::before {
+  content: attr(data-gutter);
+  position: sticky;
+  left: 0;
+  float: left;
+  top: 0;
+  z-index: 2;
+  min-height: 100%;
+  padding: 0 0.75rem 0 0.25rem;
+  margin-right: 0.75rem;
+  border-right: 1px solid var(--border, #e4e4e7);
+  color: var(--muted-foreground, #71717a);
+  white-space: pre-wrap;
+  text-align: right;
+  user-select: none;
+}
+
+/* Table Resizer Handle */
+.editor-table-resizer {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: transparent;
+  cursor: col-resize;
+  z-index: 10;
+  transition: background-color 0.15s;
+}
+
+.editor-table-resizer:hover,
+.editor-table-resizer:active {
+  background-color: var(--primary, #0ea5e9);
+}
+
+/* Block Cursor */
+.editor-block-cursor {
+  display: block;
+  pointer-events: none;
+  position: absolute;
+}
+
+.editor-block-cursor::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: -2px;
+  width: 20px;
+  border-top: 2px solid currentColor;
+  animation: EditorCursorBlink 1.1s steps(2, start) infinite;
+}
+
+@keyframes EditorCursorBlink {
+  to {
+    visibility: hidden;
+  }
+}

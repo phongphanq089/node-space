@@ -1,8 +1,8 @@
 import React from 'react'
-import { Star, Trash2, Clock, ArrowRight, Folder, Pencil } from 'lucide-react'
-import { GlowCard } from '@/shared/ui/system/glow-card-grid'
+import { Star, Trash2, Pencil, Check } from 'lucide-react'
 import { useToggleFavoriteFolderMutation } from '../hooks/use-folders'
-import { Button } from '@/shared/ui'
+import { Button } from '@/shared/ui/core/button'
+import { cn } from '@/shared/lib/utils'
 
 export interface FolderItemRecord {
   id: string
@@ -22,6 +22,9 @@ interface FolderCardProps {
   onEdit?: (folder: FolderItemRecord) => void
   onDelete?: (folder: FolderItemRecord) => void
   isDeleting?: boolean
+  isSelectMode?: boolean
+  isSelected?: boolean
+  onToggleSelect?: (folderId: string) => void
 }
 
 function FolderCardComponent({
@@ -31,6 +34,9 @@ function FolderCardComponent({
   onEdit,
   onDelete,
   isDeleting = false,
+  isSelectMode = false,
+  isSelected = false,
+  onToggleSelect,
 }: FolderCardProps) {
   const favoriteMutation = useToggleFavoriteFolderMutation()
 
@@ -57,140 +63,172 @@ function FolderCardComponent({
     favoriteMutation.mutate(folder.id)
   }
 
+  const handleCardClick = () => {
+    if (isSelectMode) {
+      onToggleSelect?.(folder.id)
+    } else {
+      onSelect?.(folder)
+    }
+  }
+
+  const folderColor = folder.color || '#6366f1'
+
   return (
-    <GlowCard avatar={folder.image || undefined} className="cursor-pointer">
-      <div
-        onClick={() => onSelect?.(folder)}
-        className="group flex gap-3.5 p-3.5"
-      >
-        {/* Thumbnail */}
+    <div
+      onClick={handleCardClick}
+      style={
+        {
+          '--folder-accent': folderColor,
+          '--folder-accent-shadow': `${folderColor}33`,
+          '--folder-accent-glow': `${folderColor}4d`,
+        } as React.CSSProperties
+      }
+      className={cn(
+        'group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border bg-gray-100 p-3.5 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-[var(--folder-accent)] hover:shadow-[var(--folder-accent-shadow)] hover:ring-1 hover:ring-[var(--folder-accent)]/40 dark:border-white/10 dark:bg-ns-primary/10! dark:hover:border-[var(--folder-accent)] dark:hover:shadow-[0_0_30px_var(--folder-accent-glow)] dark:hover:ring-1 dark:hover:ring-[var(--folder-accent)]/70',
+        isSelected &&
+          'border-ns-primary! shadow-[0_0_20px_rgba(59,130,246,0.3)] ring-2 ring-ns-primary!'
+      )}
+    >
+      <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-ns-surface-alt transition-colors duration-300">
+        {/* Selection Checkbox */}
+        {isSelectMode && (
+          <div
+            onClick={(e) => {
+              e.stopPropagation()
+              onToggleSelect?.(folder.id)
+            }}
+            className={cn(
+              'absolute top-2.5 left-2.5 z-20 flex h-6 w-6 cursor-pointer items-center justify-center rounded-lg border backdrop-blur-md transition-all',
+              isSelected
+                ? 'border-ns-primary bg-ns-primary text-white shadow-md'
+                : 'border-white/30 bg-black/50 hover:border-white/70'
+            )}
+          >
+            {isSelected && <Check size={14} strokeWidth={3} />}
+          </div>
+        )}
+
         {folder.image ? (
           <img
             src={folder.image}
             alt={folder.name}
-            className="size-[76px] shrink-0 rounded-xl border border-ns-border object-cover shadow-sm transition-all group-hover:border-ns-border-md"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div
-            className="flex size-[76px] shrink-0 items-center justify-center rounded-xl border border-ns-border shadow-inner transition-all group-hover:border-ns-border-md"
-            style={{
-              background: `linear-gradient(
-          135deg,
-          ${folder.color ?? '#3b82f6'}22,
-          ${folder.color ?? '#3b82f6'}44
-        )`,
-            }}
-          >
-            <Folder
-              size={28}
-              style={{ color: folder.color ?? '#60a5fa' }}
-              className="drop-shadow-md"
-            />
-          </div>
+          <>
+            <div className="absolute inset-0 flex items-center justify-center bg-ns-primary/10">
+              <img
+                src={'/icon-ui-v1.png'}
+                alt={folder.name}
+                className="h-[80%] w-[80%] object-contain transition-opacity duration-300 group-hover:opacity-80"
+              />
+            </div>
+          </>
         )}
 
-        {/* Content */}
-        <div className="min-w-0 flex-1">
-          {/* Title */}
-          <div className="flex items-start gap-2">
-            <h3 className="min-w-0 flex-1 truncate text-sm font-bold text-white transition-colors group-hover:text-ns-primary-lt">
-              {folder.name}
-            </h3>
+        <button
+          type="button"
+          onClick={handleToggleFavorite}
+          disabled={favoriteMutation.isPending}
+          className="absolute top-2.5 right-2.5 z-10 flex size-8 cursor-pointer items-center justify-center rounded-lg border border-black/10 bg-white/85 text-ns-muted shadow-xs backdrop-blur-md transition-all hover:scale-110 hover:border-amber-400/60 hover:bg-white hover:text-amber-500 active:scale-95 dark:border-white/15 dark:bg-black/55 dark:text-ns-ghost dark:hover:border-amber-400/40 dark:hover:bg-black/80 dark:hover:text-amber-400"
+          title={
+            folder.isFavorite ? 'Remove from favorites' : 'Add to favorites'
+          }
+        >
+          <Star
+            size={14}
+            fill={folder.isFavorite ? '#fbbf24' : 'none'}
+            className={
+              folder.isFavorite
+                ? 'text-amber-500 dark:text-amber-400'
+                : 'text-zinc-500 dark:text-white/75'
+            }
+          />
+        </button>
+      </div>
 
-            <button
-              onClick={handleToggleFavorite}
-              disabled={favoriteMutation.isPending}
-              className="shrink-0 cursor-pointer rounded-md p-1 text-ns-ghost transition-all hover:bg-ns-hover hover:text-amber-400"
-              title={
-                folder.isFavorite ? 'Remove from favorites' : 'Add to favorites'
-              }
+      <div className="mt-3.5 flex flex-1 flex-col">
+        {/* Tags row */}
+        <div className="flex items-center gap-1.5">
+          {folder.tags && folder.tags.length > 0 ? (
+            <>
+              {folder.tags.slice(0, 2).map((tag) => (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onSelectTag?.(tag)
+                  }}
+                  className="max-w-[110px] truncate rounded-md border border-purple-200 bg-purple-50 px-2 py-0.5 font-mono text-[10px] font-semibold text-purple-700 transition-colors hover:border-purple-300 hover:bg-purple-100 hover:text-purple-900 dark:border-purple-500/25 dark:bg-purple-500/10 dark:text-purple-300 dark:hover:border-purple-500/50 dark:hover:bg-purple-500/20 dark:hover:text-white"
+                  title={`Filter by #${tag}`}
+                >
+                  #{tag}
+                </button>
+              ))}
+              {folder.tags.length > 2 && (
+                <span className="text-[10px] font-medium text-ns-muted dark:text-ns-faint">
+                  +{folder.tags.length - 2}
+                </span>
+              )}
+            </>
+          ) : (
+            <span className="rounded-md border border-ns-border-soft bg-ns-surface-alt px-2 py-0.5 font-mono text-[10px] font-medium text-ns-muted dark:border-ns-border/40 dark:bg-ns-surface/50 dark:text-ns-faint">
+              #folder
+            </span>
+          )}
+        </div>
+
+        {/* Title */}
+        <h3 className="mt-5 line-clamp-1 text-lg font-semibold tracking-tight text-ns-text transition-colors group-hover:text-[var(--folder-accent)] dark:text-white dark:group-hover:text-[var(--folder-accent)]">
+          {folder.name}
+        </h3>
+
+        {/* Subtitle / Description */}
+        <p className="mt-1 line-clamp-2 text-base leading-relaxed text-ns-muted">
+          {folder.tags && folder.tags.length > 0
+            ? `Tagged with ${folder.tags.map((t) => `#${t}`).join(', ')}`
+            : 'Organized workspace folder for notes and documents.'}
+        </p>
+
+        <div className="mt-4 flex items-center justify-between border-t border-ns-border-soft pt-3 dark:border-ns-border-soft/40">
+          <div className="flex items-center gap-2 text-[11px] text-ns-muted dark:text-ns-muted-md">
+            <div
+              className="flex size-5 shrink-0 items-center justify-center rounded-full text-[9px] font-bold text-white shadow-xs"
+              style={{ backgroundColor: folderColor }}
             >
-              <Star
-                size={13}
-                fill={folder.isFavorite ? '#fbbf24' : 'none'}
-                className={
-                  folder.isFavorite ? 'text-amber-400' : 'text-ns-ghost'
-                }
-              />
-            </button>
-          </div>
-          <div className="mt-1 flex min-w-0 items-center gap-2">
-            {/* Date */}
-            <div className="flex shrink-0 items-center gap-1.5 text-[10px] text-ns-faint">
-              <Clock size={11} />
-              <span>Created {formattedDate}</span>
+              {folder.name.charAt(0).toUpperCase()}
             </div>
-
-            {/* Tags */}
-            {folder.tags && folder.tags.length > 0 && (
-              <>
-                <span className="text-ns-border">·</span>
-
-                <div className="flex min-w-0 items-center gap-1 overflow-hidden">
-                  {folder.tags.slice(0, 3).map((tag) => (
-                    <button
-                      key={tag}
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onSelectTag?.(tag)
-                      }}
-                      className="max-w-[80px] shrink-0 truncate rounded-md border border-purple-500/20 bg-purple-500/10 px-1.5 py-0.5 font-mono text-[9px] font-semibold text-purple-300 transition-colors hover:border-purple-500/50 hover:bg-purple-500/15 hover:text-white"
-                      title={`Filter by #${tag}`}
-                    >
-                      #{tag}
-                    </button>
-                  ))}
-
-                  {folder.tags.length > 3 && (
-                    <span className="shrink-0 text-[9px] font-medium text-ns-faint">
-                      +{folder.tags.length - 3}
-                    </span>
-                  )}
-                </div>
-              </>
-            )}
+            <div className="flex items-center gap-1">
+              <span>{formattedDate}</span>
+            </div>
           </div>
 
-          <div className="mt-2.5 flex items-center justify-between border-t border-ns-border-soft/50 pt-2">
-            <button
+          {/* Right: Actions */}
+          <div className="flex items-center gap-1 text-ns-muted dark:text-ns-ghost">
+            <Button
+              size="icon-lg"
               type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                onSelect?.(folder)
-              }}
-              className="flex items-center gap-1 text-[10px] font-semibold text-ns-primary-lt transition-colors hover:text-white"
-            >
-              <span>Open folder</span>
-              <ArrowRight
-                size={11}
-                className="transition-transform group-hover:translate-x-0.5"
-              />
-            </button>
+              onClick={handleEdit}
 
-            <div className="flex gap-1 text-ns-ghost">
-              <Button
-                onClick={handleEdit}
-                title="Edit Folder"
-                size={'icon-sm'}
-                className="bg-ns-primary/30"
-              >
-                <Pencil />
-              </Button>
-              <Button
-                onClick={handleDelete}
-                disabled={isDeleting}
-                title="Delete Folder"
-                size={'icon-sm'}
-                className="bg-ns-primary/30"
-              >
-                <Trash2 />
-              </Button>
-            </div>
+              title="Edit Folder"
+            >
+              <Pencil size={13} />
+            </Button>
+            <Button
+              size="icon-lg"
+              type="button"
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={isDeleting}
+              title="Delete Folder"
+            >
+              <Trash2 size={13} />
+            </Button>
           </div>
         </div>
       </div>
-    </GlowCard>
+    </div>
   )
 }
 

@@ -1,8 +1,9 @@
-import { SidebarProvider } from '@/shared/ui'
+import { SidebarProvider, TooltipProvider } from '@/shared/ui'
 import { YoutubePlayer, useMusicStore } from '@/features/music-player'
 import type { TrackItem } from '@/features/music-player'
 import { WorkSpaceSidebar } from '@/widgets/workspace-sidebar'
 import { GlobalMusicDrawer } from '@/widgets/global-music-drawer'
+import { AppearanceDrawer } from '@/widgets/appearance-drawer'
 
 import { useEffect, useRef } from 'react'
 import MainContentWorkspace from './layouts/main-content-workspace'
@@ -87,46 +88,51 @@ const Workspace = () => {
 
   return (
     <SidebarProvider>
-      <div className="flex w-full bg-ns-bg text-ns-text-2">
-        <WorkSpaceSidebar />
+      <TooltipProvider>
+        <div className="flex w-full bg-ns-bg text-ns-text-2">
+          <WorkSpaceSidebar />
 
-        <MainContentWorkspace />
+          <MainContentWorkspace />
 
-        {/* YouTube Stream Modal & PIP Player */}
-        <YoutubePlayer />
+          {/* YouTube Stream Modal & PIP Player */}
+          <YoutubePlayer />
 
-        {/* Native Video player */}
-        {currentTrack && !isYoutube && isVideo && (
-          <video
-            ref={videoRef}
-            src={currentTrack.url}
-            muted={isMuted}
-            onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
-            onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
-            onEnded={handleTrackEnded}
-            className={`pointer-events-auto fixed object-cover transition-all duration-300 ${
-              isExpanded
-                ? 'top-[40%] left-1/2 z-ns-supreme aspect-video w-[85vw] max-w-[640px] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-white/10 bg-black shadow-2xl'
-                : 'right-6 bottom-24 z-ns-float aspect-video w-[240px] rounded-xl border border-ns-border bg-black shadow-2xl hover:scale-105'
-            }`}
-          />
-        )}
+          {/* Native Video player */}
+          {currentTrack && !isYoutube && isVideo && (
+            <video
+              ref={videoRef}
+              src={currentTrack.url}
+              muted={isMuted}
+              onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
+              onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
+              onEnded={handleTrackEnded}
+              className={`pointer-events-auto fixed object-cover transition-all duration-300 ${
+                isExpanded
+                  ? 'top-[40%] left-1/2 z-ns-supreme aspect-video w-[85vw] max-w-[640px] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-white/10 bg-black shadow-2xl'
+                  : 'right-6 bottom-24 z-ns-float aspect-video w-[240px] rounded-xl border border-ns-border bg-black shadow-2xl hover:scale-105'
+              }`}
+            />
+          )}
 
-        {/* Native Audio player */}
-        {currentTrack && !isYoutube && !isVideo && (
-          <audio
-            ref={audioRef}
-            src={currentTrack.url}
-            muted={isMuted}
-            onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
-            onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
-            onEnded={handleTrackEnded}
-          />
-        )}
+          {/* Native Audio player */}
+          {currentTrack && !isYoutube && !isVideo && (
+            <audio
+              ref={audioRef}
+              src={currentTrack.url}
+              muted={isMuted}
+              onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
+              onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
+              onEnded={handleTrackEnded}
+            />
+          )}
 
-        {/* Global Standalone Music & Focus Drawer Widget */}
-        <GlobalMusicDrawer />
-      </div>
+          {/* Global Standalone Music & Focus Drawer Widget */}
+          <GlobalMusicDrawer />
+
+          {/* Global Appearance & Theme Settings Drawer */}
+          <AppearanceDrawer />
+        </div>
+      </TooltipProvider>
     </SidebarProvider>
   )
 }

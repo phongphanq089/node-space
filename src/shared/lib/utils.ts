@@ -41,7 +41,7 @@ export const seo = ({
     { name: 'twitter:creator', content: '@nodespaceapp' },
     // Open Graph — phải dùng `property`, không phải `name`
     { property: 'og:type', content: 'website' },
-    { property: 'og:site_name', content: 'Node Space' },
+    { property: 'og:site_name', content: 'Note Flow' },
     { property: 'og:title', content: title },
     { property: 'og:description', content: description },
     { property: 'og:locale', content: 'en_US' },

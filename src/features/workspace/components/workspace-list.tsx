@@ -56,7 +56,7 @@ export function WorkspacesList() {
   return (
     <>
       {/* Search Bar & Create Trigger */}
-      <div className="flex items-center gap-3">
+      <div className="mb-10 flex items-center gap-3">
         <div className="flex flex-1 items-center">
           <Input
             placeholder="Search workspaces..."
@@ -69,7 +69,7 @@ export function WorkspacesList() {
             }
           />
         </div>
-        <Button onClick={() => setIsCreateWorkspaceOpen(true)}>
+        <Button onClick={() => setIsCreateWorkspaceOpen(true)} className="px-6">
           <Plus size={13} />
           <span className="hidden sm:inline">New Workspace</span>
         </Button>
@@ -170,7 +170,7 @@ export function WorkspacesList() {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
         title="Delete Workspace"
-        description="Are you sure you want to delete this workspace? This action cannot be undone."
+        description="Are you sure you want to delete this workspace and all its folders and notes? This action cannot be undone."
         itemName={deletingWorkspace?.name}
         isPending={deleteWorkspaceMutation.isPending}
       />

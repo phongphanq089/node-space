@@ -13,7 +13,7 @@ registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType)
 export const Route = createFileRoute('/_workspace')({
   head: () => ({
     meta: [
-      { title: 'Workspace | Node Space' },
+      { title: 'Workspace | Note Flow' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),

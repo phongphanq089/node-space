@@ -1,19 +1,31 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import { getDb } from '@/db'
-import { folder, user, workspace } from '@/db/schema'
+import { folder, note, user, workspace } from '@/db/schema'
 import { eq, or, desc, and, like, sql } from 'drizzle-orm'
+import { ensureTagsExist } from '../tag'
 
-let isTagsColumnChecked = false
+let isFolderColumnsChecked = false
 
-async function ensureTagsColumnExists(db: any) {
-  if (isTagsColumnChecked) return
-  try {
-    await db.run(sql`ALTER TABLE folder ADD COLUMN tags TEXT`)
-  } catch {
-    // Column already exists or alter table not needed
+async function ensureFolderColumnsExist(db: any) {
+  if (isFolderColumnsChecked) return
+
+  const alters = [
+    sql`ALTER TABLE folder ADD COLUMN tags TEXT`,
+    sql`ALTER TABLE folder ADD COLUMN color TEXT`,
+    sql`ALTER TABLE folder ADD COLUMN image TEXT`,
+    sql`ALTER TABLE folder ADD COLUMN is_favorite INTEGER DEFAULT 0`,
+  ]
+
+  for (const query of alters) {
+    try {
+      await db.run(query)
+    } catch {
+      // Column might already exist
+    }
   }
-  isTagsColumnChecked = true
+
+  isFolderColumnsChecked = true
 }
 
 export const createFolderSchema = z.object({
@@ -55,7 +67,7 @@ export const createFolderFn = createServerFn({ method: 'POST' })
     }
 
     const db = getDb()
-    await ensureTagsColumnExists(db)
+    await ensureFolderColumnsExist(db)
 
     // Fallback authorId if unauthenticated in dev
     if (!authorId) {
@@ -125,6 +137,10 @@ export const createFolderFn = createServerFn({ method: 'POST' })
       updatedAt: now,
     }
 
+    if (data.tags && data.tags.length > 0) {
+      await ensureTagsExist(db, data.tags, targetWorkspaceId)
+    }
+
     try {
       await db.insert(folder).values(newFolder)
     } catch {
@@ -148,6 +164,7 @@ export const getFoldersFn = createServerFn({ method: 'GET' })
             search?: string
             workspaceId?: string | null
             tag?: string | null
+            tags?: string[] | string | null
           }
         | undefined
     ) =>
@@ -158,6 +175,10 @@ export const getFoldersFn = createServerFn({ method: 'GET' })
           search: z.string().optional(),
           workspaceId: z.string().nullable().optional(),
           tag: z.string().nullable().optional(),
+          tags: z
+            .union([z.array(z.string()), z.string()])
+            .nullable()
+            .optional(),
         })
         .parse(data ?? {})
   )
@@ -165,7 +186,7 @@ export const getFoldersFn = createServerFn({ method: 'GET' })
     const limit = data?.limit ?? 10
     const offset = data?.offset ?? 0
     const db = getDb()
-    await ensureTagsColumnExists(db)
+    await ensureFolderColumnsExist(db)
 
     let authorId: string | null = null
     try {
@@ -184,8 +205,32 @@ export const getFoldersFn = createServerFn({ method: 'GET' })
     if (data?.search && data.search.trim() !== '') {
       conditions.push(like(folder.name, `%${data.search.trim()}%`))
     }
-    if (data?.tag && data.tag.trim() !== '') {
-      conditions.push(like(folder.tags, `%${data.tag.trim()}%`))
+
+    // Process multiple tags
+    const targetTags: string[] = []
+    if (data?.tags) {
+      if (Array.isArray(data.tags)) {
+        targetTags.push(...data.tags.filter(Boolean))
+      } else if (typeof data.tags === 'string' && data.tags.trim() !== '') {
+        targetTags.push(
+          ...data.tags
+            .split(',')
+            .map((t) => t.trim())
+            .filter(Boolean)
+        )
+      }
+    } else if (data?.tag && data.tag.trim() !== '') {
+      targetTags.push(
+        ...data.tag
+          .split(',')
+          .map((t) => t.trim())
+          .filter(Boolean)
+      )
+    }
+
+    if (targetTags.length > 0) {
+      const tagConditions = targetTags.map((t) => like(folder.tags, `%${t}%`))
+      conditions.push(or(...tagConditions))
     }
 
     let rows: any[] = []
@@ -285,6 +330,22 @@ export const deleteFolderFn = createServerFn({ method: 'POST' })
   )
   .handler(async ({ data }) => {
     const db = getDb()
+
+    // 1. Find all child subfolders to also cascade delete their notes
+    const childFolders = await db
+      .select({ id: folder.id })
+      .from(folder)
+      .where(eq(folder.parentId, data.folderId))
+
+    for (const child of childFolders) {
+      await db.delete(note).where(eq(note.folder_id, child.id))
+      await db.delete(folder).where(eq(folder.id, child.id))
+    }
+
+    // 2. Cascade delete all notes directly inside this folder
+    await db.delete(note).where(eq(note.folder_id, data.folderId))
+
+    // 3. Delete the target folder itself
     await db.delete(folder).where(eq(folder.id, data.folderId))
 
     return { success: true, folderId: data.folderId }
@@ -336,7 +397,7 @@ export const updateFolderFn = createServerFn({ method: 'POST' })
   .validator((data: UpdateFolderInput) => updateFolderSchema.parse(data))
   .handler(async ({ data }) => {
     const db = getDb()
-    await ensureTagsColumnExists(db)
+    await ensureFolderColumnsExist(db)
 
     const updatePayload: Record<string, any> = {
       updatedAt: new Date(),
@@ -345,7 +406,12 @@ export const updateFolderFn = createServerFn({ method: 'POST' })
     if (data.name !== undefined) updatePayload.name = data.name
     if (data.color !== undefined) updatePayload.color = data.color
     if (data.image !== undefined) updatePayload.image = data.image
-    if (data.tags !== undefined) updatePayload.tags = data.tags
+    if (data.tags !== undefined) {
+      updatePayload.tags = data.tags
+      if (data.tags.length > 0) {
+        await ensureTagsExist(db, data.tags, data.workspaceId)
+      }
+    }
     if (data.parentId !== undefined)
       updatePayload.parentId = data.parentId || null
 
@@ -416,3 +482,171 @@ export const updateFolderFn = createServerFn({ method: 'POST' })
 
     return { success: true, folderId: data.folderId }
   })
+
+let isUserHeroBannerColumnsChecked = false
+
+async function ensureUserHeroBannerColumnsExist(db: any) {
+  if (isUserHeroBannerColumnsChecked) return
+  try {
+    await db.run(
+      sql`ALTER TABLE user ADD COLUMN hero_banner TEXT DEFAULT '/hero-banner.png'`
+    )
+  } catch {
+    // Column already exists
+  }
+  try {
+    await db.run(
+      sql`ALTER TABLE user ADD COLUMN hero_banner_preset TEXT DEFAULT 'default'`
+    )
+  } catch {
+    // Column already exists
+  }
+  isUserHeroBannerColumnsChecked = true
+}
+
+export const updateHeroBannerSchema = z.object({
+  bannerUrl: z.string().min(1, 'Banner URL is required'),
+  presetId: z.string().nullable().optional(),
+})
+
+export type UpdateHeroBannerInput = z.infer<typeof updateHeroBannerSchema>
+
+export const updateHeroBannerFn = createServerFn({ method: 'POST' })
+  .validator((data: UpdateHeroBannerInput) =>
+    updateHeroBannerSchema.parse(data)
+  )
+  .handler(async ({ data }) => {
+    const { getAuth } = await import('@/shared/lib/auth')
+    const { getRequest } = await import('@tanstack/react-start/server')
+    const request = getRequest()
+
+    let userId: string | null = null
+
+    if (request) {
+      try {
+        const auth = getAuth()
+        const session = await auth.api.getSession({
+          headers: request.headers,
+        })
+        if (session?.user) {
+          userId = session.user.id
+        }
+      } catch (err) {
+        console.warn('⚠️ Could not retrieve auth session:', err)
+      }
+    }
+
+    const db = getDb()
+    await ensureUserHeroBannerColumnsExist(db)
+
+    if (userId) {
+      await db
+        .update(user)
+        .set({
+          heroBanner: data.bannerUrl,
+          heroBannerPreset: data.presetId || null,
+          updatedAt: new Date(),
+        })
+        .where(eq(user.id, userId))
+
+      return {
+        success: true,
+        bannerUrl: data.bannerUrl,
+        presetId: data.presetId || null,
+      }
+    }
+
+    // Fallback: If running in dev without session, find the first user
+    const firstUser = await db.select({ id: user.id }).from(user).limit(1)
+    if (firstUser.length > 0) {
+      await db
+        .update(user)
+        .set({
+          heroBanner: data.bannerUrl,
+          heroBannerPreset: data.presetId || null,
+          updatedAt: new Date(),
+        })
+        .where(eq(user.id, firstUser[0].id))
+
+      return {
+        success: true,
+        bannerUrl: data.bannerUrl,
+        presetId: data.presetId || null,
+      }
+    }
+
+    return {
+      success: true,
+      bannerUrl: data.bannerUrl,
+      presetId: data.presetId || null,
+    }
+  })
+
+export const getHeroBannerFn = createServerFn({ method: 'GET' }).handler(
+  async () => {
+    const { getAuth } = await import('@/shared/lib/auth')
+    const { getRequest } = await import('@tanstack/react-start/server')
+    const request = getRequest()
+
+    let userId: string | null = null
+
+    if (request) {
+      try {
+        const auth = getAuth()
+        const session = await auth.api.getSession({
+          headers: request.headers,
+        })
+        if (session?.user) {
+          userId = session.user.id
+        }
+      } catch {
+        // Unauthenticated
+      }
+    }
+
+    const db = getDb()
+    await ensureUserHeroBannerColumnsExist(db)
+
+    try {
+      if (userId) {
+        const [foundUser] = await db
+          .select({
+            heroBanner: user.heroBanner,
+            heroBannerPreset: user.heroBannerPreset,
+          })
+          .from(user)
+          .where(eq(user.id, userId))
+          .limit(1)
+
+        if (foundUser && foundUser.heroBanner) {
+          return {
+            bannerUrl: foundUser.heroBanner,
+            presetId: foundUser.heroBannerPreset || null,
+          }
+        }
+      } else {
+        const [firstUser] = await db
+          .select({
+            heroBanner: user.heroBanner,
+            heroBannerPreset: user.heroBannerPreset,
+          })
+          .from(user)
+          .limit(1)
+
+        if (firstUser && firstUser.heroBanner) {
+          return {
+            bannerUrl: firstUser.heroBanner,
+            presetId: firstUser.heroBannerPreset || null,
+          }
+        }
+      }
+    } catch {
+      // Fallback to default
+    }
+
+    return {
+      bannerUrl: '/hero-banner.png',
+      presetId: 'default',
+    }
+  }
+)

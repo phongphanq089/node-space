@@ -1,5 +1,5 @@
-﻿import { useState } from 'react'
-import type { NoteItem } from '@/shared/mocks/mock-data'
+import { useState } from 'react'
+import type { NoteItem } from '../types'
 
 export type ViewMode = 'edit' | 'preview' | 'split'
 

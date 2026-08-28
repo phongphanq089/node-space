@@ -3,14 +3,15 @@ import { Eye, EyeOff } from 'lucide-react'
 
 import { cn } from '@/shared/lib/utils'
 
-interface InputProps extends React.ComponentProps<'input'> {
+interface InputProps extends Omit<React.ComponentProps<'input'>, 'prefix'> {
   className?: string
+  prefix?: React.ReactNode
   suffix?: React.ReactNode
   showPasswordToggle?: boolean
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, suffix, type, showPasswordToggle, ...props }, ref) => {
+  ({ className, prefix, suffix, type, showPasswordToggle, ...props }, ref) => {
     const [showPassword, setShowPassword] = React.useState(false)
 
     const isPasswordType = type === 'password'
@@ -40,12 +41,19 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className="relative flex w-full items-center">
+        {prefix && (
+          <div className="pointer-events-none absolute left-3 z-10 flex items-center text-ns-ghost">
+            {prefix}
+          </div>
+        )}
+
         <input
           ref={ref}
           type={finalType}
           data-slot="input"
           className={cn(
-            'h-10 w-full min-w-0 rounded-sm border border-ns-border bg-ns-bg/30 py-1.5 pr-3 pl-3 text-base transition-all duration-200 outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-ns-placeholder focus-visible:border-ns-primary focus-visible:ring-3 focus-visible:ring-ns-primary/20 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-ns-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm',
+            'h-10 w-full min-w-0 rounded-lg border border-ns-primary/60 bg-ns-bg/30 py-1.5 text-base transition-all duration-200 outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-ns-placeholder focus-visible:border-ns-primary focus-visible:ring-3 focus-visible:ring-ns-primary/20 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-ns-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:border-ns-border/70',
+            prefix ? 'pl-9' : 'pl-3',
             renderedSuffix ? 'pr-10' : 'pr-3',
             className
           )}

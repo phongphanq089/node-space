@@ -16,3 +16,23 @@ migrations_pattern = "drizzle/*/migration.sql"
 [[r2_buckets]]
 binding = "MEDIA_BUCKET"
 bucket_name = "node-space-media"
+
+# ── Environment: STAGING (Live Test) ──
+[env.staging]
+name = "node-space-worker-staging"
+
+[env.staging.vars]
+R2_PUBLIC_URL = "https://pub-d67355446a304a4cb69d91b2b303bc75.r2.dev"
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "note-space-db-staging"
+database_id = "0bbfe7ed-1ecd-4b4e-a197-2fb061370ad2"
+migrations_dir = "drizzle"
+migrations_pattern = "drizzle/*/migration.sql"
+remote = true # <── Bật kết nối trực tiếp lên Cloud D1
+
+[[env.staging.r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "node-space-media-staging"
+remote = true # <── Bật kết nối trực tiếp lên Cloud R2

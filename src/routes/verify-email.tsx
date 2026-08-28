@@ -5,7 +5,7 @@ import { VerifyEmailPage } from '@/features/auth/components/VerifyEmailPage'
 export const Route = createFileRoute('/verify-email')({
   head: () => ({
     meta: [
-      { title: 'Verify Your Email | Node Space' },
+      { title: 'Verify Your Email | Note Flow' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),

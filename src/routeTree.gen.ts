@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WorkspaceRouteImport } from './routes/_workspace'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as DesignSystemRouteImport } from './routes/design-system'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
@@ -18,13 +20,14 @@ import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as WorkspaceSplatRouteImport } from './routes/_workspace/$'
 import { Route as WorkspaceWorkspaceIndexRouteImport } from './routes/_workspace/workspace.index'
 import { Route as WorkspaceWorkspaceFavoritesRouteImport } from './routes/_workspace/workspace.favorites'
-import { Route as WorkspaceWorkspaceFolderRouteImport } from './routes/_workspace/workspace.folder'
 import { Route as WorkspaceWorkspaceMusicRouteImport } from './routes/_workspace/workspace.music'
 import { Route as WorkspaceWorkspaceTagsRouteImport } from './routes/_workspace/workspace.tags'
 import { Route as WorkspaceWorkspaceTrashRouteImport } from './routes/_workspace/workspace.trash'
 import { Route as WorkspaceWorkspaceWorkspacesRouteImport } from './routes/_workspace/workspace.workspaces'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiMediaSplatRouteImport } from './routes/api/media/$'
+import { Route as WorkspaceWorkspaceFolderIndexRouteImport } from './routes/_workspace/workspace.folder.index'
+import { Route as WorkspaceWorkspaceFolderFolderIdRouteImport } from './routes/_workspace/workspace.folder.$folderId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -33,6 +36,16 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const WorkspaceRoute = WorkspaceRouteImport.update({
   id: '/_workspace',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DesignSystemRoute = DesignSystemRouteImport.update({
+  id: '/design-system',
+  path: '/design-system',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
@@ -71,12 +84,6 @@ const WorkspaceWorkspaceFavoritesRoute =
     path: '/workspace/favorites',
     getParentRoute: () => WorkspaceRoute,
   } as any)
-const WorkspaceWorkspaceFolderRoute =
-  WorkspaceWorkspaceFolderRouteImport.update({
-    id: '/workspace/folder',
-    path: '/workspace/folder',
-    getParentRoute: () => WorkspaceRoute,
-  } as any)
 const WorkspaceWorkspaceMusicRoute = WorkspaceWorkspaceMusicRouteImport.update({
   id: '/workspace/music',
   path: '/workspace/music',
@@ -108,16 +115,29 @@ const ApiMediaSplatRoute = ApiMediaSplatRouteImport.update({
   path: '/api/media/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WorkspaceWorkspaceFolderIndexRoute =
+  WorkspaceWorkspaceFolderIndexRouteImport.update({
+    id: '/workspace/folder/',
+    path: '/workspace/folder/',
+    getParentRoute: () => WorkspaceRoute,
+  } as any)
+const WorkspaceWorkspaceFolderFolderIdRoute =
+  WorkspaceWorkspaceFolderFolderIdRouteImport.update({
+    id: '/workspace/folder/$folderId',
+    path: '/workspace/folder/$folderId',
+    getParentRoute: () => WorkspaceRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/design-system': typeof DesignSystemRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/verify-email': typeof VerifyEmailRoute
   '/$': typeof WorkspaceSplatRoute
   '/workspace/favorites': typeof WorkspaceWorkspaceFavoritesRoute
-  '/workspace/folder': typeof WorkspaceWorkspaceFolderRoute
   '/workspace/music': typeof WorkspaceWorkspaceMusicRoute
   '/workspace/tags': typeof WorkspaceWorkspaceTagsRoute
   '/workspace/trash': typeof WorkspaceWorkspaceTrashRoute
@@ -125,16 +145,19 @@ export interface FileRoutesByFullPath {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/media/$': typeof ApiMediaSplatRoute
   '/workspace/': typeof WorkspaceWorkspaceIndexRoute
+  '/workspace/folder/$folderId': typeof WorkspaceWorkspaceFolderFolderIdRoute
+  '/workspace/folder/': typeof WorkspaceWorkspaceFolderIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/design-system': typeof DesignSystemRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/verify-email': typeof VerifyEmailRoute
   '/$': typeof WorkspaceSplatRoute
   '/workspace/favorites': typeof WorkspaceWorkspaceFavoritesRoute
-  '/workspace/folder': typeof WorkspaceWorkspaceFolderRoute
   '/workspace/music': typeof WorkspaceWorkspaceMusicRoute
   '/workspace/tags': typeof WorkspaceWorkspaceTagsRoute
   '/workspace/trash': typeof WorkspaceWorkspaceTrashRoute
@@ -142,18 +165,21 @@ export interface FileRoutesByTo {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/media/$': typeof ApiMediaSplatRoute
   '/workspace': typeof WorkspaceWorkspaceIndexRoute
+  '/workspace/folder/$folderId': typeof WorkspaceWorkspaceFolderFolderIdRoute
+  '/workspace/folder': typeof WorkspaceWorkspaceFolderIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_workspace': typeof WorkspaceRouteWithChildren
+  '/admin': typeof AdminRoute
+  '/design-system': typeof DesignSystemRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/verify-email': typeof VerifyEmailRoute
   '/_workspace/$': typeof WorkspaceSplatRoute
   '/_workspace/workspace/favorites': typeof WorkspaceWorkspaceFavoritesRoute
-  '/_workspace/workspace/folder': typeof WorkspaceWorkspaceFolderRoute
   '/_workspace/workspace/music': typeof WorkspaceWorkspaceMusicRoute
   '/_workspace/workspace/tags': typeof WorkspaceWorkspaceTagsRoute
   '/_workspace/workspace/trash': typeof WorkspaceWorkspaceTrashRoute
@@ -161,18 +187,21 @@ export interface FileRoutesById {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/media/$': typeof ApiMediaSplatRoute
   '/_workspace/workspace/': typeof WorkspaceWorkspaceIndexRoute
+  '/_workspace/workspace/folder/$folderId': typeof WorkspaceWorkspaceFolderFolderIdRoute
+  '/_workspace/workspace/folder/': typeof WorkspaceWorkspaceFolderIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
+    | '/design-system'
     | '/forgot-password'
     | '/login'
     | '/register'
     | '/verify-email'
     | '/$'
     | '/workspace/favorites'
-    | '/workspace/folder'
     | '/workspace/music'
     | '/workspace/tags'
     | '/workspace/trash'
@@ -180,16 +209,19 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/media/$'
     | '/workspace/'
+    | '/workspace/folder/$folderId'
+    | '/workspace/folder/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
+    | '/design-system'
     | '/forgot-password'
     | '/login'
     | '/register'
     | '/verify-email'
     | '/$'
     | '/workspace/favorites'
-    | '/workspace/folder'
     | '/workspace/music'
     | '/workspace/tags'
     | '/workspace/trash'
@@ -197,17 +229,20 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/media/$'
     | '/workspace'
+    | '/workspace/folder/$folderId'
+    | '/workspace/folder'
   id:
     | '__root__'
     | '/'
     | '/_workspace'
+    | '/admin'
+    | '/design-system'
     | '/forgot-password'
     | '/login'
     | '/register'
     | '/verify-email'
     | '/_workspace/$'
     | '/_workspace/workspace/favorites'
-    | '/_workspace/workspace/folder'
     | '/_workspace/workspace/music'
     | '/_workspace/workspace/tags'
     | '/_workspace/workspace/trash'
@@ -215,11 +250,15 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/api/media/$'
     | '/_workspace/workspace/'
+    | '/_workspace/workspace/folder/$folderId'
+    | '/_workspace/workspace/folder/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   WorkspaceRoute: typeof WorkspaceRouteWithChildren
+  AdminRoute: typeof AdminRoute
+  DesignSystemRoute: typeof DesignSystemRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
@@ -242,6 +281,20 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof WorkspaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/design-system': {
+      id: '/design-system'
+      path: '/design-system'
+      fullPath: '/design-system'
+      preLoaderRoute: typeof DesignSystemRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forgot-password': {
@@ -293,13 +346,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceWorkspaceFavoritesRouteImport
       parentRoute: typeof WorkspaceRoute
     }
-    '/_workspace/workspace/folder': {
-      id: '/_workspace/workspace/folder'
-      path: '/workspace/folder'
-      fullPath: '/workspace/folder'
-      preLoaderRoute: typeof WorkspaceWorkspaceFolderRouteImport
-      parentRoute: typeof WorkspaceRoute
-    }
     '/_workspace/workspace/music': {
       id: '/_workspace/workspace/music'
       path: '/workspace/music'
@@ -342,29 +388,45 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMediaSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_workspace/workspace/folder/': {
+      id: '/_workspace/workspace/folder/'
+      path: '/workspace/folder'
+      fullPath: '/workspace/folder/'
+      preLoaderRoute: typeof WorkspaceWorkspaceFolderIndexRouteImport
+      parentRoute: typeof WorkspaceRoute
+    }
+    '/_workspace/workspace/folder/$folderId': {
+      id: '/_workspace/workspace/folder/$folderId'
+      path: '/workspace/folder/$folderId'
+      fullPath: '/workspace/folder/$folderId'
+      preLoaderRoute: typeof WorkspaceWorkspaceFolderFolderIdRouteImport
+      parentRoute: typeof WorkspaceRoute
+    }
   }
 }
 
 interface WorkspaceRouteChildren {
   WorkspaceSplatRoute: typeof WorkspaceSplatRoute
   WorkspaceWorkspaceFavoritesRoute: typeof WorkspaceWorkspaceFavoritesRoute
-  WorkspaceWorkspaceFolderRoute: typeof WorkspaceWorkspaceFolderRoute
   WorkspaceWorkspaceMusicRoute: typeof WorkspaceWorkspaceMusicRoute
   WorkspaceWorkspaceTagsRoute: typeof WorkspaceWorkspaceTagsRoute
   WorkspaceWorkspaceTrashRoute: typeof WorkspaceWorkspaceTrashRoute
   WorkspaceWorkspaceWorkspacesRoute: typeof WorkspaceWorkspaceWorkspacesRoute
   WorkspaceWorkspaceIndexRoute: typeof WorkspaceWorkspaceIndexRoute
+  WorkspaceWorkspaceFolderFolderIdRoute: typeof WorkspaceWorkspaceFolderFolderIdRoute
+  WorkspaceWorkspaceFolderIndexRoute: typeof WorkspaceWorkspaceFolderIndexRoute
 }
 
 const WorkspaceRouteChildren: WorkspaceRouteChildren = {
   WorkspaceSplatRoute: WorkspaceSplatRoute,
   WorkspaceWorkspaceFavoritesRoute: WorkspaceWorkspaceFavoritesRoute,
-  WorkspaceWorkspaceFolderRoute: WorkspaceWorkspaceFolderRoute,
   WorkspaceWorkspaceMusicRoute: WorkspaceWorkspaceMusicRoute,
   WorkspaceWorkspaceTagsRoute: WorkspaceWorkspaceTagsRoute,
   WorkspaceWorkspaceTrashRoute: WorkspaceWorkspaceTrashRoute,
   WorkspaceWorkspaceWorkspacesRoute: WorkspaceWorkspaceWorkspacesRoute,
   WorkspaceWorkspaceIndexRoute: WorkspaceWorkspaceIndexRoute,
+  WorkspaceWorkspaceFolderFolderIdRoute: WorkspaceWorkspaceFolderFolderIdRoute,
+  WorkspaceWorkspaceFolderIndexRoute: WorkspaceWorkspaceFolderIndexRoute,
 }
 
 const WorkspaceRouteWithChildren = WorkspaceRoute._addFileChildren(
@@ -374,6 +436,8 @@ const WorkspaceRouteWithChildren = WorkspaceRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   WorkspaceRoute: WorkspaceRouteWithChildren,
+  AdminRoute: AdminRoute,
+  DesignSystemRoute: DesignSystemRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,

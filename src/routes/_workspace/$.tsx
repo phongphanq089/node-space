@@ -28,7 +28,7 @@ function NotFoundPage() {
           Error 404
         </p>
         <h1 className="mb-3 text-2xl font-extrabold tracking-tight text-white drop-shadow-sm">
-          Node Space Lost
+          Note Flow Lost
         </h1>
         <p className="mb-8 max-w-xs text-xs leading-5 text-ns-muted">
           The coordinate or node you are trying to access does not exist, has
@@ -37,8 +37,8 @@ function NotFoundPage() {
 
         {/* CTA Button */}
         <Button asChild className="group cursor-pointer px-6 py-2 font-bold">
-          <Link to="/workspace">
-            <span>Return to Home</span>
+          <Link to="/workspace/folder">
+            <span>Return to Workspace</span>
             <ArrowRight
               size={14}
               className="ml-1.5 transition-transform group-hover:translate-x-1"
